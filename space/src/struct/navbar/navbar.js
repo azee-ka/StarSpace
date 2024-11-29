@@ -9,6 +9,9 @@ import axios from 'axios';
 // import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faEdit, faPlus, faCompass, faCalculator, faTachometerAlt, faChartLine, faBell } from '@fortawesome/free-solid-svg-icons';
+import ProfilePicture from '../../utils/getProfilePicture';
+import ProfileMenu from './profileMenu/profileMenu';
+import NotificationsMenu from './notificationsMenu/notificationsMenu';
 
 const Navbar = () => {
     const { authState, logout, isAuthenticated } = useAuth();
@@ -56,13 +59,13 @@ const Navbar = () => {
             // console.log(response.data);
 
         } catch (error) {
-            console.error('Error fetching notifications:', error);
+            // console.error('Error fetching notifications:', error);
         }
     };
     useEffect(() => {
         if (authState.isAuthenticated) {
             fetchProfileData();
-            fetchNotifications();
+            // fetchNotifications();
         }
     }, []);
 
@@ -96,7 +99,7 @@ const Navbar = () => {
 
 
     const publicPagesNavbar = [
-        { path: '/', label: 'Home', id: 'navbar-phrase', role: 'public' },
+        { path: '/home', label: 'Home', id: 'navbar-phrase', role: 'public' },
         { path: '/login', label: 'Sign In', id: 'navbar-access', role: 'public' },
     ];
 
@@ -127,16 +130,16 @@ const Navbar = () => {
                     <div className='navbar-menu-logo-container'>
                         {isAuthenticated &&
                             <div className={`navbar-sidebar-menu-toggle`}>
-                            <div className={`navbar-sidebar-menu-toggle-inner ${showHighOrderSidebar ? 'sidebar-visible' : ''}`}>
-                                <div className='navbar-sidebar-menu-toggle-inner-content'>
-                                    <button onClick={handleHighOrderSidebarToggle}>
-                                        <span className={`icon-bar ${showHighOrderSidebar ? 'rotate' : ''}`}></span>
-                                        <span className={`icon-bar ${showHighOrderSidebar ? 'rotate' : ''}`}></span>
-                                        <span className={`icon-bar ${showHighOrderSidebar ? 'rotate' : ''}`}></span>
-                                    </button>
+                                <div className={`navbar-sidebar-menu-toggle-inner ${showHighOrderSidebar ? 'sidebar-visible' : ''}`}>
+                                    <div className='navbar-sidebar-menu-toggle-inner-content'>
+                                        <button onClick={handleHighOrderSidebarToggle}>
+                                            <span className={`icon-bar ${showHighOrderSidebar ? 'rotate' : ''}`}></span>
+                                            <span className={`icon-bar ${showHighOrderSidebar ? 'rotate' : ''}`}></span>
+                                            <span className={`icon-bar ${showHighOrderSidebar ? 'rotate' : ''}`}></span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>}
+                            </div>}
                         <div className={`app-logo`}>
                             <Link to={'/'}>
                                 <h2>4Space</h2>
@@ -149,15 +152,15 @@ const Navbar = () => {
                             <div className='right-side-menu-items'>
                                 <ul className="right-menu">
                                     {pagesNavbar && pagesNavbar.map((item, index) => (
-                                            <li
-                                                key={index}
-                                                className={location.pathname === item.path ? 'active' : ''}
-                                                id={item.id}
-                                            >
-                                                <Link to={item.path} onClick={() => handleMenuClick(item.path, item.action)}>
-                                                    {item.label}
-                                                </Link>
-                                            </li>
+                                        <li
+                                            key={index}
+                                            className={location.pathname === item.path ? 'active' : ''}
+                                            id={item.id}
+                                        >
+                                            <Link to={item.path} onClick={() => handleMenuClick(item.path, item.action)}>
+                                                {item.label}
+                                            </Link>
+                                        </li>
                                     ))}
 
                                     {/* Notifications Menu */}
@@ -174,7 +177,7 @@ const Navbar = () => {
                                                     </span>
                                                 )}
                                             </button>
-                                            {/* {notificationsMenuVisible && <NotificationsMenu notificationsList={notificationsList} setCountNotifications={setCountNotifications} fetchNotifications={fetchNotifications} />} */}
+                                            {notificationsMenuVisible && <NotificationsMenu notificationsList={notificationsList} setCountNotifications={setCountNotifications} fetchNotifications={fetchNotifications} />}
                                         </li>
                                     )}
 
@@ -185,9 +188,9 @@ const Navbar = () => {
                                             ref={profileMenuRef}
                                         >
                                             <button onClick={handleProfileMenuToggle}>
-                                                {/* <ProfilePicture src={profileData} /> */}
+                                                <ProfilePicture src={profileData} />
                                             </button>
-                                            {/* {profileMenuVisible && <ProfileMenu user={authState.user} logout={logout} />} */}
+                                            {profileMenuVisible && <ProfileMenu user={authState.user} logout={logout} />}
                                         </li>
                                     )}
                                 </ul>

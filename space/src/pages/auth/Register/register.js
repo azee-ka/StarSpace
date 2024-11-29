@@ -7,8 +7,6 @@ import API_BASE_URL from '../../../config';
 import './register.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-import AlertModule from '../../../alert/alert';
-
 const RegisterPage = () => {
     const navigate = useNavigate();
 
@@ -56,12 +54,12 @@ const RegisterPage = () => {
                 last_name: capitalizedLastName,
             };
             // Send registration data to the backend
-            const response = await axios.post(`${API_BASE_URL}access/register/`, data, config);
+            const response = await axios.post(`${API_BASE_URL}register/`, data, config);
 
             // Handle the response from the backend as needed
             console.log(response.data);
             login(response.data);
-            navigate('/calculator');
+            navigate('/timeline');
 
         } catch (error) {
             // Handle registration error
@@ -115,11 +113,6 @@ const RegisterPage = () => {
                         <button type="submit">Register</button>
                     </form>
                 </div>
-            </div>
-            <div className='register-error-display'>
-                {registerError !== '' &&
-                    <AlertModule message={registerError} setShowAlert={setRegisterError} />
-                }
             </div>
         </div>
     );

@@ -1,19 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../reducers/auth/useAuth'; // assuming your auth hook exists
 import Layout from '../struct/layout/layout';
 
-const LoginPage = React.lazy(() => import('../pages/auth/Login/login'));
-const RegisterPage = React.lazy(() => import('../pages/auth/Register/register'));
-const Timeline = React.lazy(() => import('../pages/timeline/timeline'));
+import LoginPage from '../pages/auth/Login/login';
+import RegisterPage from '../pages/auth/Register/register';
+
+import FrontPage from '../pages/frontPage/frontPage';
+
+import Timeline from '../pages/timeline/timeline';
 
 const privateRoutes = [
-    { name: 'Timeline', path: '/', component: Timeline, key: 'Timeline', showSidebar: true },
+    { name: 'Timeline', path: '/', component: Timeline, key: 'Timeline' },
+    { name: 'Timeline', path: '/timeline', component: Timeline, key: 'Timeline' },
 ];
 
 const publicRoutes = [
-    { name: 'Login', path: '/login', component: LoginPage, key: 'Login', showSidebar: false },
-    { name: 'Register', path: '/register', component: RegisterPage, key: 'Register', showSidebar: false },
+    { name: 'Login', path: '/login', component: LoginPage, key: 'Login' },
+    { name: 'Register', path: '/register', component: RegisterPage, key: 'Register' },
+    { name: 'Home', path: '/', component: FrontPage, key: 'FrontPage' },
+    { name: 'Home', path: '/home', component: FrontPage, key: 'FrontPage' },
 ];
 
 const AppRouter = () => {

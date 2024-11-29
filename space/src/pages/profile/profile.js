@@ -1,5 +1,5 @@
 const Profile = () => {
-    
+
     return (
         <div classname='profile-container'>
 

@@ -4,7 +4,8 @@ import axios from 'axios';
 import API_BASE_URL from '../../../config';
 import { useAuth } from '../../../reducers/auth/useAuth';
 import './notificationsMenu.css';
-import { timeAgo } from '../../../components/personal/postUI/expandPost/convertDateTime';
+import { timeAgo } from '../../../utils/convertDateTIme';
+
 const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNotifications }) => {
     const { authState } = useAuth();
 

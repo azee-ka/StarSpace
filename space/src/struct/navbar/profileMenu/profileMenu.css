@@ -19,7 +19,7 @@
     min-width: 280px;
     height: auto;
     max-height: 515px;
-    gap: 10px;
+    gap: 13px;
     z-index: 100;
     border: 0.1px solid rgba(88, 88, 88, 0.6);
     transition: box-shadow 0.3s ease;
@@ -58,7 +58,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 
 .profile-menu-links a {
