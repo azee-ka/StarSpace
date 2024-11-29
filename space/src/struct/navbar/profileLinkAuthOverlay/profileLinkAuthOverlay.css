@@ -1,0 +1,136 @@
+.profile-add-auth-container {
+    position: fixed;
+    top: 0;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.89);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; 
+    color: white;
+}
+
+.profile-add-auth-container-card {
+    background: linear-gradient(10deg, #00757c80, #000000);
+    background-color: black;
+    width: 450px;
+    height: 500px;
+    border-radius: 12px;
+    border: 0px solid rgba(128, 128, 128, 0.31);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 20px 4px #00757c80;
+}
+
+.profile-add-auth-container-card-inner-login {
+    background-color: rgba(255, 0, 0, 0);
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-add-auth-container-card h2 {
+    font-size: 16px;
+}
+
+.profile-add-auth-container-card-site-logo {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.profile-add-auth-container-card-site-logo img {
+    height: 100%;
+    aspect-ratio: inherit;
+}
+
+.profile-add-auth-fields-container {
+    background-color: rgba(9, 255, 0, 0);
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-add-auth-fields-container div {
+    width: 100%;
+    height: 40px;
+    background-color: rgba(0, 128, 0, 0);
+}
+.profile-add-auth-fields-container input {
+    width: 95%;
+    height: 85%;
+    background-color: black;
+    outline: none;
+    box-shadow: 0px 0px 4px 3px rgba(0, 255, 242, 0.261) !important;
+    color: white;
+    padding-left: 8px;
+    font-size: 17px;
+    border-radius: 6px;
+    border: 0px solid white;
+}
+
+.profile-add-auth-fields-container input:focus {
+    box-shadow: 0px 0px 4px 3px rgb(0, 229, 255, 0.5) !important;
+    background-color: rgba(0, 255, 242, 0.045);
+
+}
+.profile-add-auth-fields-container input:hover {
+    background-color: rgba(0, 255, 242, 0.045);
+}
+
+.profile-add-auth-redirect-user-to-register {
+    width: 90%;
+    height: 18px;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+}
+.profile-add-auth-redirect-user-to-register p {
+    width: 100%;
+    height: 100%;
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+}
+.profile-add-auth-redirect-user-to-register p:hover {
+    cursor: pointer;
+    color: rgba(0, 196, 218, 0.836);
+}
+
+
+.profile-add-auth-submit-button {
+    width: 100%;
+    height: 35px;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+}
+.profile-add-auth-submit-button button {
+    width: 93%;
+    height: 100%;
+    background-color: rgb(0, 110, 118, 0.7) !important;
+    border-radius: 6px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+.profile-add-auth-submit-button button:hover {
+    background-color: rgb(0, 0, 0) !important;
+    box-shadow: 0px 0px 4px 3px rgba(0, 180, 189, 0.835);
+}

@@ -1,0 +1,103 @@
+.sidebar-large-container {
+    width: 220px;
+    background-color: rgb(32, 195, 111, 0);
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    transition: width 0.4s ease;
+    visibility: visible;
+}
+.sidebar-large-container.collapse {
+    width: 0;
+    visibility: hidden;
+    
+}
+
+
+
+.sidebar-large-container-content {
+    background-color: rgba(255, 255, 255, 0);
+    width: 95%;
+    height: 100%;
+    padding: 0;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+}
+
+.sidebar-large-container-content ul {
+    background-color: rgba(151, 16, 16, 0);
+    width: 90% !important;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    gap: 10px;
+}
+.sidebar-large-container-content button {
+    background-color: rgba(16, 151, 23, 0);
+    width: 100% !important;
+    height: 43px;
+    border-radius: 7px;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: background-color 0.1s ease-in;
+    border: 0 !important;
+}
+.sidebar-large-container-content button:hover {
+    background-color: rgba(81, 81, 81, 0.367);
+    cursor: pointer;
+}
+.sidebar-large-container-content li {
+    background-color: rgba(16, 151, 23, 0);
+    width: 100% !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-large-per-item {
+    width: 90%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    text-align: left;
+}
+
+
+
+
+
+
+
+/* .sidebar-large-container.expand {
+    width: 220px;
+    transition: width 1s ease;
+}
+
+.sidebar-large-container.expand > div {
+    visibility: hidden;
+}
+
+.sidebar-large-container.expand.visible > div {
+    visibility: visible;
+    color: white;
+} */
