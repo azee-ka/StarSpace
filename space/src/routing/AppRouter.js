@@ -8,11 +8,15 @@ import RegisterPage from '../pages/auth/Register/register';
 
 import FrontPage from '../pages/frontPage/frontPage';
 
-import Timeline from '../pages/timeline/timeline';
+import Timeline from '../apps/openSpace/timeline/timeline';
+import OpenSpace from '../apps/openSpace/explore/openSpace';
+import Profile from '../pages/profile/profile';
 
 const privateRoutes = [
     { name: 'Timeline', path: '/', component: Timeline, key: 'Timeline' },
-    { name: 'Timeline', path: '/timeline', component: Timeline, key: 'Timeline' },
+    { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
+    { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
+    { name: 'Profile', path: '/profile', component: Profile, key: 'Profile' },
 ];
 
 const publicRoutes = [
@@ -46,7 +50,6 @@ const AppRouter = () => {
                                         key={`${index}-${route.path}`}
                                         className={`${route.path.substring(1)}`}
                                         pageName={route.pageName}
-                                        showSidebar={route.showSidebar}
                                     >
                                         <Component />
                                     </Layout>

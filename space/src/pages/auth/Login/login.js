@@ -4,7 +4,7 @@ import axios from 'axios'; // Import Axios
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../reducers/auth/useAuth';
 import './login.css';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../../apiUrl';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const LoginPage = () => {

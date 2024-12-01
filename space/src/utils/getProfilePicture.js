@@ -1,6 +1,6 @@
 import React from 'react';
 import default_profile_picture from '../assets/default_profile_picture.png';
-import API_BASE_URL from '../config';
+import API_BASE_URL from '../apiUrl';
 import './getProfilePicture.css';
 
 const ProfilePicture = ({ src, onClick }) => {

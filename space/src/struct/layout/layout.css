@@ -15,7 +15,7 @@
 
 .layout-navbar {
     background-color: rgba(255, 0, 0, 0);
-    height: 80px;
+    height: 60px;
     width: 100%;
 }
 
@@ -36,11 +36,20 @@
     max-width: 300px; */
     /* width: 250px; */
     /* width: auto; */
-    width: 300px;
+    /* width: 300px;
     height: 100%;
     display: flex;
     flex-direction: row;
     transition: width 2s ease; 
+    background-color: rgba(53, 76, 53, 0);
+    backdrop-filter: blur(100px); */
+
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    background-color: rgba(27, 25, 25, 0.167);
+    border-right: 1px solid rgba(128, 128, 128, 0.118);
+    z-index: 4;
 }
 
 

@@ -4,3 +4,8 @@
   background-color: black !important;
   background: radial-gradient(circle at top, rgba(153, 102, 255, 0.133), rgba(153, 102, 255, 0));
 }
+
+a {
+  color: white;
+  text-decoration: none;
+}

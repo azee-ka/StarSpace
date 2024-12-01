@@ -6,27 +6,19 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useAuth } from '../../../reducers/auth/useAuth';
 import './profileMenu.css';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../../apiUrl';
 import ProfilePicture from '../../../utils/getProfilePicture';
+import getConfig from '../../../config';
 
-const ProfileMenu = ({ user }) => {
+const ProfileMenu = () => {
     const navigate = useNavigate();
-    const { authState, logout, login, switchProfile } = useAuth();
-    const userRole = useSelector((state) => state.auth.user.role);
+    const { authState, logout } = useAuth();
+    const config = getConfig(authState);
 
     const [profileData, setProfileData] = useState({});
 
-    // mock profile list
-    const [userProfilesList, setUserProfilesList] = useState([]);
-
     useEffect(() => {
         const fetchProfileData = async () => {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Token ${authState.token}`
-                }
-            };
             try {
                 const response = await axios.get(`${API_BASE_URL}profile/get-user-info/`, config);
                 // console.log(response.data);
@@ -40,15 +32,15 @@ const ProfileMenu = ({ user }) => {
             fetchProfileData();
         }
 
-    }, [authState.isAuthenticated, setProfileData, setUserProfilesList]);
+    }, [authState.isAuthenticated, setProfileData]);
 
     const profileMenuLinks = [
-        { label: 'Profile', url: '/personal/profile', role: 'Personal' },
-        { label: 'Settings', url: '/personal/preferences', role: 'Personal' },
-        { label: 'Messages', url: '/personal/messages', role: 'Personal' },
+        { label: 'Profile', url: '/profile', role: 'Personal' },
+        { label: 'Settings', url: '/preferences', role: 'Personal' },
+        { label: 'Messages', url: '/messages', role: 'Personal' },
     ];
     return (
-        <div className="profile-menu-container">
+        <div className="profile-menu-container" onClick={(e) => e.stopPropagation()}>
             <div className='profile-menu-user-info-container'>
                 <div className='profile-menu-profile-picture-container'>
                     <div className='learner-profile-menu-user-profile-picture'>
@@ -56,7 +48,7 @@ const ProfileMenu = ({ user }) => {
                     </div>
                     <div className='learner-profile-menu-user-info-text'>
                         <div className='learner-profile-menu-name-text'>{profileData.first_name} {profileData.last_name}</div>
-                        <div className='learner-profile-menu-username-text'>@{user.username}</div>
+                        <div className='learner-profile-menu-username-text'>@{profileData.username}</div>
                     </div>
                 </div>
             </div>
@@ -84,9 +76,9 @@ const ProfileMenu = ({ user }) => {
     );
 };
 
-ProfileMenu.propTypes = {
-    user: PropTypes.object.isRequired,
-    logout: PropTypes.func.isRequired,
-};
+// ProfileMenu.propTypes = {
+//     user: PropTypes.object.isRequired,
+//     logout: PropTypes.func.isRequired,
+// };
 
 export default ProfileMenu;

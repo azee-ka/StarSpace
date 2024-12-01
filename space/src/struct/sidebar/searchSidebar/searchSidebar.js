@@ -1,192 +1,140 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import API_BASE_URL from '../../../config';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../reducers/auth/useAuth';
-import { CLIENT_BASE_URL } from '../../../config';
-import ProfilePicture from '../../../utils/getProfilePicture';
 import './searchSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faSearch } from '@fortawesome/free-solid-svg-icons';
+import API_BASE_URL from '../../../../../config';
+import GetConfig from '../../../../../general/components/Authentication/utils/config';
+import { useAuthState } from '../../../../../general/components/Authentication/utils/AuthProvider';
+import ProfilePicture from '../../../../../general/utils/profilePicture/getProfilePicture';
 
-const SearchSidebar = ({ showSeachSidebar }) => {
+function SearchSidebar({ isOpen }) {
+    const { token } = useAuthState();
+    const config = GetConfig(token);
     const navigate = useNavigate();
-    const { authState } = useAuth();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+
+    const [searchInput, setSearchInput] = useState('');
+    const [searhQueryResults, setSearchQueryResults] = useState([]);
+
     const [searchHistory, setSearchHistory] = useState([]);
 
-
-    const fetchUserSearchHistory = async () => {
+    const handleGetSearchHistory = async () => {
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Token ${authState.token}`
-                }
-            };
-
-            const response = await axios.get(`${API_BASE_URL}personal/search/history/`, config);
-            // console.log(response.data);
+            const response = await axios.get(`${API_BASE_URL}api/components/search-history/history/`, config);
+            console.log(response.data);
             setSearchHistory(response.data);
         } catch (error) {
-            console.error('Error fetching profile data:', error);
+            console.error('Error', error);
+        }
+    };
+
+    useEffect(() => {
+        handleGetSearchHistory();
+    }, []);
+
+    const handleDeleteSearchItem = async (user) => {
+        try {
+            const response = await axios.delete(`${API_BASE_URL}api/components/search-history/delete/${user.id}/`, config);
+            console.log(response.data);
+            handleGetSearchHistory();
+        } catch (error) {
+            console.error('Error', error);
         }
     };
 
 
     useEffect(() => {
-        fetchUserSearchHistory();
-    }, []);
+        setSearchInput('');
+        setSearchQueryResults([]);
+        if(isOpen) {
+            handleGetSearchHistory();
+        }
+    }, [isOpen])
 
     const handleInputChange = (e) => {
         const inputValue = e.target.value;
-        setSearchQuery(inputValue);
+        setSearchInput(inputValue);
 
         if (inputValue !== "") {
-            handleSubmitSearch();
+            handleSubmitSearch(inputValue);
         } else {
-            setSearchResults([]);
+            setSearchQueryResults([]);
         }
-
     };
 
-    const handleSubmitSearch = (e) => {
-        // Make an API request to search for users
-        axios.get(`${API_BASE_URL}personal/search/?query=${searchQuery}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Token ${authState.token}`,
-            },
-        })
-            .then((response) => {
-                setSearchResults(response.data);
-            })
-            .catch((error) => {
-                console.error('Error searching for users:', error);
-            });
-    };
-
-
-    const handleUserClick = (clickedUser) => {
-        // Make an API request to store search history
-        axios.post(`${API_BASE_URL}personal/search/store/`, {
-            searched_user_id: clickedUser.id,
-        }, {
-            headers: {
-                'Authorization': `Token ${authState.token}`,
-            },
-        })
-            .then(() => {
-                // Redirect to the user's profile page
-                // window.location.pathname = `/personal/profile/${clickedUser.username}`;
-                navigate(`/personal/profile/${clickedUser.username}`);
-            })
-            .catch((error) => {
-                console.error('Error storing search history:', error);
-            });
-    };
-
-
-
-    const handleDeleteFromHistory = async (usernameToDelete) => {
+    const handleSubmitSearch = async (searchQuery) => {
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Token ${authState.token}`
-                }
-            };
-
-            const data = {
-                username: usernameToDelete
-            }
-
-            const response = await axios.post(`${API_BASE_URL}personal/search/delete/`, data, config);
-            fetchUserSearchHistory();
+            const response = await axios.get(`${API_BASE_URL}api/components/search/user-search/?query=${searchQuery}`, config);
+            console.log(response.data);
+            setSearchQueryResults(response.data);
         } catch (error) {
-            console.error('Error fetching profile data:', error);
+            console.error('Error', error);
+        }
+    };
+
+    // search-history/
+
+    const handleRedirect = async (user) => {
+        console.log('user', user)
+        if (searhQueryResults.length !== 0) {
+            try {
+                const response = await axios.post(`${API_BASE_URL}api/components/search-history/store/${user.id}/`, null, config);
+                console.log(response.data);
+                navigate(`/timeline/profile/${user.username}`);
+            } catch (error) {
+                console.error('Error', error);
+            }
+        } else {
+            navigate(`/timeline/profile/${user.searched_user.username}`);
         }
     };
 
 
     return (
-        <div className={`search-sidebar-container ${showSeachSidebar ? 'show' : ''}`}>
-            <div className='search-sidebar-title'>
-                <div className='search-sidebar-title-inner'>
-                    <h3>Search</h3>
-                </div>
-            </div>
-            <div className={`sidebar-search-container`}>
-                <div className='sidebar-search-bar-container'>
-                    <div className="input-container">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={searchQuery}
-                            onChange={handleInputChange}
-                        />
-                        {searchQuery && (
-                            <FontAwesomeIcon
-                                icon={faClose}
-                                className="clear-search-icon"
-                                onClick={() => setSearchQuery('')}
+        <div className={`search-sidebar-container ${isOpen ? '' : 'close'}`} onClick={(e) => e.stopPropagation()}>
+            <div className={`search-sidebar-container-content ${isOpen ? 'open' : ''}`}>
+                <div className='search-sidebar-container-content-inner'>
+                    <div className='search-sidebar-header'>
+                        <h2>Search</h2>
+                        <div className='search-sidebar-search-bar'>
+                            <input
+                                placeholder='Search...'
+                                value={searchInput}
+                                onChange={(e) => handleInputChange(e)}
                             />
-                        )}
+                            <FontAwesomeIcon onClick={() => { setSearchInput(''); setSearchQueryResults([]); }} icon={faClose} />
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div className={`sidebar-search-show-users-search`}>
-                <div className='sidebar-search-show-users-search-inner'>
-                    {searchQuery === '' &&
-                        <div className='sidebar-search-history-results'>
-                            <div className='sidebar-search-history-title'>
-                                <h4>Recent</h4>
-                            </div>
-                            {searchHistory.map((searchQuery, index) => (
-                                <div className="users-search-list-item" key={`${searchQuery.searched_user.username}-${index}`}>
-                                    <div className="users-search-list-item-inner" onClick={() => handleUserClick(searchQuery.searched_user)}>
-                                        <div className="users-search-list-item-profile-picture">
-                                            <div className="users-search-list-item-profile-picture-inner">
-                                                <ProfilePicture src={searchQuery.searched_user.profile_picture} />
+                    <div className='search-sidebar-results'>
+                        <div className='search-sidebar-results-inner'>
+                            {(searhQueryResults.length === 0 ? searchHistory : searhQueryResults).map((item, index) => (
+                                <div key={index} className='search-per-item' onClick={() => handleRedirect(item)}>
+                                    {/* <Link to={`/timeline/profile/${item.username}`}> */}
+                                    <div className='search-per-item-inner'>
+                                        <div className='search-item-info'>
+                                            <div className='search-item-profile-picture'>
+                                                <ProfilePicture src={searhQueryResults.length === 0 ? item.searched_user.profile_picture : item.profile_picture} />
+                                            </div>
+                                            <div className='search-item-username'>
+                                                {searhQueryResults.length === 0 ? item.searched_user.username : item.username}
                                             </div>
                                         </div>
-                                        <div className="users-search-list-item-username">
-                                            <p>{searchQuery.searched_user.username}</p>
-                                        </div>
+                                        {searhQueryResults.length === 0 &&
+                                            <div className='delete-history-search'>
+                                                <FontAwesomeIcon icon={faClose} onClick={(e) => { handleDeleteSearchItem(item); e.stopPropagation() }} />
+                                            </div>
+                                        }
                                     </div>
-                                    <div className={`clear-search-history-result-container ${showSeachSidebar ? 'show' : ''}`}>
-                                        <FontAwesomeIcon
-                                            icon={faClose}
-                                            className="clear-search-history-result"
-                                            onClick={() => handleDeleteFromHistory(searchQuery.searched_user.username)}
-                                        />
-                                    </div>
+                                    {/* </Link> */}
                                 </div>
-                            ))
-                            }
+                            ))}
                         </div>
-                    }
-
-                    {searchResults.map((thisUser, index) => (
-                        <div className="users-search-list-item" onClick={() => handleUserClick(thisUser)} key={`${thisUser.username}-${index}`}>
-                            <div className="users-search-list-item-inner">
-                                <div className="users-search-list-item-profile-picture">
-                                    <div className="users-search-list-item-profile-picture-inner">
-                                        <ProfilePicture src={thisUser.profile_picture} />
-                                    </div>
-                                </div>
-                                <div className="users-search-list-item-username">
-                                    <p>{thisUser.username}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default SearchSidebar;

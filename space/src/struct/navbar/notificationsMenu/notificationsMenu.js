@@ -1,21 +1,17 @@
 // NotificationsMenu.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../../apiUrl';
 import { useAuth } from '../../../reducers/auth/useAuth';
 import './notificationsMenu.css';
 import { timeAgo } from '../../../utils/convertDateTIme';
+import getConfig from '../../../config';
 
-const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNotifications }) => {
+const NotificationsMenu = ({ notificationsList, fetchNotifications }) => {
     const { authState } = useAuth();
+    const config = getConfig(authState);
 
     const handleAcceptLinkAccountRequest = async (notificationId) => {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${authState.token}`
-            }
-        };
         try {
             const response = await axios.post(`${API_BASE_URL}accept_link_request/${notificationId}/`, {}, config);
             console.log(response.data);
@@ -26,12 +22,6 @@ const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNoti
     };
 
     const handleDeleteNotification = async (notificationId) => {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${authState.token}`
-            }
-        };
         try {
             const response = await axios.delete(`${API_BASE_URL}delete-notification/${notificationId}/`, config);
             console.log(response.data);
@@ -42,12 +32,6 @@ const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNoti
     };
 
     const handleDeclineLinkAccountRequest = async (notificationId) => {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${authState.token}`
-            }
-        };
         try {
             const response = await axios.post(`${API_BASE_URL}reject_link_request/${notificationId}/`, {}, config);
             console.log(response.data);
@@ -60,12 +44,6 @@ const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNoti
 
 
     const handleAcceptFollowAccountRequest = async (notificationId) => {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${authState.token}`
-            }
-        };
         try {
             const response = await axios.post(`${API_BASE_URL}personal/accept_follow_request/${notificationId}/`, {}, config);
             console.log(response.data);
@@ -74,13 +52,8 @@ const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNoti
         }
         fetchNotifications()
     };
+    
     const handleDeclineFollowAccountRequest = async (notificationId) => {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${authState.token}`
-            }
-        };
         try {
             const response = await axios.post(`${API_BASE_URL}personal/reject_follow_request/${notificationId}/`, {}, config);
             console.log(response.data);
@@ -92,7 +65,7 @@ const NotificationsMenu = ({ setCountNotifications, notificationsList, fetchNoti
 
 
     return (
-        <div className='notifications-menu-container'>
+        <div className='notifications-menu-container' onClick={(e) => e.stopPropagation()}>
             <div className='notifications-menu-notifications-list'>
                 {notificationsList.length !== 0 ? (
                     notificationsList.map((notification, index) => (
