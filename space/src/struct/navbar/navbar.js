@@ -9,13 +9,14 @@ import axios from 'axios';
 // import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faEdit, faPlus, faCompass, faCalculator, faTachometerAlt, faChartLine, faBell } from '@fortawesome/free-solid-svg-icons';
-import ProfilePicture from '../../utils/getProfilePicture';
+import ProfilePicture from '../../utils/profilePicture/getProfilePicture';
 import ProfileMenu from './profileMenu/profileMenu';
 import NotificationsMenu from './notificationsMenu/notificationsMenu';
 import getConfig from '../../config';
 import { useSubApp } from '../../context/SubAppContext';
 import NineDotIcon from '../../utils/nine-dot';
 import AppMenu from './appMenu/appMenu';
+import SidebarMenuIcon from './iconMenu';
 
 const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount }) => {
     const { authState, logout } = useAuth();
@@ -97,17 +98,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
             <div className='navbar-left'>
                 <div className='navbar-icon-logo-container'>
                     {authState.isAuthenticated &&
-                        <div className='navbar-sidebar-icon'>
-                            <div className={`navbar-sidebar-menu-toggle-inner ${sidebarOpen ? 'sidebar-visible' : ''}`}>
-                                <div className='navbar-sidebar-menu-toggle-inner-content' onClick={(e) => e.stopPropagation()}>
-                                    <button onClick={() => handleHighOrderSidebarToggle()}>
-                                        <span className={`icon-bar ${sidebarOpen ? 'rotate' : ''}`}></span>
-                                        <span className={`icon-bar ${sidebarOpen ? 'rotate' : ''}`}></span>
-                                        <span className={`icon-bar ${sidebarOpen ? 'rotate' : ''}`}></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        <SidebarMenuIcon sidebarOpen={sidebarOpen} handleHighOrderSidebarToggle={handleHighOrderSidebarToggle} />
                     }
                     <div className='navbar-logo-container'>
                         <Link to={'/'}>

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useAuth } from '../../../reducers/auth/useAuth';
 import './profileMenu.css';
 import API_BASE_URL from '../../../apiUrl';
-import ProfilePicture from '../../../utils/getProfilePicture';
+import ProfilePicture from '../../../utils/profilePicture/getProfilePicture';
 import getConfig from '../../../config';
 
 const ProfileMenu = () => {
