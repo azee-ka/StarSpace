@@ -1,6 +1,6 @@
 .sidebar-container {
     backdrop-filter: blur(70px) !important;
-    background-color: rgba(16, 16, 16, 0.327);
+    background-color: rgba(16, 16, 16, 0.229);
     position: fixed;
     width: 270px;
     height: 100vh;

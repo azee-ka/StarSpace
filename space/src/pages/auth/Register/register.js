@@ -63,8 +63,8 @@ const RegisterPage = () => {
 
         } catch (error) {
             // Handle registration error
-            // console.error('Registration failed:', error);
-            setRegisterError(error.response.data.username);
+            console.error('Registration failed:', error);
+            // setRegisterError((error.response.data && error.response.data.message) || (error.message));
         }
     };
 

@@ -171,6 +171,32 @@
 
 
 
+.navbar-public-btns {
+  background-color: rgba(255, 0, 0, 0);
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-right: 15px;
+}
+
+
+
+.navbar-pages.animation {
+  animation: nav-slide 0.5s ease;
+}
+
+@keyframes nav-slide {
+  0% {
+    transform: translateY(-90%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+
+
 
 
 

@@ -125,9 +125,20 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                     </ul>
                 </div>
                 <div className='navbar-items'>
-                    <ul>
-                        {/* Notifications Menu */}
-                        {authState.isAuthenticated && (
+                {!authState.isAuthenticated && (
+                    <div className='navbar-public-btns'>
+                        <div className='navbar-login-btn'>
+                            <Link to={'/login'}>Sign In</Link>
+                        </div>
+                        <div className='navbar-register-btn'>
+                            <Link to={'/login'}>Sign Up</Link>
+                        </div>
+                    </div>
+                )}
+
+                    {authState.isAuthenticated && (
+                        <ul>
+                            {/* Notifications Menu */}
                             <li
                                 className={`notifications-menu ${notificationsMenuVisible ? 'active' : ''}`}
                                 ref={notificationsMenuRef}
@@ -142,19 +153,15 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                                     )}
                                 </button>
                             </li>
-                        )}
 
-                        {/* App Menu */}
-                        {authState.isAuthenticated && (
+                            {/* App Menu */}
                             <li className="navigation-bar-menubar-icon" ref={appMenuRef} onClick={(e) => e.stopPropagation()}>
                                 <button onClick={handleAppMenuToggle}>
                                     <NineDotIcon style={{ color: 'white', background: 'transparent', fontSize: '24px' }} />
                                 </button>
                             </li>
-                        )}
 
-                        {/* Profile Menu */}
-                        {authState.isAuthenticated && (
+                            {/* Profile Menu */}
                             <li
                                 className={`profile-menu ${profileMenuVisible ? 'active' : ''}`}
                                 ref={profileMenuRef}
@@ -164,8 +171,8 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                                     <ProfilePicture src={profileData} />
                                 </button>
                             </li>
-                        )}
-                    </ul>
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>
