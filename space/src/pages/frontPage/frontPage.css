@@ -1,0 +1,122 @@
+.front-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    color: #f0f0f0;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.hero-section {
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero-section h1 {
+    font-size: 2.9rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #0ff0f8, #7500f9, #ff007b, #f4ff00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #0ff0f8bd, #7500f9);;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease,  box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+    background: linear-gradient(135deg, #004343bd, #000000);
+    box-shadow: 0px 0px 4px 4px rgba(0, 132, 132, 0.913);
+}
+
+
+
+
+
+
+
+/* Feature Section Card Style */
+.feature-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.055); /* Slightly transparent card */
+    border-radius: 15px;
+    padding: 40px 30px;
+    width: 320px;
+    height: 400px;
+    margin: 30px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px); /* Makes the card appear like it's floating */
+    position: relative;
+}
+
+.feature-card:hover {
+    transform: translateY(-15px); /* Hover effect to make the card "lift" */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+/* Feature Section Card Title */
+.feature-card h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #02ece8f9;
+    font-weight: 700;
+}
+
+/* Feature Section Card Description */
+.feature-card p {
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    font-weight: 400;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Section Background - Cleaner, Minimal */
+.feature-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    background-color: #1a1a1a2f;
+    color: white;
+    height: 100vh;
+}
+
+/* Footer Styling */
+.footer {
+    background: rgba(34, 34, 34, 0);
+    text-align: center;
+    padding: 20px;
+    font-size: 1rem;
+    color: #bbb;
+    border-top: 1px solid #444;
+    margin-top: 50px;
+}
+
+/* Footer Text */
+.footer p {
+    font-size: 0.9rem;
+    color: #888;
+}

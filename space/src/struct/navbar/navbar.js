@@ -94,7 +94,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
     const pagesNavbar = authState.isAuthenticated ? privatePagesNavbar : publicPagesNavbar;
 
     return (
-        <div className='navbar-conatiner'>
+        <div className='navbar-conatiner neon-background'>
             <div className='navbar-left'>
                 <div className='navbar-icon-logo-container'>
                     {authState.isAuthenticated &&
@@ -102,7 +102,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                     }
                     <div className='navbar-logo-container'>
                         <Link to={'/'}>
-                            <h2>4Space</h2>
+                            <h2 className='neon-text'>4Space</h2>
                         </Link>
                     </div>
                 </div>
@@ -131,7 +131,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                             <Link to={'/login'}>Sign In</Link>
                         </div>
                         <div className='navbar-register-btn'>
-                            <Link to={'/login'}>Sign Up</Link>
+                            <Link to={'/register'}>Sign Up</Link>
                         </div>
                     </div>
                 )}
