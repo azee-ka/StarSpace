@@ -81,7 +81,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
 }
 .navbar-pages ul li{
   list-style: none;

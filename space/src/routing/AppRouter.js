@@ -9,6 +9,8 @@ import RegisterPage from '../pages/auth/Register/register';
 import FrontPage from '../pages/frontPage/frontPage';
 
 import Timeline from '../apps/openSpace/timeline/timeline';
+import CreateExchange from '../apps/openSpace/createExchange/createExchange';
+
 import OpenSpace from '../apps/openSpace/explore/openSpace';
 import Profile from '../pages/profile/profile';
 import { useSubApp } from '../context/SubAppContext';
@@ -16,15 +18,11 @@ import { useSubApp } from '../context/SubAppContext';
 
 
 const privateRoutes = {
-    // { name: 'Timeline', path: '/', component: Timeline, key: 'Timeline' },
-    // { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
-    // { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
-    // { name: 'Profile', path: '/profile', component: Profile, key: 'Profile' },
     openspace: [
-        { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },
-        { name: 'Explore', path: '/openspace', component: OpenSpace, key: 'Timeline' },
+        { name: 'OpenSpace Dasboard', path: '/', component: OpenSpace, key: 'OpenSpaceDasboard' },
+        { name: 'OpenSpace Dasboard', path: '/openspace', component: Timeline, key: 'OpenSpaceDasboard' },
         { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
-        { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
+        { name: 'Create Exchange', path: '/openspace/create-exchange', component: CreateExchange, key: 'CreateExchange' },
     ],
     home: [
         { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },

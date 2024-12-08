@@ -1,65 +1,63 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import EntryCard from "./EntryCard"; // Modularized entry component
-import "./Exchange.css";
+import "./exchange.css";
 
 const Exchange = () => {
-    const [exchangeData, setExchangeData] = useState(null); // Exchange details
-    const [entries, setEntries] = useState([]); // Entries data
-    const [loading, setLoading] = useState(true);
+    const [exchangeData, setExchangeData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch exchange and entries from API
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const exchangeResponse = await axios.get("/api/exchange/1"); // Mock endpoint for exchange
-                const entriesResponse = await axios.get("/api/exchange/1/entries"); // Mock endpoint for entries
-                setExchangeData(exchangeResponse.data);
-                setEntries(entriesResponse.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                setLoading(false);
-            }
-        };
-        fetchData();
+        // Fetch the exchange data
+        axios.get("/api/exchange")
+            .then(response => {
+                setExchangeData(response.data);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching exchange data:", error);
+                setIsLoading(false);
+            });
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-
     return (
-        <div className="open-space-exchange">
-            {/* Header Section */}
-            <div className="exchange-header">
-                <h1 className="exchange-title">{exchangeData.title}</h1>
-                <div className="exchange-meta">
-                    <span>By <strong>{exchangeData.author}</strong> | {exchangeData.date}</span>
-                    <span className="tags">Tags: {exchangeData.tags.join(", ")}</span>
+        <div className="exchange-page">
+            {isLoading ? (
+                <div className="loading-spinner">
+                    <span>Loading...</span>
                 </div>
-            </div>
+            ) : (
+                exchangeData && (
+                    <div className="exchange-container">
+                        <header className="exchange-header">
+                            <h1>{exchangeData.name}</h1>
+                            <p>{exchangeData.description}</p>
+                            <div className="exchange-stats">
+                                <span>Members: {exchangeData.members.length}</span>
+                                <span>Score: {exchangeData.score}</span>
+                            </div>
+                        </header>
 
-            {/* Main Content */}
-            <div className="exchange-content">
-                <p>{exchangeData.content}</p>
-                <div className="stats-bar">
-                    <span>💬 {entries.length} Entries</span>
-                    <span>👍 {exchangeData.upvotes} Upvotes</span>
-                </div>
-            </div>
+                        <div className="exchange-body">
+                            <h2>Welcome to {exchangeData.name}</h2>
+                            <p>
+                                Explore, engage, and contribute! This exchange is all about{" "}
+                                <strong>{exchangeData.name}</strong>.
+                            </p>
+                            <div className="futuristic-card">
+                                <h3>Be an active member!</h3>
+                                <p>
+                                    Interact with members, share your thoughts, and contribute to the exchange.
+                                </p>
+                            </div>
+                        </div>
 
-            {/* Entries Section */}
-            <div className="entries-section">
-                <h2>Community Entries</h2>
-                {entries.map((entry) => (
-                    <EntryCard key={entry.id} entry={entry} />
-                ))}
-            </div>
-
-            {/* Reply Section */}
-            <div className="reply-box">
-                <textarea placeholder="Contribute your thoughts..." rows="3" className="reply-input"></textarea>
-                <button className="reply-submit">Post Entry</button>
-            </div>
+                        <footer className="exchange-footer">
+                            <button className="join-button">Join Exchange</button>
+                            <button className="explore-button">Explore Entries</button>
+                        </footer>
+                    </div>
+                )
+            )}
         </div>
     );
 };

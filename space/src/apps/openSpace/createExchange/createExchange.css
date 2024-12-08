@@ -1,0 +1,144 @@
+.create-exchange-page {
+    font-family: "Roboto", sans-serif;
+    background: linear-gradient(135deg, #1c1c2822, #12121434);
+    color: #eaeaea;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.create-exchange-page h1,
+.create-exchange-page h2 {
+    font-family: "Poppins", sans-serif;
+    color: #d4b3ff;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+form {
+    background: rgba(25, 25, 35, 0.9);
+    padding: 20px;
+    border-radius: 12px;
+    width: 100%;
+    width: 850px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.section {
+    /* margin-bottom: 1.5rem; */
+    border-bottom: 1px solid #444;
+    /* padding-bottom: 1.5rem; */
+}
+
+.section:last-of-type {
+    border-bottom: none;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    color: #c7c7db;
+}
+
+input, textarea, select {
+    width: 96%;
+    padding: 0.6rem 0.8rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    background: #1e1e28;
+    color: #f3f3f3;
+    outline: none;
+    transition: all 0.3s;
+    margin-top: 0.3rem;
+    resize: none;
+}
+
+select {
+    width: 99%;
+}
+
+input:focus, 
+textarea:focus, 
+select:focus {
+    box-shadow: 0 0 8px rgba(212, 179, 255, 0.8);
+}
+
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+.color-picker {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.color-picker input {
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.color-picker input:hover {
+    transform: scale(1.1);
+}
+
+.banner-preview {
+    margin-top: 1rem;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.submit-button {
+    background: linear-gradient(90deg, #7a5cff, #5f32d4);
+    color: #ffffff;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+    margin-top: 1rem;
+}
+
+.submit-button:hover {
+    background: linear-gradient(90deg, #5f32d4, #7a5cff);
+    transform: translateY(-2px);
+}
+
+input[type="file"] {
+    background: none;
+    color: #d4b3ff;
+    padding: 0;
+    font-size: 0.95rem;
+}
+
+input[type="file"]::file-selector-button {
+    background: #7a5cff;
+    color: #ffffff;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: #5f32d4;
+}

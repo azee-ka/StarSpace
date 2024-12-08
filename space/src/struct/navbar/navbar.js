@@ -68,7 +68,9 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
 
     const privatePagesNavbar = {
         openspace: [
+            { label: "Dashboard", path: "/openspace" },
             { label: "Timeline", path: "/openspace/timeline" },
+            { label: "Create Exchange", path: "/openspace/create-exchange" },
             { label: "Explore", path: "/openspace/explore" },
         ],
         home: [
