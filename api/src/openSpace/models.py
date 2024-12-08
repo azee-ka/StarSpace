@@ -1,50 +1,101 @@
 from django.db import models
-from django.contrib.auth.models import User
+from ..user.models import User  # Importing your custom User model
+from django.utils import timezone
 
 class Exchange(models.Model):
-    """
-    Represents a discussion topic or 'Exchange'.
-    """
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     description = models.TextField()
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="exchanges")
-    created_at = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_exchanges')
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    tags = models.CharField(max_length=255, blank=True, null=True)  # Comma-separated tags
+    members = models.ManyToManyField(User, related_name='joined_exchanges', through='ExchangeMember')
+    score = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
+class ExchangeMember(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
+    joined_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'exchange')
+
+class Entry(models.Model):
+    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name='entries')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='entries')
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    score = models.IntegerField(default=0)
+    impact_score = models.OneToOneField('ImpactScore', on_delete=models.CASCADE, related_name='entry_impact_score', blank=True, null=True)
+    flags = models.ManyToManyField('Flag', related_name='flagged_entries', blank=True)
+    
     def __str__(self):
         return self.title
 
-
-class Entry(models.Model):
-    """
-    Represents a user-submitted post (or 'Entry') within an Exchange.
-    """
-    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name="entries")
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="entries")
+class Comment(models.Model):
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    score = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'Comment by {self.author.get_current_username()} on {self.entry.title}'
+
+class Score(models.Model):
+    SCORE_CHOICES = [
+        ('upvote', 'Upvote'),
+        ('downvote', 'Downvote'),
+    ]
+    content_type = models.CharField(max_length=50)
+    content_id = models.IntegerField()
+    score_type = models.CharField(max_length=10, choices=SCORE_CHOICES)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'{self.score_type} for {self.content_type} with ID {self.content_id}'
+
+class Flag(models.Model):
+    FLAG_CHOICES = [
+        ('spam', 'Spam'),
+        ('inappropriate', 'Inappropriate'),
+        ('offensive', 'Offensive'),
+        ('other', 'Other'),
+    ]
+    content_type = models.CharField(max_length=50)
+    content_id = models.IntegerField()
+    reason = models.CharField(max_length=50, choices=FLAG_CHOICES)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flags')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'Flag for {self.content_type} {self.content_id} by {self.user.get_current_username()}'
+
+class ImpactScore(models.Model):
+    entry = models.OneToOneField(Entry, on_delete=models.CASCADE, related_name='impact_score_detail')  # changed related_name
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
+    comments = models.IntegerField(default=0)
+    shares = models.IntegerField(default=0)
+    engagement_score = models.IntegerField(default=0)
+
+    def calculate_engagement(self):
+        self.engagement_score = self.upvotes * 3 + self.comments * 2 + self.shares * 5
+        self.save()
 
     def __str__(self):
-        return f"Entry by {self.author.username} in {self.exchange.title}"
+        return f'Impact score for entry {self.entry.title}'
 
-
-class Reaction(models.Model):
-    """
-    Optional: Add reactions to entries (e.g., Agree, Disagree, Needs Evidence).
-    """
-    REACTION_CHOICES = [
-        ("INSIGHTFUL", "Insightful"),
-        ("AGREE", "Agree"),
-        ("NEEDS_EVIDENCE", "Needs Evidence"),
-    ]
-    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name="reactions")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reactions")
-    reaction_type = models.CharField(max_length=20, choices=REACTION_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 
     def __str__(self):
-        return f"{self.reaction_type} by {self.user.username}"
+        return f'Profile for {self.user.get_current_username()}'

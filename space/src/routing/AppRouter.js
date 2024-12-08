@@ -11,13 +11,27 @@ import FrontPage from '../pages/frontPage/frontPage';
 import Timeline from '../apps/openSpace/timeline/timeline';
 import OpenSpace from '../apps/openSpace/explore/openSpace';
 import Profile from '../pages/profile/profile';
+import { useSubApp } from '../context/SubAppContext';
 
-const privateRoutes = [
-    { name: 'Timeline', path: '/', component: Timeline, key: 'Timeline' },
-    { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
-    { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
-    { name: 'Profile', path: '/profile', component: Profile, key: 'Profile' },
-];
+
+
+const privateRoutes = {
+    // { name: 'Timeline', path: '/', component: Timeline, key: 'Timeline' },
+    // { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
+    // { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
+    // { name: 'Profile', path: '/profile', component: Profile, key: 'Profile' },
+    openspace: [
+        { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },
+        { name: 'Explore', path: '/openspace', component: OpenSpace, key: 'Timeline' },
+        { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
+        { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
+    ],
+    home: [
+        { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },
+        { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
+        { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
+    ],
+};
 
 const publicRoutes = [
     { name: 'Login', path: '/login', component: LoginPage, key: 'Login' },
@@ -26,13 +40,44 @@ const publicRoutes = [
     { name: 'Home', path: '/home', component: FrontPage, key: 'FrontPage' },
 ];
 
+
 const AppRouter = () => {
     const { authState, isLoading } = useAuth();
     const isAuthenticated = authState.isAuthenticated;
+    const { activeSubApp } = useSubApp();
+
+    // console.log(activeSubApp);
 
     if (isLoading) {
         return <div>Loading...</div>;
     }
+
+
+
+    const renderPrivateRoutes = () => {
+        const currentRoutes = privateRoutes[activeSubApp] || [];
+        console.log("activeSubApp" , activeSubApp)
+        console.log("Current Routes:", currentRoutes);
+         return currentRoutes.map((route, index) => {
+        const Component = route.component;
+        return (
+            <Route
+                key={`${index}-${route.path}`}
+                path={route.path}
+                element={
+                    <Layout
+                        key={`${index}-${route.path}`}
+                        className={route.path.substring(1)}
+                        pageName={route.pageName}
+                        // showSidebar={route.showSidebar}
+                    >
+                        <Component />
+                    </Layout>
+                }
+            />
+        );
+    });
+};
 
     return (
         <Router>
@@ -59,25 +104,8 @@ const AppRouter = () => {
                     })}
 
                     {/* Private Routes (Accessible only by authenticated users) */}
-                    {isAuthenticated && privateRoutes.map((route, index) => {
-                        const Component = route.component;
-                        return (
-                            <Route
-                                key={`${index}-${route.path}`}
-                                path={route.path}
-                                element={
-                                    <Layout
-                                        key={`${index}-${route.path}`}
-                                        className={`${route.path.substring(1)}`}
-                                        pageName={route.pageName}
-                                        showSidebar={route.showSidebar}
-                                    >
-                                        <Component />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
+                    {isAuthenticated && renderPrivateRoutes()}
+
 
                     {/* If not authenticated, redirect to login page */}
                     {!isAuthenticated && (

@@ -3,17 +3,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCog, faStream, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { useSubApp } from '../../context/SubAppContext';
 // import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 
 function Sidebar({ isOpen, onClose }) {
     const navigate = useNavigate();
+    const { activeSubApp, setActiveSubApp } = useSubApp();
 
 
     const taskFlow = [
-        { icon: <FontAwesomeIcon icon={faStream} />, label: 'Timeline', path: '/timeline', type: 'link' },
-        { icon: <FontAwesomeIcon icon={faLayerGroup} />, label: 'Explore', path: '/timeline/explore', type: 'link' },
-        // { icon: <ChatBubbleLeftRightIcon className='chat-icon'/>, label: 'Messages', path: '/timeline/messages', type: 'link' },
-        { icon: <FontAwesomeIcon icon={faCog} />, label: 'Settings', path: '/timeline/preferences', type: 'link' },
+        { icon: <FontAwesomeIcon icon={faStream} />, label: 'Central', path: '/', type: 'context' },
+        { icon: <FontAwesomeIcon icon={faStream} />, label: 'OpenSpace', path: '/openspace', type: 'context' },
+        { icon: <FontAwesomeIcon icon={faLayerGroup} />, label: 'ProSpace', path: '/prospace', type: 'context' },
+        { icon: <FontAwesomeIcon icon={faCog} />, label: 'Impact Space', path: '/impactspace', type: 'context' },
     ];
 
     const [options] = useState(taskFlow);
@@ -24,6 +26,9 @@ function Sidebar({ isOpen, onClose }) {
                 item.onClick();
             }
         } else if (item.type === 'link') {
+            navigate(item.path);
+        } else if (item.type === 'context') {
+            setActiveSubApp(item.label.toLowerCase() === 'central' ? 'home' : item.label.toLowerCase());
             navigate(item.path);
         }
         onClose();

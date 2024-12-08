@@ -40,6 +40,17 @@
   font-family: Arial, Helvetica, sans-serif;
   color: #fff;
 }
+.navbar-logo-container h2 {
+  /* background: linear-gradient(135deg, #f7ffff, #ffffff); */
+  /* -webkit-background-clip: text; */
+  /* -webkit-text-fill-color: transparent; */
+  color: white;
+  font-family: 'Roboto Mono', monospace;
+}
+.navbar-logo-container h2 span {
+  margin-left: 5px;
+}
+
 .navbar-logo-container a {
   text-decoration: none;
   color: white;

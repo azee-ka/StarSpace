@@ -67,15 +67,13 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
     ];
 
     const privatePagesNavbar = {
-        // { path: '/timeline', label: 'Timeline', id: 'navbar-phrase', role: 'private' },
-        // { path: '/openspace', label: 'OpenSpace', id: 'navbar-phrase', role: 'private' },
         openspace: [
             { label: "Timeline", path: "/openspace/timeline" },
             { label: "Explore", path: "/openspace/explore" },
         ],
         home: [
-            { label: "Timeline", path: "/openspace/timeline" },
-            { label: "Explore", path: "/openspace/explore" },
+            { label: "Dashbaord", path: "/" },
+            { label: "Metrics", path: "/metrics" },
         ],
     };
 
@@ -101,8 +99,8 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                         <SidebarMenuIcon sidebarOpen={sidebarOpen} handleHighOrderSidebarToggle={handleHighOrderSidebarToggle} />
                     }
                     <div className='navbar-logo-container'>
-                        <Link to={'/'}>
-                            <h2 className='neon-text'>4Space</h2>
+                        <Link to={`/${activeSubApp === 'home' ? '' : activeSubApp.toLowerCase()}`}>
+                            <h2 className='neon-text'>4Space<span></span></h2>
                         </Link>
                     </div>
                 </div>

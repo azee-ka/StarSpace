@@ -1,59 +1,134 @@
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
-from .models import Exchange, Entry
-from .serializers import ExchangeSerializer, EntrySerializer
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, UserProfile
+from .serializers import ExchangeSerializer, EntrySerializer, CommentSerializer, ScoreSerializer, FlagSerializer, ImpactScoreSerializer, UserProfileSerializer
+from django.shortcuts import get_object_or_404
 
-@api_view(['GET'])
-def get_exchange(request, exchange_id):
-    """
-    Fetch a single exchange by ID, including its entries.
-    """
-    try:
-        exchange = Exchange.objects.get(id=exchange_id)
-        serializer = ExchangeSerializer(exchange)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exchange.DoesNotExist:
-        return Response({"error": "Exchange not found"}, status=status.HTTP_404_NOT_FOUND)
+# Exchange Views
+@api_view(['GET', 'POST'])
+def exchange_list(request):
+    if request.method == 'GET':
+        exchanges = Exchange.objects.all()
+        serializer = ExchangeSerializer(exchanges, many=True)
+        return Response(serializer.data)
 
-
-@api_view(['POST'])
-def create_exchange(request):
-    """
-    Create a new exchange.
-    """
-    serializer = ExchangeSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save(created_by=request.user)  # Assume user authentication
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_entries(request, exchange_id):
-    """
-    Fetch all entries for a specific exchange.
-    """
-    try:
-        exchange = Exchange.objects.get(id=exchange_id)
-        entries = exchange.entries.all()
-        serializer = EntrySerializer(entries, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exchange.DoesNotExist:
-        return Response({"error": "Exchange not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['POST'])
-def create_entry(request, exchange_id):
-    """
-    Create a new entry in an exchange.
-    """
-    try:
-        exchange = Exchange.objects.get(id=exchange_id)
-        serializer = EntrySerializer(data=request.data)
+    elif request.method == 'POST':
+        serializer = ExchangeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(author=request.user, exchange=exchange)  # Assume user authentication
+            serializer.save(creator=request.user)  # Automatically assign the creator as the current user
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    except Exchange.DoesNotExist:
-        return Response({"error": "Exchange not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def exchange_detail(request, pk):
+    exchange = get_object_or_404(Exchange, pk=pk)
+
+    if request.method == 'GET':
+        serializer = ExchangeSerializer(exchange)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = ExchangeSerializer(exchange, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        exchange.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+# Entry Views
+@api_view(['GET', 'POST'])
+def entry_list(request, exchange_id):
+    exchange = get_object_or_404(Exchange, pk=exchange_id)
+
+    if request.method == 'GET':
+        entries = Entry.objects.filter(exchange=exchange)
+        serializer = EntrySerializer(entries, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = EntrySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(exchange=exchange, author=request.user)  # Automatically set the author as the current user
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def entry_detail(request, exchange_id, entry_id):
+    exchange = get_object_or_404(Exchange, pk=exchange_id)
+    entry = get_object_or_404(Entry, pk=entry_id)
+
+    if request.method == 'GET':
+        serializer = EntrySerializer(entry)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = EntrySerializer(entry, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        entry.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# Comment Views
+@api_view(['GET', 'POST'])
+def comment_list(request, entry_id):
+    entry = get_object_or_404(Entry, pk=entry_id)
+
+    if request.method == 'GET':
+        comments = Comment.objects.filter(entry=entry)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(entry=entry)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Score Views
+@api_view(['POST'])
+def score_entry(request, entry_id):
+    entry = get_object_or_404(Entry, pk=entry_id)
+    score_type = request.data.get('score_type')
+
+    if score_type not in ['upvote', 'downvote']:
+        return Response({'error': 'Invalid score type'}, status=status.HTTP_400_BAD_REQUEST)
+
+    score = Score.objects.create(content_type='entry', content_id=entry.id, score_type=score_type)
+    # Recalculate the score for the entry
+    entry.score += 1 if score_type == 'upvote' else -1
+    entry.save()
+
+    return Response(ScoreSerializer(score).data, status=status.HTTP_201_CREATED)
+
+# Flag Views
+@api_view(['POST'])
+def flag_entry(request, entry_id):
+    entry = get_object_or_404(Entry, pk=entry_id)
+    reason = request.data.get('reason')
+
+    if reason not in ['spam', 'inappropriate', 'offensive', 'other']:
+        return Response({'error': 'Invalid flag reason'}, status=status.HTTP_400_BAD_REQUEST)
+
+    flag = Flag.objects.create(content_type='entry', content_id=entry.id, reason=reason, user=request.user)
+    return Response(FlagSerializer(flag).data, status=status.HTTP_201_CREATED)
+
+# Impact Score Views
+@api_view(['GET'])
+def impact_score_entry(request, entry_id):
+    entry = get_object_or_404(Entry, pk=entry_id)
+    impact_score = ImpactScore.objects.filter(entry=entry).first()
+
+    if impact_score is None:
+        return Response({'error': 'Impact score not calculated yet'}, status=status.HTTP_404_NOT_FOUND)
+
+    return Response(ImpactScoreSerializer(impact_score).data)

@@ -96,7 +96,7 @@ function Layout({ children, pageName }) {
                         {children}
                     </div>
                 </div>
-                {<Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
+                {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
                 {menuOpen && <ProfileMenu />}
                 {appMenuOpen && <AppMenu />}
                 {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
