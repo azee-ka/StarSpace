@@ -1,7 +1,7 @@
-function getConfig(authState) {
+function getConfig(authState, contentType = "application/json") {
     const config = {
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': contentType,
             Authorization: `Token ${authState.token}`
         }
     };

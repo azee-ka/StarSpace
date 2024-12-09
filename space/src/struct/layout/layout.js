@@ -28,6 +28,8 @@ function Layout({ children, pageName }) {
     const [countNotifications, setCountNotifications] = useState(0);
 
 
+    console.log('location', location.pathname)
+
     const fetchNotifications = async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}get-notifications/`, config);
@@ -95,11 +97,16 @@ function Layout({ children, pageName }) {
                     <div className='layout-page-content'>
                         {children}
                     </div>
+                    {/* Footer */}
+                <footer className="footer">
+                    <p>© {new Date().getFullYear()} 4Space. All Copyrights Reserved.</p>
+                </footer>
                 </div>
                 {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
                 {menuOpen && <ProfileMenu />}
                 {appMenuOpen && <AppMenu />}
                 {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
+
             </div>
         </div>
     );

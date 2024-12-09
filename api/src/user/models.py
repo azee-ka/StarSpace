@@ -1,6 +1,5 @@
-# src/user/models.py
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 def upload_to(instance, filename):
     return f'profile_pictures/{instance.username}/{filename}'
@@ -25,7 +24,22 @@ class BaseUserManager(BaseUserManager):
 
 class BaseUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
+    username = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    username_anon = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    username_pro = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    role = models.CharField(
+        max_length=50, 
+        choices=[('anonymous', 'Anonymous'), ('professional', 'Professional')],
+        blank=True,
+        null=True
+    )
+    display_name = models.CharField(max_length=150, blank=True, null=True)
+    first_name = models.CharField(max_length=150, blank=True, null=True)
+    last_name = models.CharField(max_length=150, blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    bio = models.TextField(blank=True, null=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -38,27 +52,3 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-
-class User(BaseUser):
-    username_anon = models.CharField(max_length=150, unique=True, blank=True, null=True)
-    username_pro = models.CharField(max_length=150, unique=True, blank=True, null=True)
-    full_name = models.CharField(max_length=200, blank=True)
-    bio = models.TextField(blank=True, null=True)
-    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
-    role = models.CharField(max_length=50, choices=[('anonymous', 'Anonymous'), ('professional', 'Professional')], blank=True, null=True)
-    is_verified = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.email
-
-    def switch_role(self):
-        """Switch between anonymous and professional identity."""
-        if self.role == 'anonymous':
-            self.role = 'professional'
-        else:
-            self.role = 'anonymous'
-        self.save()
-
-    def get_current_username(self):
-        """Get the active username (based on the current role)."""
-        return self.username_anon if self.role == 'anonymous' else self.username_pro

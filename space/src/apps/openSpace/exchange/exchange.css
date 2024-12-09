@@ -1,11 +1,111 @@
 .exchange-page {
-    width: 100%;
-    height: 100%;
+    font-family: "Roboto", sans-serif;
+    background: linear-gradient(135deg, #1b1b26, #111119);
+    color: #eaeaea;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    padding: 2rem 1rem;
 }
 
-.exchange-container {
+.loading, .error {
+    font-size: 1.5rem;
+    color: #d4b3ff;
+    text-align: center;
+}
 
+.exchange-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 2rem;
+}
+
+.exchange-banner img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.exchange-info {
+    text-align: center;
+    margin-top: -50px;
+    padding: 1rem 2rem;
+    background: rgba(25, 25, 35, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    width: 90%;
+    max-width: 800px;
+}
+
+.exchange-info h1 {
+    font-family: "Poppins", sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #d4b3ff;
+}
+
+.exchange-info p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #b3b3c9;
+    margin-bottom: 1.5rem;
+}
+
+.exchange-stats {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #c7c7db;
+}
+
+.exchange-details {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.rules-section, .moderators-section {
+    background: rgba(30, 30, 40, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 300px;
+}
+
+.rules-section h2, 
+.moderators-section h2 {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.5rem;
+    color: #d4b3ff;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+}
+
+.rules-section ul, 
+.moderators-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rules-section li, 
+.moderators-section li {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #eaeaea;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid #7a5cff;
 }

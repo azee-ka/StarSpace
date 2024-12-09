@@ -1,31 +1,59 @@
 from rest_framework import serializers
-from .models import User
+from .models import BaseUser
+from rest_framework import serializers
+
+class MinimalUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ['first_name', 'last_name', 'username', 'email']
+        
+class BaseUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'display_name', 'date_of_birth', 'profile_image', 'is_private_profile']
+
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    username = serializers.CharField(write_only=True)  # Frontend sends 'username'
 
     class Meta:
-        model = User
-        fields = ['email', 'username_anon', 'username_pro', 'password', 'full_name', 'bio', 'profile_image']
+        model = BaseUser
+        fields = ['email', 'password', 'username', 'first_name', 'last_name']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        # Extract 'username' from validated data
+        username = validated_data.pop('username', None)
+
+        # Create the user using the other validated data
+        user = BaseUser.objects.create_user(**validated_data)
+
+        # Store the username in the 'username_general' field
+        user.username_general = username
+
+        # Save and return the user
+        user.save()
         return user
+
+
+
+
+
+
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['full_name', 'bio', 'profile_image', 'username_anon', 'username_pro', 'role']
+        model = BaseUser
+        fields = ['display_name', 'bio', 'username_anon', 'username_pro', 'role', 'profile_image']
 
     def update(self, instance, validated_data):
-        instance.full_name = validated_data.get('full_name', instance.full_name)
-        instance.bio = validated_data.get('bio', instance.bio)
-        instance.profile_image = validated_data.get('profile_image', instance.profile_image)
-        instance.username_anon = validated_data.get('username_anon', instance.username_anon)
-        instance.username_pro = validated_data.get('username_pro', instance.username_pro)
-        instance.role = validated_data.get('role', instance.role)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
         return instance
+
+
 
 
 class UserProfilePictureUpdateSerializer(serializers.Serializer):

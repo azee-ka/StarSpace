@@ -1,14 +1,29 @@
 from rest_framework import serializers
-from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, UserProfile
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
-# Exchange Serializer
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore
+from ..user.models import BaseUser
+
+
 class ExchangeSerializer(serializers.ModelSerializer):
-    creator = serializers.StringRelatedField()  # Reference to the custom User model
-    members = serializers.StringRelatedField(many=True)
+    creator = serializers.PrimaryKeyRelatedField(queryset=BaseUser.objects.all(), required=False)
 
     class Meta:
         model = Exchange
-        fields = ['id', 'name', 'description', 'creator', 'created_at', 'updated_at', 'score', 'members']
+        fields = [
+            'uuid', 'name', 'description', 'category', 'creator',  # Include uuid here
+            'created_at', 'updated_at', 'score', 'rules', 'banner',
+            'isPublic', 'allowAnonymous', 'primaryColor', 'secondaryColor'
+        ]
+
+    def create(self, validated_data):
+        request_user = self.context['request'].user
+        validated_data.pop('creator', None)
+        validated_data['creator'] = request_user
+        return Exchange.objects.create(**validated_data)
+
+
+
 
 # Entry Serializer
 class EntrySerializer(serializers.ModelSerializer):
@@ -45,11 +60,3 @@ class ImpactScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImpactScore
         fields = ['id', 'entry', 'upvotes', 'downvotes', 'comments', 'shares', 'engagement_score']
-
-# UserProfile Serializer
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()  # Reference to the custom User model
-
-    class Meta:
-        model = UserProfile
-        fields = ['id', 'user', 'bio', 'avatar', 'following']

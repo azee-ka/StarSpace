@@ -54,7 +54,7 @@ const RegisterPage = () => {
                 last_name: capitalizedLastName,
             };
             // Send registration data to the backend
-            const response = await axios.post(`${API_BASE_URL}register/`, data, config);
+            const response = await axios.post(`${API_BASE_URL}api/register/`, data, config);
 
             // Handle the response from the backend as needed
             console.log(response.data);

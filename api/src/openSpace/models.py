@@ -1,21 +1,36 @@
 from django.db import models
-from ..user.models import User  # Importing your custom User model
 from django.utils import timezone
+from ..user.models import BaseUser
+import uuid
+
+def upload_to(instance, filename):
+    return f'banner/{instance.name}/{filename}'
 
 class Exchange(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    name = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_exchanges')
+    category = models.CharField(max_length=255, default='Uncategorized')
+    creator = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='created_exchanges', null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    members = models.ManyToManyField(User, related_name='joined_exchanges', through='ExchangeMember')
+    members = models.ManyToManyField(BaseUser, related_name='joined_exchanges', through='ExchangeMember')
     score = models.IntegerField(default=0)
+    rules = models.TextField(blank=True, null=True)  # Optional rules for the exchange
+    moderators = models.ManyToManyField(BaseUser, related_name='moderating_exchanges', blank=True)  # Moderators for the exchange
+    banner = models.ImageField(upload_to='exchange_banners/', blank=True, null=True)
+    isPublic = models.BooleanField(default=True)  # Whether the exchange is public
+    allowAnonymous = models.BooleanField(default=False)  # Whether anonymous posts are allowed
+    primaryColor = models.CharField(max_length=7, blank=True, null=True)  # Primary color (Hex code)
+    secondaryColor = models.CharField(max_length=7, blank=True, null=True)  # Secondary color (Hex code)
 
     def __str__(self):
         return self.name
 
+
 class ExchangeMember(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
     joined_at = models.DateTimeField(default=timezone.now)
 
@@ -24,7 +39,7 @@ class ExchangeMember(models.Model):
 
 class Entry(models.Model):
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name='entries')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='entries')
+    author = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='entries')
     title = models.CharField(max_length=255)
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
@@ -38,7 +53,7 @@ class Entry(models.Model):
 
 class Comment(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -70,7 +85,7 @@ class Flag(models.Model):
     content_type = models.CharField(max_length=50)
     content_id = models.IntegerField()
     reason = models.CharField(max_length=50, choices=FLAG_CHOICES)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flags')
+    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='flags')
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -90,12 +105,3 @@ class ImpactScore(models.Model):
 
     def __str__(self):
         return f'Impact score for entry {self.entry.title}'
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
-
-    def __str__(self):
-        return f'Profile for {self.user.get_current_username()}'

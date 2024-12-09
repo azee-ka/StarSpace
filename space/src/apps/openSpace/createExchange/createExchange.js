@@ -1,7 +1,14 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./createExchange.css";
+import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../../../apiUrl";
+import { useAuth } from "../../../reducers/auth/useAuth";
+import getConfig from "../../../config";
 
 const CreateExchange = () => {
+    const { authState } = useAuth();
+    const config = getConfig(authState, "multipart/form-data" );
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("General");
@@ -11,27 +18,60 @@ const CreateExchange = () => {
     const [isPublic, setIsPublic] = useState(true);
     const [allowAnonymous, setAllowAnonymous] = useState(false);
     const [moderators, setModerators] = useState("");
+    const [loading, setLoading] = useState(false);  // For loading state
+    const [error, setError] = useState("");  // To handle errors
+
+    const navigate = useNavigate();  // Initialize useNavigate for navigation after successful creation
 
     const handleBannerUpload = (e) => {
-        setBanner(URL.createObjectURL(e.target.files[0]));
+        setBanner(e.target.files[0]);  // Set the file object, not the URL
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const exchangeData = {
-            name,
-            description,
-            category,
-            banner,
-            primaryColor,
-            secondaryColor,
-            isPublic,
-            allowAnonymous,
-            moderators: moderators.split(",").map((mod) => mod.trim()),
-        };
-        console.log("Exchange Data:", exchangeData);
-        // Here, you'd send this data to the server via API
+        setLoading(true);  // Start loading when submission is in progress
+        
+        const exchangeData = new FormData();
+        
+        // Append regular data fields
+        exchangeData.append('name', name);
+        exchangeData.append('description', description);
+        exchangeData.append('category', category);
+        exchangeData.append('primaryColor', primaryColor);
+        exchangeData.append('secondaryColor', secondaryColor);
+        exchangeData.append('isPublic', isPublic);
+        exchangeData.append('allowAnonymous', allowAnonymous);
+        // exchangeData.append('moderators', JSON.stringify(moderators));
+        if (banner) {
+            exchangeData.append('banner', banner);
+        }
+    
+        try {
+            // Send data to the API using axios
+            const response = await axios.post(`${API_BASE_URL}api/openspace/exchange/create/`, exchangeData, config);
+            console.log(response);
+            const exchangeId = response.data.uuid;
+        
+            // Navigate to the newly created exchange page
+            navigate(`/openspace/exchange/${exchangeId}`);
+        } catch (error) {
+            // Handle error if the request fails
+            if (error.response) {
+                // Server responded with a status other than 2xx
+                setError(error.response.data.detail || "Something went wrong!");
+            } else if (error.request) {
+                // Request was made but no response received
+                setError("No response from the server. Please try again.");
+            } else {
+                // Something else went wrong
+                setError("Failed to create exchange. Please try again.");
+            }
+        } finally {
+            // Stop loading after the request is complete
+            setLoading(false);
+        }
     };
+    
 
     return (
         <div className="create-exchange-page">
@@ -102,7 +142,7 @@ const CreateExchange = () => {
                                 checked={isPublic}
                                 onChange={(e) => setIsPublic(e.target.checked)}
                             />
-                            Public Exchange
+                            <p>Public Exchange</p>
                         </label>
                         <label>
                             <input
@@ -110,7 +150,7 @@ const CreateExchange = () => {
                                 checked={allowAnonymous}
                                 onChange={(e) => setAllowAnonymous(e.target.checked)}
                             />
-                            Allow Anonymous Posts
+                            <p>Allow Anonymous Posts</p>
                         </label>
                     </div>
                 </section>

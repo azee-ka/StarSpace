@@ -10,6 +10,7 @@ import FrontPage from '../pages/frontPage/frontPage';
 
 import Timeline from '../apps/openSpace/timeline/timeline';
 import CreateExchange from '../apps/openSpace/createExchange/createExchange';
+import ExchangePage from '../apps/openSpace/exchange/exchange';
 
 import OpenSpace from '../apps/openSpace/explore/openSpace';
 import Profile from '../pages/profile/profile';
@@ -23,11 +24,13 @@ const privateRoutes = {
         { name: 'OpenSpace Dasboard', path: '/openspace', component: Timeline, key: 'OpenSpaceDasboard' },
         { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
         { name: 'Create Exchange', path: '/openspace/create-exchange', component: CreateExchange, key: 'CreateExchange' },
+        { name: 'Exchange', path: '/openspace/exchange/:exchangeId', component: ExchangePage, key: 'ExchangePage' },
     ],
     home: [
         { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },
         { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
         { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
+
     ],
 };
 
@@ -54,28 +57,26 @@ const AppRouter = () => {
 
     const renderPrivateRoutes = () => {
         const currentRoutes = privateRoutes[activeSubApp] || [];
-        console.log("activeSubApp" , activeSubApp)
-        console.log("Current Routes:", currentRoutes);
-         return currentRoutes.map((route, index) => {
-        const Component = route.component;
-        return (
-            <Route
-                key={`${index}-${route.path}`}
-                path={route.path}
-                element={
-                    <Layout
-                        key={`${index}-${route.path}`}
-                        className={route.path.substring(1)}
-                        pageName={route.pageName}
+        return currentRoutes.map((route, index) => {
+            const Component = route.component;
+            return (
+                <Route
+                    key={`${index}-${route.path}`}
+                    path={route.path}
+                    element={
+                        <Layout
+                            key={`${index}-${route.path}`}
+                            className={route.path.substring(1)}
+                            pageName={route.pageName}
                         // showSidebar={route.showSidebar}
-                    >
-                        <Component />
-                    </Layout>
-                }
-            />
-        );
-    });
-};
+                        >
+                            <Component />
+                        </Layout>
+                    }
+                />
+            );
+        });
+    };
 
     return (
         <Router>

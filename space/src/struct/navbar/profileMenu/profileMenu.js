@@ -20,8 +20,8 @@ const ProfileMenu = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}profile/get-user-info/`, config);
-                // console.log(response.data);
+                const response = await axios.get(`${API_BASE_URL}api/profile/get-user-info/`, config);
+                console.log(response.data);
                 setProfileData(response.data);
             } catch (error) {
                 console.error('Error fetching profile data:', error);

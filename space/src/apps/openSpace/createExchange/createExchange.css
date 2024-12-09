@@ -7,13 +7,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto;
+    padding-top: 20px;
 }
 
 .create-exchange-page h1,
 .create-exchange-page h2 {
     font-family: "Poppins", sans-serif;
-    color: #d4b3ff;
+    /* color: #d4b3ff; */
+    color: rgb(241, 216, 255);
     font-weight: 600;
     margin-bottom: 1.5rem;
 }
@@ -25,6 +26,7 @@ form {
     width: 100%;
     width: 850px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    margin-bottom: 30px;
 }
 
 .section {
@@ -41,12 +43,19 @@ form {
     margin-bottom: 1rem;
 }
 
+.section.membership-controls .form-group {
+    display: flex;
+    gap: 25px;
+}
+
+
 label {
     display: block;
     font-weight: bold;
     margin-bottom: 0.4rem;
     color: #c7c7db;
 }
+
 
 input, textarea, select {
     width: 96%;
@@ -64,6 +73,33 @@ input, textarea, select {
 
 select {
     width: 99%;
+}
+
+.section.membership-controls .form-group label input {
+    width: 20px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(128, 0, 128, 0);
+}
+
+.section.membership-controls .form-group label {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(0, 128, 0, 0);
+}
+
+.section.membership-controls .form-group label p {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 0, 0, 0);
 }
 
 input:focus, 

@@ -44,8 +44,10 @@
     background-color: black;
     color: white;
     font-size: 16px;
-    padding-left: 10px;
-    height: 35px;
+    padding: 20px 12px;
+    width: 100%;
+    height: 20px;
+    box-sizing: border-box;
   }
   
   .register-auth-container input:focus {
@@ -53,6 +55,7 @@
     border-color: lightgray;
     background-color: rgba(0, 241, 245, 0.022);
     box-shadow: 0 0 5px rgb(0, 154, 181);
+
   }
   
   .register-auth-container input:hover {
@@ -64,33 +67,38 @@
   
   .register-auth-container form {
     background-color: rgba(255, 255, 255, 0);
-    width: 80%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     align-content: center;
     gap: 15px;
+    box-sizing: border-box;
   }
   
   .register-card-full-name {
     display: flex;
     flex-direction: row;
     gap: 8px;
+    /* padding: 8px 10px; */
+    box-sizing: border-box;
   }
   
   .register-card-full-name input {
     width: 50%;
-  
   }
+
   
   .register-card-other-fields {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 13px;
     width: 100%;
     background-color: rgba(255, 255, 255, 0);
-    padding: 0;
+    box-sizing: border-box;
   }
   
   .redirect-to-login {
@@ -136,20 +144,17 @@
   
   }
   
-  .register-password-field-container input {
-    width: 97%;
-  }
   
   .register-password-field-container .password-toggle-button-container {
     position: absolute;
-    top: 50%;
+    top: 55%;
     right: 10px;
     transform: translateY(-50%);
     transition: right 0.25s ease;
   }
   
   .register-password-field-container input:focus+.password-toggle-button-container {
-    right: 25px !important;
+    right: 40px !important;
   }
   
   .register-password-field-container .password-toggle-button {

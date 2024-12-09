@@ -59,11 +59,6 @@ const FrontPage = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Footer */}
-            <footer className="footer">
-                <p>© {new Date().getFullYear()} 4Space. All Copyrights Reserved.</p>
-            </footer>
         </div>
     );
 };
