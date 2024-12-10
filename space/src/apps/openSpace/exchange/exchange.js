@@ -10,6 +10,8 @@ import { FaChartBar, FaFlag, FaUsers, FaInfoCircle } from "react-icons/fa";
 
 // Chart.js setup
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import FuturisticDonutChart from "./chartConfig";
+import { formatDateTime } from "../../../utils/formatDateTime";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ExchangePage = () => {
@@ -49,17 +51,6 @@ const ExchangePage = () => {
 
     if (loading) return <div className="loading">Loading...</div>;
     if (error) return <div className="error">{error}</div>;
-
-    const metricsData = {
-        labels: ["Positive Impact", "Negative Impact", "Neutral"],
-        datasets: [
-            {
-                data: [60, 25, 15], // Example data
-                backgroundColor: ["#4CAF50", "#F44336", "#FFC107"],
-                hoverBackgroundColor: ["#81C784", "#E57373", "#FFD54F"],
-            },
-        ],
-    };
 
     return (
         <div className="exchange-page">
@@ -118,17 +109,33 @@ const ExchangePage = () => {
                             <div className="exchange-page-header-title">
                                 <h2>{exchange?.name}</h2>
                             </div>
+                            <div className="exchange-page-header-tabs">
+                                <div className="exchange-page-header-tabs-inner">
+                                    <p>Category<span>{exchange?.category}</span></p>
+                                    <p>Creation Date<span>{formatDateTime(exchange?.created_at)}</span></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="exchange-page-info">
                         <div className="exchange-page-info-inner">
-                            <div className="exchange-header-description-card">
-                                <div className="exchange-header-description-card-inner">
-                                    <p>{exchange?.description}</p>
+                            <div className="exchange-header-description-control-card">
+                                <div className="exchange-header-control-card">
+
+                                </div>
+                                <div className="exchange-header-description-card">
+                                    <div className="exchange-header-description-card-title">
+                                        <h3>Description</h3>
+                                    </div>
+                                    <div className="exchange-header-description-card-inner">
+                                        <p>{exchange?.description}</p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="exchange-header-charts-card">
-                                <Doughnut data={metricsData} />
+                                <div className="exchange-header-charts-card-inner">
+                                    <FuturisticDonutChart data={[60, 25, 15]} label={["Positive Impact", "Negative Impact", "Neutral"]} />
+                                </div>
                             </div>
                             <div className="exchange-header-metrics-card">
                                 <div className="metric-card">

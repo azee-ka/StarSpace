@@ -30,7 +30,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user = BaseUser.objects.create_user(**validated_data)
 
         # Store the username in the 'username_general' field
-        user.username_general = username
+        user.username = username
 
         # Save and return the user
         user.save()

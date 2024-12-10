@@ -26,6 +26,8 @@
     justify-content: flex-start;
     align-items: center;
     flex-shrink: 0;
+    perspective: 1000px;
+    position: fixed;
 }
 
 .exchange-page-sidebar-inner {
@@ -42,6 +44,12 @@
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
+    transition: transform 0.4s ease-in-out;
+    perspective: 1000px;
+}
+
+.exchange-page-sidebar-inner:hover {
+    transform: rotateY(14deg);
 }
 
 .exchange-sidebar-section:first-child {
@@ -110,7 +118,7 @@
     padding: 5px 13px;
 }
 .exchange-sidebar-section-content li:hover {
-    background-color: rgba(128, 128, 128, 0.351);
+    background-color: rgba(128, 128, 128, 0.251);
     cursor: pointer;
 }
 
@@ -152,13 +160,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 2px;
     justify-content: flex-start;
+    margin-left: 290px;
 }
 
 .exchange-page-header {
     width: 100%;
-    height: 60px;
+    height: 45px;
     display: flex;
     background-color: rgba(255, 255, 0, 0);
 }
@@ -193,14 +202,56 @@
 .exchange-page-header-inner {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
+    background-color: rgba(65, 65, 65, 0.309);
+}
+
+.exchange-page-header-title {
+    background-color: rgba(0, 128, 0, 0);
+    max-width: 500px;
+    margin-left: 15px;
+    color: rgb(221, 246, 255);
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    height: 100%;
+    display: flex;
     justify-content: flex-start;
     align-items: center;
 }
-.exchange-page-header-title {
+
+.exchange-page-header-tabs {
+    margin-right: 15px;
+    flex-grow: 1;
+    min-width: 100px;
+    height: 100%;
     background-color: rgba(0, 128, 0, 0);
-    margin-left: 23px;
-    color: rgb(221, 246, 255);
-    font-family: 'Orbitron', monospace;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+.exchange-page-header-tabs-inner {
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 15px;
+}
+.exchange-page-header-tabs-inner p {
+    font-size: 12px;
+    color: rgb(171, 171, 171);
+    display: flex;
+    flex-direction: column;
+}
+.exchange-page-header-tabs-inner p span {
+    font-size: 11px;
+    color: rgb(136, 136, 136);
 }
 
 .exchange-page-info-inner {
@@ -208,7 +259,7 @@
     height: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     gap: 25px;
     background-color: rgba(0, 128, 0, 0);
@@ -216,41 +267,79 @@
 
 
 .exchange-header-description-card,
+.exchange-header-control-card,
 .exchange-header-charts-card,
 .exchange-header-metrics-card {
     background-color: rgba(65, 65, 65, 0.209);
-    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    box-shadow: 0 3px 4px 2px rgba(128, 128, 128, 0.243);
     backdrop-filter: blur(100px);
     border-radius: 10px;
     transition: transform 0.4s ease;
 }
 
 .exchange-header-description-card:hover,
+.exchange-header-control-card:hover,
 .exchange-header-charts-card:hover,
 .exchange-header-metrics-card:hover {
     transform: scale(1.03);
 }
 
 
-.exchange-header-description-card {
+.exchange-header-description-control-card {
     flex-grow: 1;
     height: 90%;
     font-size: 13px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
+    gap: 15px;
+    /* overflow-y: auto; */
+}
+.exchange-header-control-card {
+    width: 100%;
+    height: 90px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+.exchange-header-description-card {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+}
+.exchange-header-description-card-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(0, 128, 0, 0);
+    height: 15px;
+    width: 96%;
+    margin-top: 10px;
+}
+.exchange-header-description-card h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    color: rgb(182, 182, 182);
 }
 .exchange-header-description-card-inner {
-    width: 95%;
-    height: 96%;
-    background-color: rgba(255, 0, 0, 0);
-    overflow-y: auto;
+    width: 96%;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
 }
 .exchange-header-description-card-inner p {
-    color: rgb(198, 198, 198);
+    color: rgba(181, 181, 181, 0.891);
     font-family: 'Orbitron', monospace;
 }
 
@@ -258,7 +347,16 @@
     width: 250px;
     height: 90%;
     flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.exchange-header-charts-card-inner {
+    width: 90%;
+    height: 90%;
+}
+
 
 .exchange-header-metrics-card {
     width: 250px;
