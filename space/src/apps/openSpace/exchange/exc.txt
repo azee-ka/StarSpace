@@ -1,0 +1,420 @@
+            <div className="exchange-page-sidebar">
+                <div className="exchange-page-sidebar-inner">
+                    <div className="sidebar-section">
+                        <div className="sidebar-sub-section-title"><h4>Quick Navigation</h4></div>
+                        <div className="sidebar-sub-section-content">
+                            <ul className="sidebar-links">
+                                <li><a href="#overview">Overview</a></li>
+                                <li><a href="#entries">Entries</a></li>
+                                <li><a href="#metrics">Metrics</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="sidebar-section">
+                        <div className="sidebar-sub-section-title">
+                            <h4>Search Entries</h4>
+                        </div>
+                        <div className="sidebar-sub-section-content">
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                className="sidebar-search"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sidebar-section">
+                        <div className="sidebar-sub-section-title">
+                            <h4>Trending Entries</h4>
+                        </div>
+                        <div className="sidebar-sub-section-content">
+                            <ul className="trending-entries">
+                                <li><a href="/entry/1">Top Contribution of the Week</a></li>
+                                <li><a href="/entry/2">Most Discussed Entry</a></li>
+                                <li><a href="/entry/3">Editor's Pick</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="sidebar-section">
+                        <div className="sidebar-sub-section-title">
+                            <h4>Your Contributions</h4>
+                        </div>
+                        <div className="sidebar-sub-section-content">
+                            <button className="contribute-button">Add New Entry</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="exchange-page-content">
+                <header className="exchange-header">
+                    <div className="exchange-info">
+                        <h2 className="exchange-title">{exchange?.name}</h2>
+                        <p className="exchange-description">
+                            {exchange?.description}
+                        </p>
+                    </div>
+                    <div className="exchange-metrics">
+                        <Doughnut data={metricsData} />
+                    </div>
+                    <section className="exchange-metrics-sidebar">
+                        <div className="metric-card">
+                            <div className="metric-card-name">
+                                <FaChartBar />
+                                <h3>Net Impact Score</h3>
+                            </div>
+                            <p>{exchange?.net_impact_score}</p>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-card-name">
+                                <FaFlag />
+                                <h3>Flagged Content</h3>
+                            </div>
+                            <p>{exchange?.flagged_content_count}</p>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-card-name">
+                                <FaUsers />
+                                <h3>Active Users</h3>
+                            </div>
+                            <p>{exchange?.user_contributions?.length}</p>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-card-name">
+                                <FaInfoCircle />
+                                <h3>Toxicity Score</h3>
+                            </div>
+                            <p>{exchange?.toxicity_score}</p>
+                        </div>
+                    </section>
+                </header>
+
+                <div className="main-container">
+                    <section className="entries-section">
+                        <h2 className="section-title">Entries</h2>
+                        <div className="entries-list">
+                            {entries.map((entry) => (
+                                <div key={entry.id} className="entry-card">
+                                    <h3 className="entry-title">{entry.title}</h3>
+                                    <p className="entry-summary">{entry.summary}</p>
+                                    <div className="entry-meta">
+                                        <FaUsers /> {entry.author} | {new Date(entry.created_at).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+            
+
+
+
+
+
+
+
+
+
+
+
+
+.exchange-page {
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(9, 0, 30, 0);
+    height: 100vh;
+    width: 100%;
+    gap: 30px;
+}
+
+.exchange-page-sidebar {
+    width: 250px;
+    height: 100%;
+    flex-shrink: 0;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 9px;
+    /* box-shadow: 0px -5px 6px 3px rgba(128, 128, 128, 0.298); */
+    padding: 0;
+    padding-top: 15px;
+    box-sizing: border-box;
+    color: rgb(182, 182, 182);
+}
+
+.exchange-page-sidebar-inner {
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    padding: 10px 5px;
+    height: 100%;
+    width: 90%;
+}
+
+.exchange-page-sidebar .sidebar-sub-section-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.exchange-page-sidebar .sidebar-section {
+    width: 90%;
+    background-color: rgba(0, 110, 255, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.sidebar-sub-section-title {
+    background-color: rgba(30, 0, 40, 0.063);
+    padding: 0;
+    align-self: center;
+    height: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.sidebar-section ul {
+    list-style: none;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: rgba(37, 95, 37, 0);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0;
+}
+
+.sidebar-section ul li {
+    background-color: rgba(255, 0, 0, 0);
+    width: 90%;
+    height: 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 2px 10px;
+}
+
+.sidebar-section ul li:hover {
+    background-color: rgba(128, 128, 128, 0.312);
+    cursor: pointer;
+}
+
+.sidebar-section ul li a {
+    color: rgb(171, 171, 171);
+}
+
+.sidebar-sub-section-content input {
+    width: 90%;
+    margin-bottom: 15px;
+}
+
+.sidebar-sub-section-content button {
+    width: 100%;
+    border: 0;
+    border-radius: 6px;
+    padding: 8px 14px;
+    background-color: rgb(64, 0, 128);
+    color: white;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-sub-section-content button:hover {
+    background-color: black;
+    box-shadow: 0 0 4px 4px rgb(64, 0, 128);
+    cursor: pointer;
+}
+
+.exchange-page-content {
+    flex-grow: 1;
+    height: 100%;
+    margin-right: 20px;
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.main-container {
+    flex: 1;
+    width: 100%;
+    /* padding: 20px; */
+    background-color: red;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+.exchange-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 25px;
+    /* border-bottom: 2px solid #4CAF50; */
+    width: 100%;
+    height: 350px;
+    background-color: rgba(255, 0, 0, 0);
+    gap: 25px;
+}
+
+.exchange-info {
+    height: 91%;
+    width: 630px;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    padding: 15px;
+    transition: transform 0.4s ease;
+}
+
+
+.exchange-metrics-sidebar:hover,
+.exchange-metrics:hover,
+.exchange-info:hover {
+    transform: scale(1.03);
+}
+
+.exchange-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #4caf89;
+}
+
+.exchange-description {
+    font-size: 0.9rem;
+    color: #8e8e8e;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.02em;
+}
+
+.exchange-sidebar {
+    width: 280px;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.exchange-metrics {
+    width: 200px;
+    height: 91%;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 8px;
+    padding: 15px;
+    transition: transform 0.4s ease;
+}
+
+.exchange-metrics-sidebar {
+    flex-grow: 1;
+    height: 91%;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: transform 0.4s ease;
+}
+
+.metric-card {
+    /* background: #001d2866; */
+    backdrop-filter: blur(0px);
+    padding: 0px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #00ffbfb2;
+    font-size: 1.5rem;
+    height: 50px;
+}
+
+.metric-card-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.metric-card h3 {
+    font-size: 0.8rem;
+    /* Smaller title */
+    margin: 0;
+}
+
+.metric-card p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.metric-card svg {
+    font-size: 1.2rem;
+    /* Adjust icon size */
+}
+
+.entries-section {
+    flex: 2;
+}
+
+.entries-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.entry-card {
+    background-color: #1e2734;
+    border-radius: 10px;
+    padding: 15px;
+    color: #FFEB3B;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.entry-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.entry-summary {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}

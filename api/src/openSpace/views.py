@@ -1,14 +1,15 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore
+from rest_framework.permissions import IsAuthenticated
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember
 from .serializers import ExchangeSerializer, EntrySerializer, CommentSerializer, ScoreSerializer, FlagSerializer, ImpactScoreSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from .models import Exchange
-from .serializers import ExchangeSerializer
 from ..user.models import BaseUser
 
+# Create Exchange View
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_exchange(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
@@ -18,15 +19,13 @@ def create_exchange(request):
         serializer = ExchangeSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
-            exchange = serializer.save()  # The creator is set based on the request.user type
+            exchange = serializer.save(creator=request.user)  # Set creator to the logged-in user
             return Response({"uuid": exchange.uuid}, status=status.HTTP_201_CREATED)
         
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-# Exchange Views
+# Exchange List View
 @api_view(['GET', 'POST'])
 def exchange_list(request):
     if request.method == 'GET':
@@ -34,9 +33,10 @@ def exchange_list(request):
         serializer = ExchangeSerializer(exchanges, many=True)
         return Response(serializer.data)
 
+# Exchange Detail View
 @api_view(['GET', 'PUT', 'DELETE'])
 def exchange_detail(request, uuid):
-    exchange = get_object_or_404(Exchange, uuid=uuid)  # Use UUID instead of pk
+    exchange = get_object_or_404(Exchange, uuid=uuid)
 
     if request.method == 'GET':
         serializer = ExchangeSerializer(exchange)
@@ -53,10 +53,10 @@ def exchange_detail(request, uuid):
         exchange.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+# Entry List View
 @api_view(['GET', 'POST'])
 def entry_list(request, uuid):
-    exchange = get_object_or_404(Exchange, uuid=uuid)  # Use UUID instead of pk
+    exchange = get_object_or_404(Exchange, uuid=uuid)
 
     if request.method == 'GET':
         entries = Entry.objects.filter(exchange=exchange)
@@ -67,10 +67,12 @@ def entry_list(request, uuid):
         serializer = EntrySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(exchange=exchange, author=request.user)
+            exchange.entries += 1  # Update the entries count in the Exchange model
+            exchange.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# Entry Detail View
 @api_view(['GET', 'PUT', 'DELETE'])
 def entry_detail(request, exchange_id, entry_id):
     exchange = get_object_or_404(Exchange, pk=exchange_id)
@@ -89,11 +91,11 @@ def entry_detail(request, exchange_id, entry_id):
 
     elif request.method == 'DELETE':
         entry.delete()
+        exchange.entries -= 1  # Decrease the entry count in the Exchange model
+        exchange.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-
-# Comment Views
+# Comment List View
 @api_view(['GET', 'POST'])
 def comment_list(request, entry_id):
     entry = get_object_or_404(Entry, pk=entry_id)
@@ -106,11 +108,11 @@ def comment_list(request, entry_id):
     elif request.method == 'POST':
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(entry=entry)
+            serializer.save(entry=entry, author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Score Views
+# Score Entry View
 @api_view(['POST'])
 def score_entry(request, entry_id):
     entry = get_object_or_404(Entry, pk=entry_id)
@@ -124,9 +126,14 @@ def score_entry(request, entry_id):
     entry.score += 1 if score_type == 'upvote' else -1
     entry.save()
 
+    # Optionally recalculate ImpactScore if needed
+    impact_score = ImpactScore.objects.filter(entry=entry).first()
+    if impact_score:
+        impact_score.calculate_engagement()
+
     return Response(ScoreSerializer(score).data, status=status.HTTP_201_CREATED)
 
-# Flag Views
+# Flag Entry View
 @api_view(['POST'])
 def flag_entry(request, entry_id):
     entry = get_object_or_404(Entry, pk=entry_id)
@@ -136,9 +143,15 @@ def flag_entry(request, entry_id):
         return Response({'error': 'Invalid flag reason'}, status=status.HTTP_400_BAD_REQUEST)
 
     flag = Flag.objects.create(content_type='entry', content_id=entry.id, reason=reason, user=request.user)
+
+    # Optionally update flagged content count on Exchange
+    exchange = entry.exchange
+    exchange.flagged_content_count += 1
+    exchange.save()
+
     return Response(FlagSerializer(flag).data, status=status.HTTP_201_CREATED)
 
-# Impact Score Views
+# Impact Score View
 @api_view(['GET'])
 def impact_score_entry(request, entry_id):
     entry = get_object_or_404(Entry, pk=entry_id)
@@ -149,10 +162,7 @@ def impact_score_entry(request, entry_id):
 
     return Response(ImpactScoreSerializer(impact_score).data)
 
-
-
-
-
+# Add Members to Exchange
 @api_view(['POST'])
 def add_members(request, exchange_id):
     exchange = get_object_or_404(Exchange, pk=exchange_id)
@@ -169,11 +179,15 @@ def add_members(request, exchange_id):
     if not members.exists():
         return Response({"detail": "One or more users do not exist."}, status=status.HTTP_404_NOT_FOUND)
 
-    exchange.members.add(*members)  # Add members to the ManyToMany relationship
+    for member in members:
+        ExchangeMember.objects.get_or_create(user=member, exchange=exchange)  # Track members
+
+    exchange.members += len(members)  # Update member count
+    exchange.save()
+
     return Response({"detail": "Members added successfully."}, status=status.HTTP_200_OK)
 
-
-
+# Add Moderators to Exchange
 @api_view(['POST'])
 def add_moderators(request, exchange_id):
     exchange = get_object_or_404(Exchange, pk=exchange_id)
@@ -190,5 +204,5 @@ def add_moderators(request, exchange_id):
     if not moderators.exists():
         return Response({"detail": "One or more users do not exist."}, status=status.HTTP_404_NOT_FOUND)
 
-    exchange.moderators.add(*moderators)  # Add moderators to the ManyToMany relationship
+    exchange.moderators.add(*moderators)  # Add moderators
     return Response({"detail": "Moderators added successfully."}, status=status.HTTP_200_OK)

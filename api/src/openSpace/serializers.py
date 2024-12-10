@@ -1,19 +1,23 @@
 from rest_framework import serializers
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-
-from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember
 from ..user.models import BaseUser
 
-
+# Exchange Serializer
 class ExchangeSerializer(serializers.ModelSerializer):
     creator = serializers.PrimaryKeyRelatedField(queryset=BaseUser.objects.all(), required=False)
-
+    
     class Meta:
         model = Exchange
         fields = [
-            'uuid', 'name', 'description', 'category', 'creator',  # Include uuid here
-            'created_at', 'updated_at', 'score', 'rules', 'banner',
-            'isPublic', 'allowAnonymous', 'primaryColor', 'secondaryColor'
+            'uuid', 'name', 'description', 'category', 'creator', 'tags', 'rules', 'created_at', 'updated_at',
+            'upvotes', 'downvotes', 'net_votes', 'reactions', 'flags', 
+            'flagged_content_count', 'flagged_content_ratio', 'verified_content_count', 
+            'verified_content_ratio', 'toxicity_score', 'misinformation_score', 
+            'echo_chamber_score', 'spam_score', 'bot_activity_score', 'community_health_score',
+            'positive_impact_score', 'negative_impact_score', 'net_impact_score', 'historical_data',
+            'user_contributions', 'allow_anonymous_posts', 'allow_link_sharing', 
+            'strict_moderation_mode', 'tools_enabled', 'monetization_options', 'funding_raised'
         ]
 
     def create(self, validated_data):
@@ -22,26 +26,19 @@ class ExchangeSerializer(serializers.ModelSerializer):
         validated_data['creator'] = request_user
         return Exchange.objects.create(**validated_data)
 
-
-
-
-# Entry Serializer
-class EntrySerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()  # Reference to the custom User model
-    exchange_name = serializers.CharField(source='exchange.name', read_only=True)
-    impact_score = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = Entry
-        fields = ['id', 'title', 'content', 'author', 'exchange', 'created_at', 'updated_at', 'score', 'impact_score', 'flags', 'exchange_name']
-
 # Comment Serializer
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()  # Reference to the custom User model
+    entry_title = serializers.CharField(source='entry.title', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'entry', 'author', 'content', 'created_at', 'updated_at', 'score']
+        fields = ['id', 'entry', 'author', 'content', 'created_at', 'updated_at', 'score', 'entry_title']
+
+    def create(self, validated_data):
+        request_user = self.context['request'].user
+        validated_data['author'] = request_user
+        return Comment.objects.create(**validated_data)
 
 # Score Serializer
 class ScoreSerializer(serializers.ModelSerializer):
@@ -51,12 +48,70 @@ class ScoreSerializer(serializers.ModelSerializer):
 
 # Flag Serializer
 class FlagSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Related user for flagging
+    content_details = serializers.SerializerMethodField()
+
     class Meta:
         model = Flag
-        fields = ['id', 'content_type', 'content_id', 'reason', 'user', 'created_at']
+        fields = ['id', 'content_type', 'content_id', 'reason', 'user', 'created_at', 'content_details']
+
+    def get_content_details(self, obj):
+        content_model = obj.content_type.lower()
+        content_id = obj.content_id
+        if content_model == 'entry':
+            try:
+                content = Entry.objects.get(id=content_id)
+                return {'title': content.title, 'content': content.content}
+            except Entry.DoesNotExist:
+                return {'error': 'Content not found'}
+        return {'error': 'Unknown content type'}
 
 # Impact Score Serializer
 class ImpactScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImpactScore
         fields = ['id', 'entry', 'upvotes', 'downvotes', 'comments', 'shares', 'engagement_score']
+
+    def create(self, validated_data):
+        impact_score = ImpactScore(**validated_data)
+        impact_score.calculate_engagement()
+        return impact_score
+
+# Exchange Member Serializer (for membership-related details)
+class ExchangeMemberSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Reference to the custom User model
+    exchange_name = serializers.CharField(source='exchange.name', read_only=True)
+    joined_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = ExchangeMember
+        fields = ['user', 'exchange', 'exchange_name', 'joined_at']
+
+    def create(self, validated_data):
+        request_user = self.context['request'].user
+        validated_data['user'] = request_user
+        return ExchangeMember.objects.create(**validated_data)
+
+
+
+
+
+# Entry Serializer
+class EntrySerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()  # Reference to the custom User model
+    exchange_name = serializers.CharField(source='exchange.name', read_only=True)
+    impact_score = ImpactScoreSerializer(read_only=True)
+    score = serializers.IntegerField(read_only=True)
+    flags = FlagSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Entry
+        fields = [
+            'id', 'title', 'content', 'author', 'exchange', 'created_at', 'updated_at', 
+            'score', 'impact_score', 'flags', 'exchange_name'
+        ]
+
+    def create(self, validated_data):
+        request_user = self.context['request'].user
+        validated_data['author'] = request_user
+        return Entry.objects.create(**validated_data)

@@ -2,31 +2,125 @@ from django.db import models
 from django.utils import timezone
 from ..user.models import BaseUser
 import uuid
+from .metrics import ExchangeMetrics
+from .flags import get_flag_weight
 
 def upload_to(instance, filename):
-    return f'banner/{instance.name}/{filename}'
+    return f'exchange_banners/{instance.name}/{filename}'
 
 class Exchange(models.Model):
+    # === Basic Info ===
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    name = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.TextField()
     category = models.CharField(max_length=255, default='Uncategorized')
-    creator = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='created_exchanges', null=True)
+    tags = models.TextField(blank=True, null=True)  # Keywords/topics
+    banner = models.ImageField(upload_to=upload_to, blank=True, null=True)
+    rules = models.JSONField(default=list, blank=True)
+
+    # === Membership and Posts ===
+    members = models.PositiveIntegerField(default=0)  # Members
+    total_entries = models.PositiveIntegerField(default=0)
+    moderators = models.ManyToManyField(BaseUser, related_name="moderated_exchanges", blank=True)
+    # === Metrics (Core Scoring) ===
+    upvotes = models.PositiveIntegerField(default=0)  # Upvotes
+    downvotes = models.PositiveIntegerField(default=0)  # Downvotes
+    net_votes = models.IntegerField(default=0)  # Upvotes - Downvotes
+    reactions = models.PositiveIntegerField(default=0)  # Total reactions
+    flags = models.JSONField(default=dict, blank=True)  # Detailed moderation flags (see below)
+    flagged_content_count = models.PositiveIntegerField(default=0)  # Total flagged content
+    flagged_content_ratio = models.FloatField(default=0.0)  # Flagged content / Total content ratio
+    verified_content_count = models.PositiveIntegerField(default=0)  # Total verified entries
+    verified_content_ratio = models.FloatField(default=0.0)  # Verified content / Total content ratio
+
+    # === Advanced Flags ===
+    toxicity_score = models.FloatField(default=0.0)  # Toxicity (0-1)
+    misinformation_score = models.FloatField(default=0.0)  # Misinformation spread (0-1)
+    echo_chamber_score = models.FloatField(default=0.0)  # Echo chamber potential (0-1)
+    spam_score = models.FloatField(default=0.0)  # Spam prevalence (0-1)
+    bot_activity_score = models.FloatField(default=0.0)  # Bot activity detection (0-1)
+    community_health_score = models.FloatField(default=0.0)  # Aggregate health score (0-1)
+
+    # === Societal Impact ===
+    positive_impact_score = models.FloatField(default=0.0)  # Contribution to society
+    negative_impact_score = models.FloatField(default=0.0)  # Negative impact (misinfo, toxicity)
+    net_impact_score = models.FloatField(default=0.0)  # Positive - Negative impact (scale -1 to 1)
+
+    # === Historical Metrics ===
+    historical_data = models.JSONField(default=dict, blank=True)  # Daily activity, post trends
+    user_contributions = models.JSONField(default=dict, blank=True)  # User activity breakdown
+
+    # === Permissions ===
+    allow_anonymous_posts = models.BooleanField(default=False)  # Anonymous posting
+    allow_link_sharing = models.BooleanField(default=True)  # Allow sharing of links
+    strict_moderation_mode = models.BooleanField(default=False)  # Enforce strict posting rules
+
+    # === Virtual Tools and Utilities ===
+    tools_enabled = models.JSONField(default=dict, blank=True)  # Collaboration tools and settings
+    monetization_options = models.JSONField(default=dict, blank=True)  # Ads, funding, etc.
+    funding_raised = models.FloatField(default=0.0)  # Total funding raised
+
+    # === Timestamps ===
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    members = models.ManyToManyField(BaseUser, related_name='joined_exchanges', through='ExchangeMember')
-    score = models.IntegerField(default=0)
-    rules = models.TextField(blank=True, null=True)  # Optional rules for the exchange
-    moderators = models.ManyToManyField(BaseUser, related_name='moderating_exchanges', blank=True)  # Moderators for the exchange
-    banner = models.ImageField(upload_to='exchange_banners/', blank=True, null=True)
-    isPublic = models.BooleanField(default=True)  # Whether the exchange is public
-    allowAnonymous = models.BooleanField(default=False)  # Whether anonymous posts are allowed
-    primaryColor = models.CharField(max_length=7, blank=True, null=True)  # Primary color (Hex code)
-    secondaryColor = models.CharField(max_length=7, blank=True, null=True)  # Secondary color (Hex code)
+
+    # === Creator Info ===
+    creator = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='created_exchanges', null=True)
 
     def __str__(self):
         return self.name
+
+    def flag_entry(self, flag_type, weight=1):
+        """
+        Dynamically add a flag to the Exchange.
+        :param flag_type: Type of flag (e.g., 'hate_speech', 'spam')
+        :param weight: Weight of the flag, default is 1
+        """
+        if flag_type not in self.flags:
+            self.flags[flag_type] = 0
+        self.flags[flag_type] += weight
+        self.flagged_content_count += 1
+        self.save()
+
+    def calculate_all_metrics(self):
+        """
+        Calculate all relevant metrics and update fields accordingly.
+        Uses the ExchangeMetrics class for core calculations.
+        """
+        metrics = ExchangeMetrics(
+            posts=self.entries,  # Assuming each post in the entries counts as a post object
+            flags=self.flags,  # Use the flags directly from the model
+            members=self.members
+        )
+        
+        # Calculate core metrics
+        metrics_summary = metrics.summary()
+
+        # Update the model with calculated metrics
+        self.upvotes = metrics_summary.get('engagement_score', 0)  # Placeholder for upvotes
+        self.flagged_content_ratio = metrics_summary.get('flagged_content_ratio', 0.0)
+        self.verified_content_ratio = metrics_summary.get('verified_content_ratio', 0.0)
+
+        # Update advanced flags metrics
+        self.toxicity_score = metrics_summary.get('toxicity_score', 0.0)
+        self.misinformation_score = metrics_summary.get('misinformation_score', 0.0)
+        self.echo_chamber_score = metrics_summary.get('echo_chamber_score', 0.0)
+        self.community_health_score = metrics_summary.get('community_health_score', 0.0)
+
+        # Save the model with new values
+        self.save()
+
+    def add_funding(self, amount):
+        """
+        Add funding raised for the exchange.
+        """
+        self.funding_raised += amount
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+
 
 
 class ExchangeMember(models.Model):

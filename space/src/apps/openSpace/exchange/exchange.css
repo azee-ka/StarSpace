@@ -1,111 +1,316 @@
 .exchange-page {
-    font-family: "Roboto", sans-serif;
-    background: linear-gradient(135deg, #1b1b26, #111119);
-    color: #eaeaea;
-    min-height: 100vh;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 0, 0, 0);
+}
+
+.exchange-page-inner {
+    width: 98%;
+    height: 96%;
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    background-color: rgb(0, 255, 8, 0);
+}
+
+.exchange-page-sidebar {
+    background-color: rgba(128, 0, 128, 0);
+    width: 265px;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    padding: 2rem 1rem;
+    flex-shrink: 0;
 }
 
-.loading, .error {
-    font-size: 1.5rem;
-    color: #d4b3ff;
-    text-align: center;
-}
-
-.exchange-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin-bottom: 2rem;
-}
-
-.exchange-banner img {
-    width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.exchange-info {
-    text-align: center;
-    margin-top: -50px;
-    padding: 1rem 2rem;
-    background: rgba(25, 25, 35, 0.95);
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    width: 90%;
-    max-width: 800px;
-}
-
-.exchange-info h1 {
-    font-family: "Poppins", sans-serif;
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: #d4b3ff;
-}
-
-.exchange-info p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #b3b3c9;
-    margin-bottom: 1.5rem;
-}
-
-.exchange-stats {
-    display: flex;
-    justify-content: space-around;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #c7c7db;
-}
-
-.exchange-details {
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.rules-section, .moderators-section {
-    background: rgba(30, 30, 40, 0.9);
+.exchange-page-sidebar-inner {
+    width: 265px;
+    height: 88vh;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    padding: 1.5rem;
-    flex: 1;
-    min-width: 300px;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
 }
 
-.rules-section h2, 
-.moderators-section h2 {
-    font-family: "Poppins", sans-serif;
-    font-size: 1.5rem;
-    color: #d4b3ff;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #444;
-    padding-bottom: 0.5rem;
+.exchange-sidebar-section:first-child {
+    margin-top: 15px;
 }
 
-.rules-section ul, 
-.moderators-section ul {
+.exchange-sidebar-section {
+    background-color: rgba(0, 255, 191, 0);
+    width: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-family: 'Orbitron', monospace;
+}
+
+.exchange-sidebar-section-title {
+    background-color: rgba(55, 85, 85, 0);
+    width: 98%;
+    height: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-self: center;
+    margin-bottom: 9px;
+    margin-top: 4px;
+    color: rgb(174, 174, 174);
+    font-size: 15px;
+}
+
+.exchange-sidebar-section-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    background-color: rgba(43, 61, 61, 0);
     list-style: none;
+    box-sizing: border-box;
+}
+
+.exchange-sidebar-section-content ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    background-color: rgba(0, 0, 255, 0);
+    box-sizing: border-box;
+    margin: 0;
     padding: 0;
+}
+
+.exchange-sidebar-section-content li {
+    background-color: rgba(255, 0, 0, 0);
+    width: 90%;
+    height: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    list-style: none;
+    border-radius: 6px;
+    font-size: 13px;
+    padding: 5px 13px;
+}
+.exchange-sidebar-section-content li:hover {
+    background-color: rgba(128, 128, 128, 0.351);
+    cursor: pointer;
+}
+
+.exchange-sidebar-section-content li a {
+    margin-left: 3px;
+    color: rgb(167, 167, 167);
+}
+
+
+.exchange-sidebar-section-content input {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.exchange-sidebar-section-content button {
+    width: 100%;
+    height: 35px;
+    border-radius: 8px;
+    border: 0;
+    border-radius: 6px;
+    background-color: rgba(75, 0, 88, 0.701);
+    background: linear-gradient(135deg, rgba(21, 0, 128, 0.686), rgba(0, 210, 185, 0.73));
+    color: white;
+    font-size: 15px;
+    transition: background 0.3s ease;
+    box-shadow: 0px 0px 0px 0px rgba(1, 188, 175, 0);
+    font-family: 'Orbitron', monospace;
+}
+.exchange-sidebar-section-content button:hover {
+    background-color: black;
+    background: linear-gradient(135deg, rgb(21, 0, 128), rgba(0, 210, 185));
+    cursor: pointer;
+}
+
+
+.exchange-page-content {
+    background-color: rgba(0, 0, 255, 0);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    justify-content: flex-start;
+}
+
+.exchange-page-header {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    background-color: rgba(255, 255, 0, 0);
+}
+
+
+.exchange-page-info {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    background-color: rgb(0, 255, 174, 0);
+}
+
+.exchange-page-entries {
+    width: 100%;
+    flex-grow: 1;
+    /* margin-bottom: 65px; */
+    display: flex;
+    background-color: rgb(112, 56, 112, 0);
+}
+
+
+.exchange-page-header-inner,
+.exchange-page-entries-inner {
+    width: 98%;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+.exchange-page-header-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.exchange-page-header-title {
+    background-color: rgba(0, 128, 0, 0);
+    margin-left: 23px;
+    color: rgb(221, 246, 255);
+    font-family: 'Orbitron', monospace;
+}
+
+.exchange-page-info-inner {
+    width: 98%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 25px;
+    background-color: rgba(0, 128, 0, 0);
+}
+
+
+.exchange-header-description-card,
+.exchange-header-charts-card,
+.exchange-header-metrics-card {
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+.exchange-header-description-card:hover,
+.exchange-header-charts-card:hover,
+.exchange-header-metrics-card:hover {
+    transform: scale(1.03);
+}
+
+
+.exchange-header-description-card {
+    flex-grow: 1;
+    height: 90%;
+    font-size: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.exchange-header-description-card-inner {
+    width: 95%;
+    height: 96%;
+    background-color: rgba(255, 0, 0, 0);
+    overflow-y: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.exchange-header-description-card-inner p {
+    color: rgb(198, 198, 198);
+    font-family: 'Orbitron', monospace;
+}
+
+.exchange-header-charts-card {
+    width: 250px;
+    height: 90%;
+    flex-shrink: 0;
+}
+
+.exchange-header-metrics-card {
+    width: 250px;
+    height: 90%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.metric-card:first-child {
+    margin-top: 10px;
+}
+
+.metric-card {
+    width: 86%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    padding: 0px 9px;
+    background-color: rgba(149, 149, 149, 0.08);
+}
+
+.metric-card:hover {
+    background-color: rgba(149, 149, 149, 0.364);
+    cursor: pointer;
+}
+
+.metric-card-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.metric-card h3 {
+    font-size: 0.8rem;
     margin: 0;
 }
 
-.rules-section li, 
-.moderators-section li {
+.metric-card p {
     font-size: 1rem;
-    line-height: 1.8;
-    color: #eaeaea;
-    margin-bottom: 0.5rem;
-    padding-left: 0.5rem;
-    border-left: 3px solid #7a5cff;
+    margin: 0;
+}
+
+.metric-card svg {
+    font-size: 1.2rem;
 }

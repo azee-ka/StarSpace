@@ -17,7 +17,6 @@ const CreateExchange = () => {
     const [secondaryColor, setSecondaryColor] = useState("#928dab");
     const [isPublic, setIsPublic] = useState(true);
     const [allowAnonymous, setAllowAnonymous] = useState(false);
-    const [moderators, setModerators] = useState("");
     const [loading, setLoading] = useState(false);  // For loading state
     const [error, setError] = useState("");  // To handle errors
 
@@ -48,6 +47,7 @@ const CreateExchange = () => {
     
         try {
             // Send data to the API using axios
+            console.log('config', config)
             const response = await axios.post(`${API_BASE_URL}api/openspace/exchange/create/`, exchangeData, config);
             console.log(response);
             const exchangeId = response.data.uuid;
@@ -154,20 +154,6 @@ const CreateExchange = () => {
                         </label>
                     </div>
                 </section>
-
-                <section className="section moderation-settings">
-                    <h2>Moderation Settings</h2>
-                    <div className="form-group">
-                        <label>Moderators (comma-separated usernames)</label>
-                        <input
-                            type="text"
-                            value={moderators}
-                            onChange={(e) => setModerators(e.target.value)}
-                            placeholder="Add moderators"
-                        />
-                    </div>
-                </section>
-
                 <button type="submit" className="submit-button">
                     Create Exchange
                 </button>
