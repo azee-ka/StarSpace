@@ -1,0 +1,259 @@
+import React, { useState } from "react";
+import "./createEntryOverlay.css";
+import axios from "axios";
+import API_BASE_URL from "../../../../apiUrl";
+import { useAuth } from "../../../../reducers/auth/useAuth";
+import getConfig from "../../../../config";
+
+const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
+    const { authState } = useAuth();
+    const config = getConfig(authState);
+    const [text, setText] = useState("");
+    const [mediaFiles, setMediaFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+
+    const handleMediaUpload = (event) => {
+        setMediaFiles([...mediaFiles, ...event.target.files]);
+    };
+
+    const handleFileUpload = (event) => {
+        setUploadedFiles([...uploadedFiles, ...event.target.files]);
+    };
+
+    const handleSubmit = async () => {
+        // Placeholder for entry submission logic
+        try {
+            const entry = { text, mediaFiles, uploadedFiles };
+            const response = await axios.post(`${API_BASE_URL}api/openspace/exchange/${exchangeUUID}/create-entry/`, entry, config)
+            console.log(response.data.entry_uuid);
+            onClose();
+        } catch (err) {
+            console.error('Error creating entry:', err);
+        }
+    };
+
+    return (
+        <div className="create-entry-overlay" onClick={() => onClose()}>
+            <div className="create-entry-overlay-card" onClick={(e) => e.stopPropagation()}>
+                <div className="create-entry-overlay-title">
+                    <h3>Create Entry</h3>
+                </div>
+                <div className="create-entry-content">
+                    <div className="create-entry-textarea">
+                    <textarea
+                        className="entry-textarea"
+                        placeholder="Write something..."
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                    ></textarea>
+                    </div>                    
+                    <div className="file-upload-section">
+                        <div>
+                            <label htmlFor="media-upload">Media (Images/Videos):</label>
+                            <input
+                                type="file"
+                                id="media-upload"
+                                accept="image/*,video/*"
+                                multiple
+                                onChange={handleMediaUpload}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="file-upload">Documents/Files:</label>
+                            <input
+                                type="file"
+                                id="file-upload"
+                                multiple
+                                onChange={handleFileUpload}
+                            />
+                        </div>
+                    </div>
+                    <div className="file-preview">
+                        <h4>Uploaded Media:</h4>
+                        <ul>
+                            {mediaFiles.map((file, index) => (
+                                <li key={index}>{file.name}</li>
+                            ))}
+                        </ul>
+                        <h4>Uploaded Files:</h4>
+                        <ul>
+                            {uploadedFiles.map((file, index) => (
+                                <li key={index}>{file.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <button className="submit-entry-btn" onClick={handleSubmit}>
+                        Submit Entry
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CreateEntryOverlay;
+
+
+
+
+
+
+
+
+
+
+.create-entry-overlay {
+    background-color: rgba(0, 0, 0, 0.679);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    z-index: 5;
+}
+
+.create-entry-overlay-card {
+    /* background-color: rgb(41, 41, 41); */
+    width: 600px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 8px;
+    padding: 8px 25px;
+    /* background: linear-gradient(145deg, #080019, #002a20); */
+    background-color: rgba(22, 22, 22, 0.624);
+    backdrop-filter: blur(20px);
+}
+
+.create-entry-overlay-title {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 16px;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 12px;
+    /* box-shadow: 0px 5px 15px rgba(0, 255, 170, 0.3); */
+}
+
+.create-entry-content {
+    width: 100%;
+    flex-grow: 1;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create-entry-overlay-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.create-entry-textarea {
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.entry-textarea {
+    width: 100%;
+    height: 150px;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.205);
+    box-shadow: inset 0px 5px 15px rgba(0, 255, 170, 0.2);
+    resize: none;
+    outline: none;
+}
+
+.entry-textarea::placeholder {
+    color: #aaa;
+}
+
+.file-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    background-color: blue;
+}
+
+.file-upload-section label {
+    color: #0df2c9;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+input[type="file"] {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #0df2c9;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.file-preview {
+    margin-top: 16px;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(145deg, #1c1c1c, #292929);
+    border-radius: 12px;
+    box-shadow: inset 0px 5px 15px rgba(0, 255, 170, 0.2);
+}
+
+.file-preview h4 {
+    margin: 8px 0;
+    color: #0df2c9;
+    font-size: 1.1rem;
+}
+
+.file-preview ul {
+    list-style: none;
+    padding: 0;
+    color: #aaa;
+}
+
+.file-preview li {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #fff;
+}
+
+.submit-entry-btn {
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(145deg, #00ffa8, #008d62);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 10px 20px rgba(0, 255, 170, 0.5);
+}
+
+.submit-entry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 15px 30px rgba(0, 255, 170, 0.8);
+}

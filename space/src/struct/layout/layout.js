@@ -28,8 +28,6 @@ function Layout({ children, pageName }) {
     const [countNotifications, setCountNotifications] = useState(0);
 
 
-    console.log('location', location.pathname)
-
     const fetchNotifications = async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}get-notifications/`, config);

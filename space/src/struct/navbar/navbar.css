@@ -40,12 +40,20 @@
   font-family: Arial, Helvetica, sans-serif;
   color: #fff;
 }
+.navbar-logo-container img {
+  height: 39px;
+  width: 31px;
+  /* aspect-ratio: 1 / 1; */
+  margin-right: 8px;
+}
 .navbar-logo-container h2 {
-  /* background: linear-gradient(135deg, #f7ffff, #ffffff); */
-  /* -webkit-background-clip: text; */
-  /* -webkit-text-fill-color: transparent; */
-  color: white;
+  /* background: linear-gradient(135deg, #7500f9, #ff007b, #f4ff00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+  color: rgba(255, 255, 255, 0.869);
   font-family: 'Roboto Mono', monospace;
+  padding: 0;
+  margin: 0;
 }
 .navbar-logo-container h2 span {
   margin-left: 5px;
@@ -54,6 +62,10 @@
 .navbar-logo-container a {
   text-decoration: none;
   color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 

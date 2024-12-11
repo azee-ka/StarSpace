@@ -17,6 +17,7 @@ import { useSubApp } from '../../context/SubAppContext';
 import NineDotIcon from '../../utils/nine-dot';
 import AppMenu from './appMenu/appMenu';
 import SidebarMenuIcon from './iconMenu';
+import appLogo from '../../assets/logo.png';
 
 const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount }) => {
     const { authState, logout } = useAuth();
@@ -102,6 +103,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                     }
                     <div className='navbar-logo-container'>
                         <Link to={`/${activeSubApp === 'home' ? '' : activeSubApp.toLowerCase()}`}>
+                            <img src={appLogo} />
                             <h2 className='neon-text'>4Space<span></span></h2>
                         </Link>
                     </div>

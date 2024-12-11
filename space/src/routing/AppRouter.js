@@ -15,6 +15,7 @@ import ExchangePage from '../apps/openSpace/exchange/exchange';
 import OpenSpace from '../apps/openSpace/explore/openSpace';
 import Profile from '../pages/profile/profile';
 import { useSubApp } from '../context/SubAppContext';
+import Entry from '../apps/openSpace/entry/entry';
 
 
 
@@ -25,6 +26,7 @@ const privateRoutes = {
         { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
         { name: 'Create Exchange', path: '/openspace/create-exchange', component: CreateExchange, key: 'CreateExchange' },
         { name: 'Exchange', path: '/openspace/exchange/:exchangeId', component: ExchangePage, key: 'ExchangePage' },
+        { name: 'Exchange', path: '/openspace/exchange/:exchangeId/entry/:entryId', component: Entry, key: 'EntryPage' },
     ],
     home: [
         { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },

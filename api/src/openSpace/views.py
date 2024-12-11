@@ -4,6 +4,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember
 from .serializers import ExchangeSerializer, EntrySerializer, CommentSerializer, ScoreSerializer, FlagSerializer, ImpactScoreSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from rest_framework import status
 from ..user.models import BaseUser
 
@@ -35,8 +38,8 @@ def exchange_list(request):
 
 # Exchange Detail View
 @api_view(['GET', 'PUT', 'DELETE'])
-def exchange_detail(request, uuid):
-    exchange = get_object_or_404(Exchange, uuid=uuid)
+def exchange_detail(request, exchange_id):
+    exchange = get_object_or_404(Exchange, uuid=exchange_id)
 
     if request.method == 'GET':
         serializer = ExchangeSerializer(exchange)
@@ -55,8 +58,8 @@ def exchange_detail(request, uuid):
 
 # Entry List View
 @api_view(['GET', 'POST'])
-def entry_list(request, uuid):
-    exchange = get_object_or_404(Exchange, uuid=uuid)
+def entry_list(request, exchange_id):
+    exchange = get_object_or_404(Exchange, uuid=exchange_id)
 
     if request.method == 'GET':
         entries = Entry.objects.filter(exchange=exchange)
@@ -72,22 +75,66 @@ def entry_list(request, uuid):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_entry(request, uuid):
+    exchange = get_object_or_404(Exchange, uuid=uuid)
+
+    # Parse request data for file handling
+    parser_classes = [MultiPartParser, FormParser]
+    
+    # Get text and files from the request
+    text = request.data.get('text', '')
+    title = request.data.get('title', '')
+    uploaded_files = request.FILES.getlist('uploadedFiles', [])
+
+    if not text and not uploaded_files:
+        print(text)
+        return Response({"error": "At least one of 'text', or 'uploadedFiles' must be provided."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Handle saving files to the appropriate directory
+    saved_uploaded_files = []
+
+    try:
+        for file in uploaded_files:
+            path = default_storage.save(f"exchange_files/{uuid}/{file.name}", ContentFile(file.read()))
+            saved_uploaded_files.append(path)
+
+        # Create the Entry object
+        entry = Entry.objects.create(
+            exchange=exchange,
+            author=request.user,
+            title=title,
+            content=text
+        )
+
+        # Optionally attach file paths to the entry
+        entry.uploaded_files = saved_uploaded_files  # Assume uploaded_files is a JSONField or similar
+        entry.save()
+
+        # Update exchange metrics
+        exchange.total_entries += 1
+        exchange.save()
+
+        return Response({"message": "Entry created successfully", "entry_uuid": entry.uuid}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+
+
 # Entry Detail View
 @api_view(['GET', 'PUT', 'DELETE'])
 def entry_detail(request, exchange_id, entry_id):
-    exchange = get_object_or_404(Exchange, pk=exchange_id)
-    entry = get_object_or_404(Entry, pk=entry_id)
+    exchange = get_object_or_404(Exchange, uuid=exchange_id)
+    entry = get_object_or_404(Entry, uuid=entry_id)
 
     if request.method == 'GET':
         serializer = EntrySerializer(entry)
         return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = EntrySerializer(entry, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         entry.delete()

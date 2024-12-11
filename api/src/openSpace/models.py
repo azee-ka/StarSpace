@@ -4,6 +4,7 @@ from ..user.models import BaseUser
 import uuid
 from .metrics import ExchangeMetrics
 from .flags import get_flag_weight
+from django.db.models import JSONField
 
 def upload_to(instance, filename):
     return f'exchange_banners/{instance.name}/{filename}'
@@ -132,6 +133,7 @@ class ExchangeMember(models.Model):
         unique_together = ('user', 'exchange')
 
 class Entry(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name='entries')
     author = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='entries')
     title = models.CharField(max_length=255)
@@ -141,6 +143,14 @@ class Entry(models.Model):
     score = models.IntegerField(default=0)
     impact_score = models.OneToOneField('ImpactScore', on_delete=models.CASCADE, related_name='entry_impact_score', blank=True, null=True)
     flags = models.ManyToManyField('Flag', related_name='flagged_entries', blank=True)
+    uploaded_files = JSONField(default=list, blank=True)
+    
+    @property
+    def all_comments(self):
+        """
+        Retrieve all comments (including nested replies) for this entry.
+        """
+        return self.comments.all()
     
     def __str__(self):
         return self.title
@@ -154,8 +164,10 @@ class Comment(models.Model):
     score = models.IntegerField(default=0)
 
     def __str__(self):
+        if self.parent_comment:
+            return f'Reply by {self.author.get_current_username()} on comment ID {self.parent_comment.id}'
         return f'Comment by {self.author.get_current_username()} on {self.entry.title}'
-
+    
 class Score(models.Model):
     SCORE_CHOICES = [
         ('upvote', 'Upvote'),

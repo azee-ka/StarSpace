@@ -1,14 +1,15 @@
 .exchange-page {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     background-color: rgba(255, 0, 0, 0);
 }
 
 .exchange-page-inner {
+    margin-top: 20px;
     width: 98%;
     height: 96%;
     display: flex;
@@ -49,7 +50,7 @@
 }
 
 .exchange-page-sidebar-inner:hover {
-    transform: rotateY(14deg);
+    transform: rotateY(12deg);
 }
 
 .exchange-sidebar-section:first-child {
@@ -91,13 +92,53 @@
     box-sizing: border-box;
 }
 
+.exchange-sidebar-section-content-stats {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 128, 0, 0);
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.exchange-sidebar-section-content-stats div p {
+    margin: 0;
+    padding: 0;
+    color: rgb(184, 184, 184);
+}
+.exchange-sidebar-section-content-stats div p:first-child {
+    font-size: 18px;
+}
+.exchange-sidebar-section-content-stats div p:last-child {
+    font-size: 12px;
+}
+.exchange-sidebar-section-content-stats div {
+    height: 85%;
+    min-width: 75px;
+    /* padding: 5px; */
+    box-sizing: border-box;
+    background-color: rgba(255, 0, 0, 0);
+    font-size: 12px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    background-color: rgba(128, 128, 128, 0.145);
+}
+
 .exchange-sidebar-section-content ul {
     list-style: none;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 5px;
+    gap: 15px;
     width: 100%;
     background-color: rgba(0, 0, 255, 0);
     box-sizing: border-box;
@@ -107,24 +148,43 @@
 
 .exchange-sidebar-section-content li {
     background-color: rgba(255, 0, 0, 0);
-    width: 90%;
-    height: 20px;
+    width: 98%;
+    height: 21px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     list-style: none;
     border-radius: 6px;
     font-size: 13px;
-    padding: 5px 13px;
+    /* padding: 5px 13px; */
 }
-.exchange-sidebar-section-content li:hover {
+
+
+.exchange-sidebar-section-content li a.active {
+    font-weight: bold;
+    background-color: rgba(128, 128, 128, 0.091);
+}
+
+.exchange-sidebar-section-content li a {
+    color: rgb(167, 167, 167);
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 255, 0);
+    padding: 5px 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.exchange-sidebar-section-content li a:hover {
     background-color: rgba(128, 128, 128, 0.251);
     cursor: pointer;
 }
 
-.exchange-sidebar-section-content li a {
-    margin-left: 3px;
-    color: rgb(167, 167, 167);
+.exchange-sidebar-section-content li a p {
+    margin: 0;
+    padding: 0;
+
 }
 
 
@@ -159,8 +219,8 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2px;
+    align-items: flex-start;
+    gap: 22px;
     justify-content: flex-start;
     margin-left: 290px;
 }
@@ -172,28 +232,27 @@
     background-color: rgba(255, 255, 0, 0);
 }
 
-
 .exchange-page-info {
     width: 100%;
     height: 300px;
     display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     background-color: rgb(0, 255, 174, 0);
 }
 
 .exchange-page-entries {
     width: 100%;
     flex-grow: 1;
-    /* margin-bottom: 65px; */
     display: flex;
-    background-color: rgb(112, 56, 112, 0);
 }
 
 
-.exchange-page-header-inner,
-.exchange-page-entries-inner {
+.exchange-page-header-inner {
     width: 98%;
     background-color: rgba(65, 65, 65, 0.209);
-    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
     backdrop-filter: blur(100px);
     border-radius: 10px;
     transition: transform 0.4s ease;
@@ -205,7 +264,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
     background-color: rgba(65, 65, 65, 0.309);
 }
 
@@ -256,7 +314,7 @@
 
 .exchange-page-info-inner {
     width: 98%;
-    height: 100%;
+    height: 100% !important;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -271,7 +329,7 @@
 .exchange-header-charts-card,
 .exchange-header-metrics-card {
     background-color: rgba(65, 65, 65, 0.209);
-    box-shadow: 0 3px 4px 2px rgba(128, 128, 128, 0.243);
+    /* box-shadow: 0 3px 4px 2px rgba(128, 128, 128, 0.243); */
     backdrop-filter: blur(100px);
     border-radius: 10px;
     transition: transform 0.4s ease;
@@ -287,7 +345,7 @@
 
 .exchange-header-description-control-card {
     flex-grow: 1;
-    height: 90%;
+    height: 100%;
     font-size: 13px;
     display: flex;
     flex-direction: column;
@@ -300,11 +358,43 @@
 .exchange-header-control-card {
     width: 100%;
     height: 90px;
+    padding: 4px;
     display: flex;
+    flex-direction: row;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     box-sizing: border-box;
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
 }
+.exchange-header-control-btn {
+    margin-left: 8px;
+    background-color: rgba(0, 128, 0, 0);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 8px;
+    border: 0;
+}
+.exchange-header-control-btn:hover {
+    background-color: rgba(128, 128, 128, 0.17);
+    cursor: pointer;
+}
+.exchange-header-control-btn p {
+    font-size: 12px;
+    color: gray;
+    margin: 0;
+    padding: 0;
+}
+.exchange-header-control-btn .icon-style {
+    font-size: 20px;
+    padding: 0;
+    margin: 0;
+    color: gray;
+}
+
 .exchange-header-description-card {
     width: 100%;
     flex-grow: 1;
@@ -313,6 +403,9 @@
     justify-content: flex-start;
     align-items: center;
     overflow-y: auto;
+    box-shadow: 0 0 0 0 rgba(128, 128, 128, 0);
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 .exchange-header-description-card-title {
     display: flex;
@@ -332,11 +425,12 @@
 }
 .exchange-header-description-card-inner {
     width: 96%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    /* margin-bottom: 5px; */
+    /* margin-top: 5px; */
 }
 .exchange-header-description-card-inner p {
     color: rgba(181, 181, 181, 0.891);
@@ -345,7 +439,7 @@
 
 .exchange-header-charts-card {
     width: 250px;
-    height: 90%;
+    height: 100%;
     flex-shrink: 0;
     display: flex;
     justify-content: center;
@@ -360,7 +454,7 @@
 
 .exchange-header-metrics-card {
     width: 250px;
-    height: 90%;
+    height: 100%;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -411,4 +505,105 @@
 
 .metric-card svg {
     font-size: 1.2rem;
+}
+
+
+
+.exchange-page-entries-inner {
+    width: 98%;
+    height: 100%;
+    transition: transform 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 255, 0);
+}
+
+
+.exchange-page-per-entry {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(0, 128, 0, 0);
+}
+.exchange-page-per-entry-content {
+    background-color: rgba(65, 65, 65, 0.209);
+    backdrop-filter: blur(100px);
+    border-radius: 8px;
+    width: 92%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.exchange-page-per-entry-content:hover {
+    background-color: rgba(65, 65, 65, 0.411);
+    cursor: pointer;
+}
+
+.exchange-page-per-entry-content-inner {
+    width: 96%;
+    height: 86%;
+    background-color: rgba(255, 0, 0, 0.);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Orbitron', monospace;
+    word-spacing: -2px;
+}
+
+.exhcange-page-per-entry-title {
+    width: 100%;
+    height: 20px;
+    background-color: rgba(0, 128, 0, 0);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: rgb(202, 202, 202);
+    font-size: 14px;
+}
+
+.exhcange-page-per-entry-content {
+    width: 100%;
+    flex-grow: 1;
+    background-color: rgb(107, 210, 107, 0);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-top: 1px solid gray;
+    padding: 10px 0px;
+}
+.exhcange-page-per-entry-content p {
+    padding: 0;
+    margin: 0;
+    color: rgb(169, 169, 169);
+    font-size: 13px;
+}
+
+
+.exchange-page-per-entry-metrics {
+    background-color: rgba(65, 65, 65, 0.209);
+    backdrop-filter: blur(100px);
+    border-radius: 8px;
+    flex-grow: 1;
+    height: 100%;
+}
+
+.exchange-page-metrics {
+    width: 98%;
+    flex-grow: 1;
+    /* height: 80.4vh; */
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
 }

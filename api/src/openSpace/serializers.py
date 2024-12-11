@@ -17,7 +17,7 @@ class ExchangeSerializer(serializers.ModelSerializer):
             'echo_chamber_score', 'spam_score', 'bot_activity_score', 'community_health_score',
             'positive_impact_score', 'negative_impact_score', 'net_impact_score', 'historical_data',
             'user_contributions', 'allow_anonymous_posts', 'allow_link_sharing', 
-            'strict_moderation_mode', 'tools_enabled', 'monetization_options', 'funding_raised'
+            'strict_moderation_mode', 'tools_enabled', 'monetization_options', 'funding_raised', 'total_entries'
         ]
 
     def create(self, validated_data):
@@ -28,17 +28,27 @@ class ExchangeSerializer(serializers.ModelSerializer):
 
 # Comment Serializer
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()  # Reference to the custom User model
+    author = serializers.CharField(source='author.username', read_only=True)
     entry_title = serializers.CharField(source='entry.title', read_only=True)
+    parent_comment_id = serializers.IntegerField(source='parent_comment.id', read_only=True)
+    replies = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'entry', 'author', 'content', 'created_at', 'updated_at', 'score', 'entry_title']
+        fields = [
+            'id', 'entry', 'author', 'content', 'parent_comment', 'parent_comment_id',
+            'created_at', 'updated_at', 'score', 'entry_title', 'replies'
+        ]
+
+    def get_replies(self, obj):
+        replies = obj.replies.all()
+        return CommentSerializer(replies, many=True, context=self.context).data
 
     def create(self, validated_data):
         request_user = self.context['request'].user
         validated_data['author'] = request_user
         return Comment.objects.create(**validated_data)
+
 
 # Score Serializer
 class ScoreSerializer(serializers.ModelSerializer):
@@ -98,17 +108,18 @@ class ExchangeMemberSerializer(serializers.ModelSerializer):
 
 # Entry Serializer
 class EntrySerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()  # Reference to the custom User model
+    author = serializers.CharField(source='author.username', read_only=True)
     exchange_name = serializers.CharField(source='exchange.name', read_only=True)
     impact_score = ImpactScoreSerializer(read_only=True)
     score = serializers.IntegerField(read_only=True)
     flags = FlagSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Entry
         fields = [
-            'id', 'title', 'content', 'author', 'exchange', 'created_at', 'updated_at', 
-            'score', 'impact_score', 'flags', 'exchange_name'
+            'uuid', 'id', 'title', 'content', 'author', 'exchange', 'created_at', 'updated_at', 
+            'score', 'impact_score', 'flags', 'exchange_name', 'comments'
         ]
 
     def create(self, validated_data):
