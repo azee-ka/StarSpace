@@ -35,9 +35,9 @@ const ProfileMenu = () => {
     }, [authState.isAuthenticated, setProfileData]);
 
     const profileMenuLinks = [
-        { label: 'Profile', url: '/profile', role: 'Personal' },
-        { label: 'Settings', url: '/preferences', role: 'Personal' },
-        { label: 'Messages', url: '/messages', role: 'Personal' },
+        { label: 'Profile', url: '/profile' },
+        { label: 'Settings', url: '/settings' },
+        { label: 'Messages', url: '/messages' },
     ];
     return (
         <div className="profile-menu-container" onClick={(e) => e.stopPropagation()}>
@@ -54,8 +54,8 @@ const ProfileMenu = () => {
             </div>
             <div className="profile-menu-links">
                 <ul>
-                    {profileMenuLinks.map((link) => (
-                        (<a href={link.url} key={`${link.label}-${link.role}`}>
+                    {profileMenuLinks.map((link, index) => (
+                        (<a href={link.url} key={`${link.label}-${index}`}>
                             <li id='exclude-link'>
                                 <div className='profile-menu-per-link'>
                                     <div className='profile-menu-link-label'>

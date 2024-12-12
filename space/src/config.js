@@ -1,4 +1,4 @@
-function getConfig(authState, contentType = "application/json") {
+function getConfig(authState, contentType) {
     const config = {
         headers: {
             'Content-Type': contentType,

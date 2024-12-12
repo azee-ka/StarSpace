@@ -198,7 +198,9 @@ const ExchangePage = () => {
                                             <div className="exchange-header-description-card-title">
                                                 <h3>Description</h3>
                                             </div>
-                                            <p>{exchange?.description}</p>
+                                            <div className="exchange-header-description-card-content">
+                                                <p>{exchange?.description}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

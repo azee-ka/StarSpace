@@ -11,7 +11,7 @@ class ExchangeSerializer(serializers.ModelSerializer):
         model = Exchange
         fields = [
             'uuid', 'name', 'description', 'category', 'creator', 'tags', 'rules', 'created_at', 'updated_at',
-            'upvotes', 'downvotes', 'net_votes', 'reactions', 'flags', 
+            'upvotes', 'downvotes', 'net_votes', 'reactions', 'flags',
             'flagged_content_count', 'flagged_content_ratio', 'verified_content_count', 
             'verified_content_ratio', 'toxicity_score', 'misinformation_score', 
             'echo_chamber_score', 'spam_score', 'bot_activity_score', 'community_health_score',
@@ -26,6 +26,11 @@ class ExchangeSerializer(serializers.ModelSerializer):
         validated_data['creator'] = request_user
         return Exchange.objects.create(**validated_data)
 
+class MinimalExchangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exchange
+        fields = [ 'uuid', 'name']
+
 # Comment Serializer
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='author.username', read_only=True)
@@ -36,13 +41,14 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
-            'id', 'entry', 'author', 'content', 'parent_comment', 'parent_comment_id',
+            'id', 'entry', 'author', 'content', 'parent_comment_id',
             'created_at', 'updated_at', 'score', 'entry_title', 'replies'
         ]
 
     def get_replies(self, obj):
-        replies = obj.replies.all()
-        return CommentSerializer(replies, many=True, context=self.context).data
+        if obj.replies.exists():
+            return CommentSerializer(obj.replies.all(), many=True).data
+        return []
 
     def create(self, validated_data):
         request_user = self.context['request'].user
@@ -110,6 +116,7 @@ class ExchangeMemberSerializer(serializers.ModelSerializer):
 class EntrySerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='author.username', read_only=True)
     exchange_name = serializers.CharField(source='exchange.name', read_only=True)
+    exchange_uuid = serializers.CharField(source='exchange.uuid', read_only=True)
     impact_score = ImpactScoreSerializer(read_only=True)
     score = serializers.IntegerField(read_only=True)
     flags = FlagSerializer(many=True, read_only=True)
@@ -119,7 +126,8 @@ class EntrySerializer(serializers.ModelSerializer):
         model = Entry
         fields = [
             'uuid', 'id', 'title', 'content', 'author', 'exchange', 'created_at', 'updated_at', 
-            'score', 'impact_score', 'flags', 'exchange_name', 'comments'
+            'score', 'impact_score', 'flags', 'exchange_name', 'comments',
+            'upvotes', 'downvotes', 'net_votes', 'comments_count', 'exchange_uuid'
         ]
 
     def create(self, validated_data):

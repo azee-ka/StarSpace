@@ -1,14 +1,186 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember
-from .serializers import ExchangeSerializer, EntrySerializer, CommentSerializer, ScoreSerializer, FlagSerializer, ImpactScoreSerializer
+from rest_framework.views import APIView
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember, Vote
+from .serializers import ExchangeSerializer, MinimalExchangeSerializer, EntrySerializer, CommentSerializer, ScoreSerializer, FlagSerializer, ImpactScoreSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.db import IntegrityError
 from rest_framework import status
 from ..user.models import BaseUser
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def reply_to_comment(request, comment_id):
+    """
+    Reply to a specific comment.
+    """
+    try:
+        parent_comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({"error": "Parent comment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Get the reply content from the request body
+    content = request.data.get('content')
+
+    if not content:
+        return Response({"error": "Reply content is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create the reply instance
+    reply = Comment.objects.create(
+        content=content,
+        entry=parent_comment.entry,
+        author=request.user,
+        parent_comment=parent_comment
+    )
+
+    # Serialize the created reply to return in the response
+    serializer = CommentSerializer(reply)
+
+    return Response({
+        "message": "Reply created successfully.",
+        "reply": serializer.data
+    }, status=status.HTTP_201_CREATED)
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_comment(request, entry_uuid):
+    """
+    Create a comment for a specific entry.
+    The user must be authenticated.
+    """
+    try:
+        # Retrieve the entry object based on the provided UUID
+        entry = Entry.objects.get(uuid=entry_uuid)
+    except Entry.DoesNotExist:
+        return Response({"error": "Entry not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Get the comment content from the request body
+    content = request.data.get('content')
+
+    if not content:
+        return Response({"error": "Comment content is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create the comment instance
+    comment = Comment.objects.create(
+        content=content,
+        entry=entry,
+        author=request.user
+    )
+
+    # Serialize the created comment to return in the response
+    serializer = CommentSerializer(comment)
+
+    # Return the created comment along with a success message
+    return Response({
+        "message": "Comment created successfully.",
+        "comment": serializer.data
+    }, status=status.HTTP_201_CREATED)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def vote_exchange(request, exchange_uuid):
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required."}, status=401)
+
+    try:
+        # Retrieve the exchange
+        exchange = Exchange.objects.get(uuid=exchange_uuid)
+    except Exchange.DoesNotExist:
+        return Response({"error": "Exchange not found."}, status=404)
+
+    # Get vote_type from request data
+    vote_type = request.data.get('vote_type')
+
+    if vote_type == 'upvote':
+        exchange.upvotes += 1
+    elif vote_type == 'downvote':
+        exchange.downvotes += 1
+    else:
+        return Response({"error": "Invalid vote type."}, status=400)
+
+    # Calculate net votes
+    exchange.net_votes = exchange.upvotes - exchange.downvotes
+    exchange.save()
+
+    # Return the updated exchange data
+    return Response({
+        "message": "Vote registered successfully.",
+        "exchange": ExchangeSerializer(exchange).data
+    }, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def vote_entry(request, entry_uuid):
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required."}, status=401)
+
+    try:
+        # Retrieve the entry
+        entry = Entry.objects.get(uuid=entry_uuid)
+    except Entry.DoesNotExist:
+        return Response({"error": "Entry not found."}, status=404)
+
+    # Get vote_type from request data
+    vote_type = request.data.get('vote_type')
+
+    if vote_type not in ['upvote', 'downvote']:
+        return Response({"error": "Invalid vote type."}, status=400)
+
+    # Check if the user has already voted on this entry
+    existing_vote = Vote.objects.filter(user=request.user, entry=entry).first()
+
+    if existing_vote:
+        # If the user has voted and wants to change their vote
+        if existing_vote.vote_type == vote_type:
+            # They are trying to vote the same type, so we don't need to do anything
+            return Response({"message": "You have already voted this way."}, status=400)
+        else:
+            # User is changing their vote, so we remove the previous vote
+            existing_vote.delete()
+
+    # Create or update the vote
+    try:
+        new_vote = Vote.objects.create(user=request.user, entry=entry, vote_type=vote_type)
+    except IntegrityError:
+        return Response({"error": "An error occurred while saving your vote."}, status=500)
+
+    # Adjust the vote counts based on the new vote
+    if vote_type == 'upvote':
+        entry.upvotes += 1
+        if existing_vote and existing_vote.vote_type == 'downvote':
+            entry.downvotes -= 1
+    elif vote_type == 'downvote':
+        entry.downvotes += 1
+        if existing_vote and existing_vote.vote_type == 'upvote':
+            entry.upvotes -= 1
+
+    # Update net votes
+    entry.net_votes = entry.upvotes - entry.downvotes
+    entry.save()
+
+    # Return the updated vote counts and net votes
+    return Response({
+        "message": "Vote registered successfully.",
+        "upvotes": entry.upvotes,
+        "downvotes": entry.downvotes,
+        "net_votes": entry.net_votes
+    }, status=200)
+        
+        
 
 # Create Exchange View
 @api_view(['POST'])
@@ -55,6 +227,15 @@ def exchange_detail(request, exchange_id):
     elif request.method == 'DELETE':
         exchange.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+@api_view(['GET'])
+def minimal_exchange_detail(request, exchange_id):
+    exchange = get_object_or_404(Exchange, uuid=exchange_id)
+    
+    if request.method == 'GET':
+        serializer = MinimalExchangeSerializer(exchange)
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Entry List View
 @api_view(['GET', 'POST'])

@@ -41,8 +41,8 @@
   color: #fff;
 }
 .navbar-logo-container img {
-  height: 39px;
-  width: 31px;
+  height: 35px;
+  width: 26px;
   /* aspect-ratio: 1 / 1; */
   margin-right: 8px;
 }
@@ -50,10 +50,15 @@
   /* background: linear-gradient(135deg, #7500f9, #ff007b, #f4ff00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent; */
-  color: rgba(255, 255, 255, 0.869);
+  color: rgba(255, 255, 255, 0.890);
   font-family: 'Roboto Mono', monospace;
   padding: 0;
   margin: 0;
+}
+.navbar-logo-container h2:hover {
+  background: linear-gradient(120deg, #00ffd0, #7500f9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .navbar-logo-container h2 span {
   margin-left: 5px;

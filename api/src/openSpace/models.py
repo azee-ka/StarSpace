@@ -132,6 +132,7 @@ class ExchangeMember(models.Model):
     class Meta:
         unique_together = ('user', 'exchange')
 
+
 class Entry(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name='entries')
@@ -140,20 +141,48 @@ class Entry(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    score = models.IntegerField(default=0)
+    
+    # Scoring and Metrics
+    upvotes = models.PositiveIntegerField(default=0)  # Total upvotes
+    downvotes = models.PositiveIntegerField(default=0)  # Total downvotes
+    net_votes = models.IntegerField(default=0)  # Calculated: upvotes - downvotes
+    comments_count = models.PositiveIntegerField(default=0)  # Total comments count
+    
+    # Related Fields
     impact_score = models.OneToOneField('ImpactScore', on_delete=models.CASCADE, related_name='entry_impact_score', blank=True, null=True)
     flags = models.ManyToManyField('Flag', related_name='flagged_entries', blank=True)
     uploaded_files = JSONField(default=list, blank=True)
-    
+
+    def update_metrics(self):
+        """
+        Update the metrics for the entry such as net votes and comments count.
+        """
+        self.net_votes = self.upvotes - self.downvotes
+        self.comments_count = self.comments.count()
+        self.save()
+
     @property
     def all_comments(self):
         """
         Retrieve all comments (including nested replies) for this entry.
         """
         return self.comments.all()
-    
+
     def __str__(self):
         return self.title
+
+
+class Vote(models.Model):
+    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
+    vote_type = models.CharField(choices=[('upvote', 'Upvote'), ('downvote', 'Downvote')], max_length=8)
+
+    class Meta:
+        unique_together = ('user', 'entry')  # Ensures a user can only vote once per entry
+
+    def __str__(self):
+        return f"{self.user.username} voted {self.vote_type} on {self.entry.title}"
+
 
 class Comment(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='comments')
@@ -162,6 +191,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     score = models.IntegerField(default=0)
+    parent_comment = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self):
         if self.parent_comment:
