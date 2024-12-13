@@ -251,10 +251,11 @@ def entry_list(request, exchange_id):
         serializer = EntrySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(exchange=exchange, author=request.user)
-            exchange.entries += 1  # Update the entries count in the Exchange model
+            exchange.total_entries += 1  # Correct field name
             exchange.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['POST'])

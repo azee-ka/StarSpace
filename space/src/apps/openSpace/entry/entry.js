@@ -29,7 +29,7 @@ const Entry = () => {
     const [showCreateReplyOverlay, setShowCreateReplyOverlay] = useState(false);
     const [replyContent, setReplyContent] = useState(EditorState.createEmpty()); // Store EditorState directly
 
-    const [commentReplyContent, setCommentReplyContent] = useState('');
+    const [commentReplyContent, setCommentReplyContent] = useState(EditorState.createEmpty());
     const [activeReplyCommentId, setActiveReplyCommentId] = useState(null);
 
     const [exchangeTrendingEntries, setExchangeTrendingEntries] = useState([]);
@@ -46,13 +46,13 @@ const Entry = () => {
         callApi(`openspace/exchange/${exchangeId}/entries/`,)
             .then((response) => {
                 setExchangeTrendingEntries(response.data);
-                console.log(response.data);
+                // console.log(response.data);
             }).catch(console.error);
 
         callApi(`openspace/exchange/${exchangeId}/minimal-info/`)
             .then((response) => {
                 setParentExchangeInfo(response.data);
-                console.log(response.data);
+                // console.log(response.data);
             }).catch(console.error);
 
     }, [exchangeId, entryId, authState]);
@@ -106,24 +106,38 @@ const Entry = () => {
             try {
                 const contentState = commentReplyContent.getCurrentContent(); // Get current content from the editor
                 const sanitizedText = DOMPurify.sanitize(stateToHTML(contentState));
-                const response = await callApi(`openspace/exchange/entry/comment/${commentId}/reply/`, 'POST', { content: sanitizedText })
+                const response = await callApi(`openspace/exchange/entry/comment/${commentId}/reply/`, 'POST', { content: sanitizedText });
+
                 console.log("Reply created:", response.data);
 
                 setCommentReplyContent('');
                 setActiveReplyCommentId(null);
+
                 setEntryInfo((prevState) => {
-                    const updatedEntry = { ...prevState };
-                    const targetComment = updatedEntry.comments.find(c => c.id === commentId);
-                    if (targetComment) {
-                        targetComment.replies = [...(targetComment.replies || []), response.data.reply];
-                    }
-                    return updatedEntry;
+                    // Deep clone the entry state to ensure immutability
+                    const updatedComments = prevState.comments.map(comment => {
+                        if (comment.id === commentId) {
+                            // Create a new comment object with updated replies
+                            return {
+                                ...comment,
+                                replies: [...comment.replies, response.data.reply],
+                            };
+                        }
+                        return comment; // Return unchanged comments
+                    });
+
+                    return {
+                        ...prevState,
+                        comments: updatedComments,
+                        comments_count: prevState.comments_count + 1, // Increment comments count
+                    };
                 });
             } catch (err) {
-                console.error(err)
+                console.error(err);
             }
         }
     }
+
 
 
     return (
@@ -248,6 +262,7 @@ const Entry = () => {
                                     <div className="entry-comment-content">
                                         <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment.content) }} />
                                     </div>
+
                                     <div className="entry-comment-controls">
                                         <button>
                                             <FaArrowCircleUp />
@@ -289,7 +304,7 @@ const Entry = () => {
                                                         </Link>
                                                     </div>
                                                     <div className="entry-comment-per-reply-content">
-                                                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entryInfo.content) }} />
+                                                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} />
                                                     </div>
                                                     <div className="entry-comment-per-reply-controls">
                                                         <button>
@@ -319,20 +334,7 @@ const Entry = () => {
                                                             <button onClick={() => submitCommentReply(reply.id)}>Reply</button>
                                                         </div>
                                                     </div>
-                                                    {/* <div className={`entry-comment-per-reply-controls-write ${activeReplyCommentId === reply.id ? 'open' : ''}`}>
-                                                        <div className="entry-comment-per-reply-controls-write-title">
-                                                            <h3>Write a Reply</h3>
-                                                        </div>
-                                                        <div className="entry-comment-per-reply-controls-textarea-write-container">
-                                                            <DraftEditor
-                                                                placeholder="Enter reply..."
-                                                                onContentChange={(state) => setCommentReplyContent(state)}
-                                                            />
-                                                        </div>
-                                                        <div className="entry-comment-per-reply-controls-write-btn">
-                                                            <button onClick={() => submitCommentReply(reply.id)}>Reply</button>
-                                                        </div>
-                                                    </div> */}
+
                                                 </div>
                                             ))}                                        </div>
                                     }

@@ -9,13 +9,14 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
 import DraftEditor from "../../../../utils/editor/editor";
 import { EditorState } from "draft-js";
+import { stateToHTML } from 'draft-js-export-html';
 
 const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { callApi } = useApi();
     const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState(EditorState.createEmpty());
     const [uploadedContentFiles, setUploadedContentFiles] = useState([]);
     const [currentFileIndex, setCurrentFileIndex] = useState(0);
     const editorRef = useRef(null);
@@ -42,7 +43,9 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
     const handleSubmit = async () => {
         try {
             const sanitizedTitle = DOMPurify.sanitize(title);
-            const sanitizedDescription = DOMPurify.sanitize(description);
+
+            const contentState = description.getCurrentContent(); // Get current content from the editor
+            const sanitizedDescription = DOMPurify.sanitize(stateToHTML(contentState));
 
             const formData = new FormData();
             formData.append("title", sanitizedTitle);
@@ -112,14 +115,10 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
                             ></textarea>
                         </div>
                         <div className="create-entry-overlay-content">
-                            {/* <Editor
-                                value={description}
-                                onChange={(value) => setDescription(value)}
-                                placeholder="Enter context..."
-                                editorRef={editorRef}
-                                // className="entry-textarea-content"
-                            /> */}
-                            <DraftEditor placeholder="Enter context..." />
+                            <DraftEditor 
+                                placeholder="Enter context..." 
+                                onContentChange={(state) => setDescription(state)}
+                            />
                         </div>
                     </div>
                     <div className="entry-overlay-subtmit-btn">

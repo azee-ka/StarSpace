@@ -46,9 +46,9 @@ class CommentSerializer(serializers.ModelSerializer):
         ]
 
     def get_replies(self, obj):
-        if obj.replies.exists():
-            return CommentSerializer(obj.replies.all(), many=True).data
-        return []
+        # Fetch only direct replies to the current comment
+        replies = obj.replies.all()
+        return CommentSerializer(replies, many=True).data
 
     def create(self, validated_data):
         request_user = self.context['request'].user
@@ -120,7 +120,7 @@ class EntrySerializer(serializers.ModelSerializer):
     impact_score = ImpactScoreSerializer(read_only=True)
     score = serializers.IntegerField(read_only=True)
     flags = FlagSerializer(many=True, read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Entry
@@ -130,6 +130,12 @@ class EntrySerializer(serializers.ModelSerializer):
             'upvotes', 'downvotes', 'net_votes', 'comments_count', 'exchange_uuid'
         ]
 
+    def get_comments(self, obj):
+        # Fetch top-level comments only
+        top_level_comments = obj.comments.filter(parent_comment__isnull=True)
+        print(f"get_comments called. Top-level comments: {top_level_comments}")
+        return CommentSerializer(top_level_comments, many=True).data
+    
     def create(self, validated_data):
         request_user = self.context['request'].user
         validated_data['author'] = request_user
