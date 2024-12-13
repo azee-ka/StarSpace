@@ -13,6 +13,7 @@ import apiCall from "../../../utils/api";
 import useApi from "../../../utils/useApi";
 import DraftEditor from "../../../utils/editor/editor";
 import { EditorState } from "draft-js";
+import { stateToHTML } from 'draft-js-export-html';
 
 const Entry = () => {
     const navigate = useNavigate();
@@ -22,40 +23,37 @@ const Entry = () => {
     const { callApi } = useApi();
 
 
-    const commentEditorRefs = useRef({});
-    const editorRef = useRef(null);
-
-
     const [parentExchangeInfo, setParentExchangeInfo] = useState({});
     const [entryInfo, setEntryInfo] = useState({});
 
     const [showCreateReplyOverlay, setShowCreateReplyOverlay] = useState(false);
-    const [replyContent, setReplyContent] = useState('');
+    const [replyContent, setReplyContent] = useState(EditorState.createEmpty()); // Store EditorState directly
 
     const [commentReplyContent, setCommentReplyContent] = useState('');
     const [activeReplyCommentId, setActiveReplyCommentId] = useState(null);
 
     const [exchangeTrendingEntries, setExchangeTrendingEntries] = useState([]);
 
-    const handleEditorReplyChange = (newContent) => {
-        setReplyContent(newContent);
-      };
 
-      const handleEditorCommentReplyChange = (newContent) => {
-        setCommentReplyContent(newContent);
-      };
-
-      
     useEffect(() => {
         // Pass authState to apiCall
         callApi(`openspace/exchange/${exchangeId}/entry/${entryId}/get-details/`)
-            .then((response) => setEntryInfo(response.data)).catch(console.error);
+            .then((response) => {
+                setEntryInfo(response.data);
+                console.log(response.data);
+            }).catch(console.error);
 
         callApi(`openspace/exchange/${exchangeId}/entries/`,)
-            .then((response) => setExchangeTrendingEntries(response.data)).catch(console.error);
+            .then((response) => {
+                setExchangeTrendingEntries(response.data);
+                console.log(response.data);
+            }).catch(console.error);
 
         callApi(`openspace/exchange/${exchangeId}/minimal-info/`)
-            .then((response) => setParentExchangeInfo(response.data)).catch(console.error);
+            .then((response) => {
+                setParentExchangeInfo(response.data);
+                console.log(response.data);
+            }).catch(console.error);
 
     }, [exchangeId, entryId, authState]);
 
@@ -80,15 +78,15 @@ const Entry = () => {
 
 
     async function commentEntry() {
-        if (replyContent !== '') {
+        if (replyContent) {
             try {
-                const content = replyContent.getCurrentContent();
-                const rawText = content.getPlainText();
-                const response = await callApi(`openspace/exchange/entry/${entryId}/comment/`, 'POST', { content: DOMPurify.sanitize(rawText)})
+                const contentState = replyContent.getCurrentContent(); // Get current content from the editor
+                const sanitizedText = DOMPurify.sanitize(stateToHTML(contentState));
+                const response = await callApi(`openspace/exchange/entry/${entryId}/comment/`, 'POST', { content: sanitizedText })
 
                 console.log("Comment created:", response.data);
                 setShowCreateReplyOverlay(false);
-                setReplyContent('');
+                setReplyContent(EditorState.createEmpty());
                 setEntryInfo((prevState) => {
                     const updatedEntry = { ...prevState };
                     updatedEntry.comments = [...prevState.comments, response.data.comment];
@@ -97,16 +95,18 @@ const Entry = () => {
                 });
 
             } catch (err) {
-                console.err(err)
+                console.error(err)
             };
         }
     }
 
 
     async function submitCommentReply(commentId) {
-        if (commentReplyContent !== '') {
+        if (commentReplyContent) {
             try {
-                const response = await callApi(`openspace/exchange/entry/comment/${commentId}/reply/`, 'POST', { content: DOMPurify.sanitize(commentReplyContent) })
+                const contentState = commentReplyContent.getCurrentContent(); // Get current content from the editor
+                const sanitizedText = DOMPurify.sanitize(stateToHTML(contentState));
+                const response = await callApi(`openspace/exchange/entry/comment/${commentId}/reply/`, 'POST', { content: sanitizedText })
                 console.log("Reply created:", response.data);
 
                 setCommentReplyContent('');
@@ -222,7 +222,7 @@ const Entry = () => {
                         <div className="entry-page-write-comment-textarea">
                             <DraftEditor
                                 placeholder="Enter reply..."
-                                onChange={handleEditorReplyChange}
+                                onContentChange={(state) => setReplyContent(state)}
                             />
                         </div>
                         <div className="entry-page-write-comment-submit">
@@ -270,13 +270,72 @@ const Entry = () => {
                                         <div className="entry-write-comment-reply-textarea-container">
                                             <DraftEditor
                                                 placeholder="Enter reply..."
-                                                onChange={handleEditorCommentReplyChange}
+                                                onContentChange={(state) => setCommentReplyContent(state)}
                                             />
                                         </div>
                                         <div className="entry-page-comment-reply-btn">
                                             <button onClick={() => submitCommentReply(comment.id)}>Reply</button>
                                         </div>
                                     </div>
+
+                                    {comment?.replies?.length > 0 &&
+                                        <div className="entry-comment-reply-container">
+                                            {comment?.replies.map((reply, index) => (
+                                                <div key={index} className="entry-comment-per-reply">
+                                                    <div className="entry-comment-per-reply-author">
+                                                        <Link to={`/profile/${comment.author}`} >
+                                                            <ProfilePicture />
+                                                            <p>@{reply.author}</p>
+                                                        </Link>
+                                                    </div>
+                                                    <div className="entry-comment-per-reply-content">
+                                                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entryInfo.content) }} />
+                                                    </div>
+                                                    <div className="entry-comment-per-reply-controls">
+                                                        <button>
+                                                            <FaArrowCircleUp />
+                                                            <p>Upvote</p>
+                                                        </button>
+                                                        <button>
+                                                            <FaArrowCircleDown />
+                                                            <p>Downvote</p>
+                                                        </button>
+                                                        <button onClick={() => setActiveReplyCommentId(activeReplyCommentId === reply.id ? null : reply.id)}>
+                                                            <FaReply />
+                                                            <p>Reply</p>
+                                                        </button>
+                                                    </div>
+                                                    <div className={`entry-comment-per-sub-reply-write ${activeReplyCommentId === reply.id ? 'open' : ''}`}>
+                                                        <div className="entry-comment-per-sub-reply-write-title">
+                                                            <h3>Write a Reply</h3>
+                                                        </div>
+                                                        <div className="entry-comment-per-sub-reply-write-textrea-container">
+                                                            <DraftEditor
+                                                                placeholder="Enter reply..."
+                                                                onContentChange={(state) => setCommentReplyContent(state)}
+                                                            />
+                                                        </div>
+                                                        <div className="entry-comment-per-sub-reply-write-submit-btn">
+                                                            <button onClick={() => submitCommentReply(reply.id)}>Reply</button>
+                                                        </div>
+                                                    </div>
+                                                    {/* <div className={`entry-comment-per-reply-controls-write ${activeReplyCommentId === reply.id ? 'open' : ''}`}>
+                                                        <div className="entry-comment-per-reply-controls-write-title">
+                                                            <h3>Write a Reply</h3>
+                                                        </div>
+                                                        <div className="entry-comment-per-reply-controls-textarea-write-container">
+                                                            <DraftEditor
+                                                                placeholder="Enter reply..."
+                                                                onContentChange={(state) => setCommentReplyContent(state)}
+                                                            />
+                                                        </div>
+                                                        <div className="entry-comment-per-reply-controls-write-btn">
+                                                            <button onClick={() => submitCommentReply(reply.id)}>Reply</button>
+                                                        </div>
+                                                    </div> */}
+                                                </div>
+                                            ))}                                        </div>
+                                    }
                                 </div>
                             ))}
                         </div>
