@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./createEntryOverlay.css";
-import axios from "axios";
-import API_BASE_URL from "../../../../apiUrl";
-import { useAuth } from "../../../../reducers/auth/useAuth";
-import getConfig from "../../../../config";
 import { FaChevronCircleLeft, FaChevronCircleRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import DOMPurify from 'dompurify';
+import useApi from "../../../../utils/useApi";
+import Editor from "../../../../utils/editor/editor";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; 
+import DraftEditor from "../../../../utils/editor/editor";
+import { EditorState } from "draft-js";
 
 const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { authState } = useAuth();
-    const config = getConfig(authState, "multipart/form-data");
+    const { callApi } = useApi();
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("");
     const [uploadedContentFiles, setUploadedContentFiles] = useState([]);
     const [currentFileIndex, setCurrentFileIndex] = useState(0);
-
+    const editorRef = useRef(null);
 
     const handleContentUpload = (event) => {
         setUploadedContentFiles([
@@ -39,16 +41,19 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
 
     const handleSubmit = async () => {
         try {
+            const sanitizedTitle = DOMPurify.sanitize(title);
+            const sanitizedDescription = DOMPurify.sanitize(description);
+
             const formData = new FormData();
-            formData.append("title", title);
-            formData.append("text", description); // Match 'text' key expected by backend
+            formData.append("title", sanitizedTitle);
+            formData.append("text", sanitizedDescription); // Match 'text' key expected by backend
     
             // Add files to FormData
             uploadedContentFiles.forEach((file) => {
                 formData.append("uploadedFiles", file); // Match 'uploadedFiles' key expected by backend
             });
-    
-            const response = await axios.post(`${API_BASE_URL}api/openspace/exchange/${exchangeUUID}/create-entry/`, formData, config)
+            
+            const response = await callApi(`openspace/exchange/${exchangeUUID}/create-entry/`, 'POST', formData, "multipart/form-data")
             console.log(response.data);
             navigate(`/openspace/exchange/${exchangeUUID}/entry/${response.data.entry_uuid}`, { replace: true });
             // console.log('location.href', location);
@@ -103,15 +108,18 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
                                 placeholder="Enter prompt here..."
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
+                                required
                             ></textarea>
                         </div>
                         <div className="create-entry-overlay-content">
-                            <textarea
-                                className="entry-textarea-content"
-                                placeholder="Enter context..."
+                            {/* <Editor
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            ></textarea>
+                                onChange={(value) => setDescription(value)}
+                                placeholder="Enter context..."
+                                editorRef={editorRef}
+                                // className="entry-textarea-content"
+                            /> */}
+                            <DraftEditor placeholder="Enter context..." />
                         </div>
                     </div>
                     <div className="entry-overlay-subtmit-btn">

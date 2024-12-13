@@ -11,6 +11,7 @@ import NotificationsMenu from '../navbar/notificationsMenu/notificationsMenu';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from '../navbar/profileMenu/profileMenu';
 import AppMenu from '../navbar/appMenu/appMenu';
+import useApi from '../../utils/useApi';
 
 
 function Layout({ children, pageName }) {
@@ -18,6 +19,7 @@ function Layout({ children, pageName }) {
     const config = getConfig(authState);
     const navigate = useNavigate();
     const location = useLocation();
+    const { apiCall } = useApi();
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [appMenuOpen, setAppMenuOpen] = useState(false);
@@ -30,7 +32,7 @@ function Layout({ children, pageName }) {
 
     const fetchNotifications = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}get-notifications/`, config);
+            const response = await apiCall(`get-notifications/`);
             setNotificationsList(response.data);
             setCountNotifications(response.data.length);
             // console.log(response.data);

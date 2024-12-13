@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import DOMPurify from 'dompurify';
 import "./exchange.css"; // Style for futuristic UI
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../reducers/auth/useAuth";
@@ -7,18 +8,19 @@ import API_BASE_URL from "../../../apiUrl";
 import getConfig from "../../../config";
 import { FaChartBar, FaFlag, FaUsers, FaInfoCircle, FaArrowUp, FaArrowCircleUp, FaArrowCircleDown } from "react-icons/fa";
 import { IoMdCheckmark } from 'react-icons/io';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; 
 // Chart.js setup
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import FuturisticDonutChart from "./chartConfig";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import CreateEntryOverlay from "./createEntryOverlay/createEntryOverlay";
+import useApi from "../../../utils/useApi";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ExchangePage = () => {
     const navigate = useNavigate();
-    const { authState } = useAuth();
-    const config = getConfig(authState);
+    const { callApi } = useApi();
     const [exchange, setExchange] = useState(null);
     const [entries, setEntries] = useState([]);
 
@@ -49,7 +51,7 @@ const ExchangePage = () => {
     useEffect(() => {
         const fetchExchange = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}api/openspace/exchange/${exchangeId}/`, config);
+                const response = await callApi(`openspace/exchange/${exchangeId}/`);
                 setExchange(response.data);
                 console.log(response.data)
                 setLoading(false);
@@ -61,7 +63,7 @@ const ExchangePage = () => {
 
         const fetchEntries = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}api/openspace/exchange/${exchangeId}/entries/`, config);
+                const response = await callApi(`openspace/exchange/${exchangeId}/entries/`);
                 console.log(response.data)
                 setEntries(response.data);
             } catch (err) {
@@ -199,7 +201,8 @@ const ExchangePage = () => {
                                                 <h3>Description</h3>
                                             </div>
                                             <div className="exchange-header-description-card-content">
-                                                <p>{exchange?.description}</p>
+                                                {/* <p>{exchange?.description}</p> */}
+                                                <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(exchange?.description)}} />
                                             </div>
                                         </div>
                                     </div>
@@ -253,7 +256,7 @@ const ExchangePage = () => {
                                                     <h3>{entry.title}</h3>
                                                 </div>
                                                 <div className="exhcange-page-per-entry-content">
-                                                    <p>{entry.content}</p>
+                                                    <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.content)}}/>
                                                 </div>
                                             </div>
                                         </div>

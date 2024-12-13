@@ -1,11 +1,9 @@
 import axios from 'axios';
 import API_BASE_URL from '../apiUrl';
 import getConfig from '../config';
-import { useAuth } from '../reducers/auth/useAuth';
 // General API call function
-const apiCall = async (endpoint, method = 'GET', data = null, contentType) => {
-    const { authState } = useAuth();
-    const config = getConfig(authState, contentType);
+const apiCall = async (endpoint, method = 'GET', data = null, contentType, authState) => {
+    const config = getConfig(authState.token, contentType);
 
     try {
         const response = await axios({
@@ -13,11 +11,11 @@ const apiCall = async (endpoint, method = 'GET', data = null, contentType) => {
             url: `${API_BASE_URL}api/${endpoint}`,
             data: data,
             headers: config.headers || {},
-            params: config.params || {}
+            params: config.params || {},
         });
-        return response.data;  // returning data directly
+        return response;  // returning data directly
     } catch (error) {
-        console.error(`Error calling ${endpoint}:`, error);
+        // console.error(`Error calling ${endpoint}:`, error);
         throw error;
     }
 };

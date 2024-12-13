@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../../apiUrl";
 import { useAuth } from "../../../reducers/auth/useAuth";
 import getConfig from "../../../config";
+import DOMPurify from 'dompurify';
+import useApi from "../../../utils/useApi";
 
 const CreateExchange = () => {
-    const { authState } = useAuth();
-    const config = getConfig(authState, "multipart/form-data" );
+    const { callApi } = useApi();
+
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("General");
@@ -33,8 +35,8 @@ const CreateExchange = () => {
         const exchangeData = new FormData();
         
         // Append regular data fields
-        exchangeData.append('name', name);
-        exchangeData.append('description', description);
+        exchangeData.append('name', DOMPurify.sanitize(name));
+        exchangeData.append('description', DOMPurify.sanitize(description));
         exchangeData.append('category', category);
         exchangeData.append('primaryColor', primaryColor);
         exchangeData.append('secondaryColor', secondaryColor);
@@ -47,8 +49,7 @@ const CreateExchange = () => {
     
         try {
             // Send data to the API using axios
-            console.log('config', config)
-            const response = await axios.post(`${API_BASE_URL}api/openspace/exchange/create/`, exchangeData, config);
+            const response = await callApi(`openspace/exchange/create/`, 'POST' , exchangeData, "multipart/form-data");
             console.log(response);
             const exchangeId = response.data.uuid;
         

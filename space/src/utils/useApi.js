@@ -1,29 +1,21 @@
-import { useState, useEffect } from 'react';
-import apiCall from './api'; // Import the generalized API call function
+import getConfig from '../config';
+import { useAuth } from '../reducers/auth/useAuth';
+import apiCall from './api';
 
-// Custom hook to fetch data via API
-const useApi = (endpoint, method = 'GET', data = null, contentType = "application/json") => {
-  const [response, setResponse] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const result = await apiCall(endpoint, method, data, contentType);
-        setResponse(result);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
+const useApi = () => {
+    const { authState } = useAuth();
+    
+    const callApi = (endpoint, method = 'GET', data = null, contentType = 'application/json') => {
+        return apiCall(
+            endpoint,
+            method,
+            data,
+            contentType,
+            authState,
+        );
     };
 
-    fetchData();
-  }, [endpoint, method, data, contentType]); // Dependencies for the hook
-
-  return { response, loading, error };
+    return { callApi }; // Return the wrapped API function
 };
 
 export default useApi;

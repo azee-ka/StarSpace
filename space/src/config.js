@@ -1,8 +1,8 @@
-function getConfig(authState, contentType) {
+function getConfig(token, contentType) {
     const config = {
         headers: {
             'Content-Type': contentType,
-            Authorization: `Token ${authState.token}`
+            Authorization: `Token ${token}`
         }
     };
     return config;

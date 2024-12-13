@@ -9,18 +9,19 @@ import './profileMenu.css';
 import API_BASE_URL from '../../../apiUrl';
 import ProfilePicture from '../../../utils/profilePicture/getProfilePicture';
 import getConfig from '../../../config';
+import useApi from '../../../utils/useApi';
 
 const ProfileMenu = () => {
     const navigate = useNavigate();
+    const { callApi } = useApi();
     const { authState, logout } = useAuth();
-    const config = getConfig(authState);
 
     const [profileData, setProfileData] = useState({});
 
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}api/profile/get-user-info/`, config);
+                const response = await callApi(`profile/get-user-info/`);
                 console.log(response.data);
                 setProfileData(response.data);
             } catch (error) {
@@ -44,11 +45,11 @@ const ProfileMenu = () => {
             <div className='profile-menu-user-info-container'>
                 <div className='profile-menu-profile-picture-container'>
                     <div className='learner-profile-menu-user-profile-picture'>
-                        <ProfilePicture src={profileData.profile_picture} />
+                        <ProfilePicture src={profileData?.profile_picture} />
                     </div>
                     <div className='learner-profile-menu-user-info-text'>
-                        <div className='learner-profile-menu-name-text'>{profileData.first_name} {profileData.last_name}</div>
-                        <div className='learner-profile-menu-username-text'>@{profileData.username}</div>
+                        <div className='learner-profile-menu-name-text'>{profileData?.first_name} {profileData?.last_name}</div>
+                        <div className='learner-profile-menu-username-text'>@{profileData?.username}</div>
                     </div>
                 </div>
             </div>

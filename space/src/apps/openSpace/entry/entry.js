@@ -1,20 +1,30 @@
 import axios from "axios";
+import DOMPurify from 'dompurify';
 import './entry.css';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import API_BASE_URL from "../../../apiUrl";
 import getConfig from "../../../config";
 import { useAuth } from "../../../reducers/auth/useAuth";
-import { FaArrowCircleDown, FaArrowCircleUp, FaComment, FaReply } from "react-icons/fa";
+import { FaArrowCircleDown, FaArrowCircleUp, FaCartArrowDown, FaComment, FaRegCaretSquareDown, FaRegCaretSquareUp, FaReply } from "react-icons/fa";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import ProfilePicture from "../../../utils/profilePicture/getProfilePicture";
+import apiCall from "../../../utils/api";
+import useApi from "../../../utils/useApi";
+import DraftEditor from "../../../utils/editor/editor";
+import { EditorState } from "draft-js";
 
 const Entry = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { entryId, exchangeId } = useParams();
     const { authState } = useAuth();
-    const config = getConfig(authState);
+    const { callApi } = useApi();
+
+
+    const commentEditorRefs = useRef({});
+    const editorRef = useRef(null);
+
 
     const [parentExchangeInfo, setParentExchangeInfo] = useState({});
     const [entryInfo, setEntryInfo] = useState({});
@@ -27,55 +37,32 @@ const Entry = () => {
 
     const [exchangeTrendingEntries, setExchangeTrendingEntries] = useState([]);
 
-    const fetchEntryInfo = async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}api/openspace/exchange/${exchangeId}/entrie/${entryId}/get-details/`, config);
-            console.log(response.data);
-            setEntryInfo(response.data);
-        } catch (err) {
-            console.error('Error fetching entry info', err);
-        }
-    };
+    const handleEditorReplyChange = (newContent) => {
+        setReplyContent(newContent);
+      };
 
-    
+      const handleEditorCommentReplyChange = (newContent) => {
+        setCommentReplyContent(newContent);
+      };
 
-    const fetchParentExchangeInfo = async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}api/openspace/exchange/${exchangeId}/minimal-info/`, config);
-            console.log(response.data);
-            setParentExchangeInfo(response.data);
-        } catch (err) {
-            console.error('Error fetching entry info', err);
-        }
-    }
-
-    const fetchTrendingExchangeEntries = async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}api/openspace/exchange/${exchangeId}/entries/`, config);
-            console.log(response.data)
-            setExchangeTrendingEntries(response.data);
-        } catch (err) {
-            console.error('Error fetching trending entries', err);
-        }
-    };
-
+      
     useEffect(() => {
-        fetchEntryInfo();
-        fetchParentExchangeInfo();
-        fetchTrendingExchangeEntries();
-    }, [entryId, exchangeId]);
+        // Pass authState to apiCall
+        callApi(`openspace/exchange/${exchangeId}/entry/${entryId}/get-details/`)
+            .then((response) => setEntryInfo(response.data)).catch(console.error);
 
+        callApi(`openspace/exchange/${exchangeId}/entries/`,)
+            .then((response) => setExchangeTrendingEntries(response.data)).catch(console.error);
+
+        callApi(`openspace/exchange/${exchangeId}/minimal-info/`)
+            .then((response) => setParentExchangeInfo(response.data)).catch(console.error);
+
+    }, [exchangeId, entryId, authState]);
 
 
     async function voteEntry(entryUUID, voteType) {
         try {
-            const response = await axios.post(
-                `${API_BASE_URL}api/openspace/exchange/entry/${entryUUID}/vote/`,
-                { vote_type: voteType },
-                config,
-            );
-            console.log(response.data);
-
+            const response = await callApi(`openspace/exchange/entry/${entryUUID}/vote/`, 'POST', { vote_type: voteType });
             const { upvotes, downvotes, net_votes } = response.data;
 
             // Update the entry info state with the new vote counts from the API response
@@ -86,9 +73,8 @@ const Entry = () => {
                 updatedEntry.net_votes = net_votes;
                 return updatedEntry;
             });
-
         } catch (err) {
-            console.error(err);
+            console.error(err)
         }
     }
 
@@ -96,11 +82,10 @@ const Entry = () => {
     async function commentEntry() {
         if (replyContent !== '') {
             try {
-                const response = await axios.post(
-                    `${API_BASE_URL}api/openspace/exchange/entry/${entryId}/comment/`,
-                    { content: replyContent },
-                    config
-                );
+                const content = replyContent.getCurrentContent();
+                const rawText = content.getPlainText();
+                const response = await callApi(`openspace/exchange/entry/${entryId}/comment/`, 'POST', { content: DOMPurify.sanitize(rawText)})
+
                 console.log("Comment created:", response.data);
                 setShowCreateReplyOverlay(false);
                 setReplyContent('');
@@ -110,9 +95,10 @@ const Entry = () => {
                     updatedEntry.comments_count += 1;
                     return updatedEntry;
                 });
+
             } catch (err) {
-                console.error("Error creating comment:", err);
-            }
+                console.err(err)
+            };
         }
     }
 
@@ -120,15 +106,11 @@ const Entry = () => {
     async function submitCommentReply(commentId) {
         if (commentReplyContent !== '') {
             try {
-                const response = await axios.post(
-                    `${API_BASE_URL}api/openspace/exchange/entry/comment/${commentId}/reply/`,
-                    { content: commentReplyContent },
-                    config
-                );
+                const response = await callApi(`openspace/exchange/entry/comment/${commentId}/reply/`, 'POST', { content: DOMPurify.sanitize(commentReplyContent) })
                 console.log("Reply created:", response.data);
 
-                setCommentReplyContent(''); // Clear input
-                setActiveReplyCommentId(null); // Close reply box
+                setCommentReplyContent('');
+                setActiveReplyCommentId(null);
                 setEntryInfo((prevState) => {
                     const updatedEntry = { ...prevState };
                     const targetComment = updatedEntry.comments.find(c => c.id === commentId);
@@ -138,11 +120,10 @@ const Entry = () => {
                     return updatedEntry;
                 });
             } catch (err) {
-                console.error("Error creating reply:", err);
+                console.error(err)
             }
         }
     }
-
 
 
     return (
@@ -198,7 +179,7 @@ const Entry = () => {
                     </div>
                     {entryInfo.content !== '' &&
                         <div className="entry-center-panel-context">
-                            <p>{entryInfo.content}</p>
+                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entryInfo.content) }} />
                         </div>
                     }
                     <div className="entry-center-panel-controls-and-info">
@@ -239,12 +220,10 @@ const Entry = () => {
                             <h3>Write a Reply</h3>
                         </div>
                         <div className="entry-page-write-comment-textarea">
-                            <textarea
-                                className="entry-page-comment-textarea"
+                            <DraftEditor
                                 placeholder="Enter reply..."
-                                value={replyContent}
-                                onChange={(e) => setReplyContent(e.target.value)}
-                            ></textarea>
+                                onChange={handleEditorReplyChange}
+                            />
                         </div>
                         <div className="entry-page-write-comment-submit">
                             <button onClick={() => commentEntry()} >Reply</button>
@@ -267,7 +246,7 @@ const Entry = () => {
                                         </div>
                                     </div>
                                     <div className="entry-comment-content">
-                                        <p>{comment.content}</p>
+                                        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment.content) }} />
                                     </div>
                                     <div className="entry-comment-controls">
                                         <button>
@@ -289,12 +268,10 @@ const Entry = () => {
                                             <h3>Write a Reply</h3>
                                         </div>
                                         <div className="entry-write-comment-reply-textarea-container">
-                                            <textarea
-                                                className="entry-page-comment-reply-textarea"
+                                            <DraftEditor
                                                 placeholder="Enter reply..."
-                                                value={commentReplyContent}
-                                                onChange={(e) => setCommentReplyContent(e.target.value)}
-                                            ></textarea>
+                                                onChange={handleEditorCommentReplyChange}
+                                            />
                                         </div>
                                         <div className="entry-page-comment-reply-btn">
                                             <button onClick={() => submitCommentReply(comment.id)}>Reply</button>
