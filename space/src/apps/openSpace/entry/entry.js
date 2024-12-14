@@ -14,6 +14,9 @@ import useApi from "../../../utils/useApi";
 import DraftEditor from "../../../utils/editor/editor";
 import { EditorState } from "draft-js";
 import { stateToHTML } from 'draft-js-export-html';
+import LeftPanel from "./leftPanel/leftPanel";
+import EntryControls from "./entryControls/entryControl";
+import WriteReply from "./writeReply/writeReply";
 
 const Entry = () => {
     const navigate = useNavigate();
@@ -72,7 +75,7 @@ const Entry = () => {
                 return updatedEntry;
             });
         } catch (err) {
-            console.error(err)
+            console.error(err);
         }
     }
 
@@ -143,48 +146,7 @@ const Entry = () => {
     return (
         <div className='openspace-entry'>
             <div className="entry-left-panel">
-                <div className="entry-left-panel-inner">
-                    <div className="entry-left-panel-section">
-                        <div className="entry-left-panel-section-title">
-                            <h4>Entry Stats</h4>
-                        </div>
-                        <div className="entry-left-panel-section-content-stats">
-                            <div className="entry-left-panel-count">
-                                <p>{entryInfo?.upvotes}</p>
-                                <p>Upvotes</p>
-                            </div>
-                            <div className="entry-left-panel-count">
-                                <p>{entryInfo?.downvotes}</p>
-                                <p>Downvotes</p>
-                            </div>
-                            <div className="entry-left-panel-count">
-                                <p>{entryInfo?.comments_count}</p>
-                                <p>Replies</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="entry-left-panel-section">
-                        <div className="entry-left-panel-section-title">
-                            <h4>Trending Entries</h4>
-                        </div>
-                        <div className="entry-left-panel-section-content-trending">
-                            {exchangeTrendingEntries.map((entry, index) => (
-                                <div className="entry-left-panel-trending-per-entry" key={index}>
-                                    <Link to={`/openspace/exchange/${entry?.exchange_uuid}/entry/${entry?.uuid}`}>
-                                        {entry?.uploadedFiles &&
-                                            <div className="entry-page-trending-entry-media-preview">
-
-                                            </div>
-                                        }
-                                        <div className="entry-page-trending-entry-title">
-                                            {entry.title}
-                                        </div>
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                <LeftPanel entryInfo={entryInfo} exchangeTrendingEntries={exchangeTrendingEntries} />
             </div>
             <div className="entry-center-panel">
                 <div className="entry-center-panel-content">
@@ -198,18 +160,11 @@ const Entry = () => {
                     }
                     <div className="entry-center-panel-controls-and-info">
                         <div className="entry-center-panel-controls">
-                            <button className="entry-central-panel-control-btn" onClick={() => voteEntry(entryInfo?.uuid, 'upvote')}>
-                                <FaArrowCircleUp className="entry-control-icon" />
-                                <p>Upvote</p>
-                            </button>
-                            <button className="entry-central-panel-control-btn" onClick={() => voteEntry(entryInfo?.uuid, 'downvote')}>
-                                <FaArrowCircleDown className="entry-control-icon" />
-                                <p>Downvote</p>
-                            </button>
-                            <button onClick={() => setShowCreateReplyOverlay(!showCreateReplyOverlay)}>
-                                <FaReply className="entry-control-icon" />
-                                <p>Reply</p>
-                            </button>
+                            <EntryControls
+                                upVoteClick={() => voteEntry(entryInfo?.uuid, 'upvote')}
+                                downVoteClick={() => voteEntry(entryInfo?.uuid, 'downvote')}
+                                replyClick={() => setShowCreateReplyOverlay(!showCreateReplyOverlay)}
+                            />
                         </div>
                         <div className="entry-center-panel-info">
                             <div className="entry-center-panel-info-content">
@@ -230,18 +185,13 @@ const Entry = () => {
                         </div>
                     </div>
                     <div className={`entry-page-write-comment-container ${showCreateReplyOverlay ? 'open' : ''}`}>
-                        <div className="entry-page-write-comment-title">
-                            <h3>Write a Reply</h3>
-                        </div>
-                        <div className="entry-page-write-comment-textarea">
-                            <DraftEditor
-                                placeholder="Enter reply..."
-                                onContentChange={(state) => setReplyContent(state)}
-                            />
-                        </div>
-                        <div className="entry-page-write-comment-submit">
-                            <button onClick={() => commentEntry()} >Reply</button>
-                        </div>
+                        <WriteReply
+                            title={'Write a Reply'}
+                            placeholder={"Enter reply..."}
+                            showEditor={showCreateReplyOverlay}
+                            onContentChange={(state) => setReplyContent(state)}
+                            onSubmit={() => commentEntry()}
+                        />
                     </div>
                     {entryInfo?.comments?.length === 0 ? (
                         <div className="entry-center-panel-no-comments">
@@ -264,33 +214,16 @@ const Entry = () => {
                                     </div>
 
                                     <div className="entry-comment-controls">
-                                        <button>
-                                            <FaArrowCircleUp />
-                                            <p>Upvote</p>
-                                        </button>
-                                        <button>
-                                            <FaArrowCircleDown />
-                                            <p>Downvote</p>
-                                        </button>
-                                        <button onClick={() => setActiveReplyCommentId(activeReplyCommentId === comment.id ? null : comment.id)}>
-                                            <FaReply />
-                                            <p>Reply</p>
-                                        </button>
+                                        <EntryControls replyClick={() => setActiveReplyCommentId(activeReplyCommentId === comment.id ? null : comment.id)} />
                                     </div>
-
-                                    <div className={`entry-write-comment-reply ${activeReplyCommentId === comment.id ? 'open' : ''}`}>
-                                        <div className="entry-write-comment-reply-title">
-                                            <h3>Write a Reply</h3>
-                                        </div>
-                                        <div className="entry-write-comment-reply-textarea-container">
-                                            <DraftEditor
-                                                placeholder="Enter reply..."
-                                                onContentChange={(state) => setCommentReplyContent(state)}
-                                            />
-                                        </div>
-                                        <div className="entry-page-comment-reply-btn">
-                                            <button onClick={() => submitCommentReply(comment.id)}>Reply</button>
-                                        </div>
+                                    <div className={`entry-write-comment-reply`}>
+                                        <WriteReply
+                                            title={'Write a Reply'}
+                                            placeholder={"Enter reply..."}
+                                            showEditor={activeReplyCommentId === comment.id}
+                                            onContentChange={(state) => setCommentReplyContent(state)}
+                                            onSubmit={() => submitCommentReply(comment.id)}
+                                        />
                                     </div>
 
                                     {comment?.replies?.length > 0 &&
@@ -306,37 +239,24 @@ const Entry = () => {
                                                     <div className="entry-comment-per-reply-content">
                                                         <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} />
                                                     </div>
+
                                                     <div className="entry-comment-per-reply-controls">
-                                                        <button>
-                                                            <FaArrowCircleUp />
-                                                            <p>Upvote</p>
-                                                        </button>
-                                                        <button>
-                                                            <FaArrowCircleDown />
-                                                            <p>Downvote</p>
-                                                        </button>
-                                                        <button onClick={() => setActiveReplyCommentId(activeReplyCommentId === reply.id ? null : reply.id)}>
-                                                            <FaReply />
-                                                            <p>Reply</p>
-                                                        </button>
+                                                        <EntryControls replyClick={() => setActiveReplyCommentId(activeReplyCommentId === reply.id ? null : reply.id)} />
                                                     </div>
-                                                    <div className={`entry-comment-per-sub-reply-write ${activeReplyCommentId === reply.id ? 'open' : ''}`}>
-                                                        <div className="entry-comment-per-sub-reply-write-title">
-                                                            <h3>Write a Reply</h3>
-                                                        </div>
-                                                        <div className="entry-comment-per-sub-reply-write-textrea-container">
-                                                            <DraftEditor
-                                                                placeholder="Enter reply..."
-                                                                onContentChange={(state) => setCommentReplyContent(state)}
-                                                            />
-                                                        </div>
-                                                        <div className="entry-comment-per-sub-reply-write-submit-btn">
-                                                            <button onClick={() => submitCommentReply(reply.id)}>Reply</button>
-                                                        </div>
+
+                                                    <div className={`entry-comment-per-sub-reply-write`}>
+                                                        <WriteReply
+                                                            title={'Write a Reply'}
+                                                            placeholder={"Enter reply..."}
+                                                            showEditor={activeReplyCommentId === reply.id}
+                                                            onContentChange={(state) => setCommentReplyContent(state)}
+                                                            onSubmit={() => submitCommentReply(reply.id)}
+                                                        />
                                                     </div>
 
                                                 </div>
-                                            ))}                                        </div>
+                                            ))}
+                                        </div>
                                     }
                                 </div>
                             ))}
