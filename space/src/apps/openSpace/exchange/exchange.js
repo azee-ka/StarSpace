@@ -75,6 +75,26 @@ const ExchangePage = () => {
         fetchEntries();
     }, [exchangeId]);
 
+
+    async function voteExchange(exchangeUUID, voteType) {
+        try {
+            const response = await callApi(`openspace/exchange/${exchangeUUID}/vote/`, 'POST', { vote_type: voteType });
+            const { upvotes, downvotes, net_votes } = response.data;
+
+            // Update the entry info state with the new vote counts from the API response
+            setExchange((prevState) => {
+                const updatedExchange = { ...prevState };
+                updatedExchange.upvotes = upvotes;
+                updatedExchange.downvotes = downvotes;
+                updatedExchange.net_votes = net_votes;
+                return updatedExchange;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
     const handleShowCreateEntryOverlay = () => {
         setShowCreateEntryOverlay(true);
     };
@@ -92,7 +112,6 @@ const ExchangePage = () => {
 
     return (
         <div className="exchange-page">
-            <div className='exchange-page-inner'>
                 <div className="exchange-page-sidebar">
                     <div className="exchange-page-sidebar-inner">
                         <div className="exchange-sidebar-section">
@@ -105,7 +124,7 @@ const ExchangePage = () => {
                                     <p>Upvotes</p>
                                 </div>
                                 <div className="exchange-sidebar-downvotes-count">
-                                    <p>{exchange?.upvotes}</p>
+                                    <p>{exchange?.downvotes}</p>
                                     <p>Downvotes</p>
                                 </div>
                                 <div className="exchange-sidebar-entries-count">
@@ -167,6 +186,7 @@ const ExchangePage = () => {
                         </div>
                     </div>
                 </div>
+                <div className='exchange-page-inner'>
                 <div className="exchange-page-content">
                     <div className="exchange-page-header">
                         <div className="exchange-page-header-inner">
@@ -186,11 +206,11 @@ const ExchangePage = () => {
                             <div className="exchange-page-info-inner">
                                 <div className="exchange-header-description-control-card">
                                     <div className="exchange-header-control-card">
-                                        <button className="exchange-header-control-btn">
+                                        <button className="exchange-header-control-btn" onClick={() => voteExchange(exchange?.uuid, 'upvote')} >
                                             <FaArrowCircleUp className="icon-style" />
                                             <p>Upvote</p>
                                         </button>
-                                        <button className="exchange-header-control-btn">
+                                        <button className="exchange-header-control-btn" onClick={() => voteExchange(exchange?.uuid, 'downvote')}>
                                             <FaArrowCircleDown className="icon-style" />
                                             <p>Downvote</p>
                                         </button>

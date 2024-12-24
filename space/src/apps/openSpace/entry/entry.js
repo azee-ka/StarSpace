@@ -17,6 +17,8 @@ import { stateToHTML } from 'draft-js-export-html';
 import LeftPanel from "./leftPanel/leftPanel";
 import EntryControls from "./entryControls/entryControl";
 import WriteReply from "./writeReply/writeReply";
+import Comment from "./comment/comment";
+import CurvedLine from "./CurvedLine";
 
 const Entry = () => {
     const navigate = useNavigate();
@@ -24,6 +26,8 @@ const Entry = () => {
     const { entryId, exchangeId } = useParams();
     const { authState } = useAuth();
     const { callApi } = useApi();
+
+    const commentRefs = useRef({});
 
 
     const [parentExchangeInfo, setParentExchangeInfo] = useState({});
@@ -77,8 +81,54 @@ const Entry = () => {
         } catch (err) {
             console.error(err);
         }
+    };
+
+    async function voteComment(comment_id, voteType) {
+        try {
+            const response = await callApi(`openspace/exchange/entry/comment/${comment_id}/vote/`, 'POST', { vote_type: voteType });
+            const { upvotes, downvotes, net_votes } = response.data;
+            console.log(response.data)
+            // Update the entry info state with the new vote counts from the API response
+            setEntryInfo((prevState) => {
+                const updatedComments = prevState.comments.map((comment) => {
+                    if (comment.id === comment_id) {
+                        return { ...comment, upvotes, downvotes, net_votes };
+                    }
+                    return comment;
+                });
+
+                return { ...prevState, comments: updatedComments };
+            });
+        } catch (err) {
+            console.error(err);
+        }
     }
 
+    async function voteReply(reply_id, voteType) {
+        try {
+            const response = await callApi(`openspace/exchange/entry/comment/${reply_id}/vote/`, 'POST', { vote_type: voteType });
+            const { upvotes, downvotes, net_votes } = response.data;
+
+            // Update the entry info state with the new vote counts from the API response
+            setEntryInfo((prevState) => {
+                const updatedComments = prevState.comments.map((comment) => {
+                    // Map through each comment's replies to find and update the specific reply
+                    const updatedReplies = comment.replies.map((reply) => {
+                        if (reply.id === reply_id) {
+                            return { ...reply, upvotes, downvotes, net_votes }; // Update the reply's vote counts
+                        }
+                        return reply;
+                    });
+
+                    return { ...comment, replies: updatedReplies }; // Return the updated comment with updated replies
+                });
+
+                return { ...prevState, comments: updatedComments };
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     async function commentEntry() {
         if (replyContent) {
@@ -104,35 +154,47 @@ const Entry = () => {
     }
 
 
-    async function submitCommentReply(commentId) {
+
+    async function handleSubmitReply(commentId, parentReplyId = null) {
         if (commentReplyContent) {
             try {
-                const contentState = commentReplyContent.getCurrentContent(); // Get current content from the editor
+                const contentState = commentReplyContent.getCurrentContent();
                 const sanitizedText = DOMPurify.sanitize(stateToHTML(contentState));
-                const response = await callApi(`openspace/exchange/entry/comment/${commentId}/reply/`, 'POST', { content: sanitizedText });
+                const response = await callApi(
+                    `openspace/exchange/entry/comment/${commentId}/reply/`,
+                    'POST',
+                    { content: sanitizedText, parent_reply_id: parentReplyId }
+                );
 
-                console.log("Reply created:", response.data);
-
-                setCommentReplyContent('');
+                setCommentReplyContent(EditorState.createEmpty());
                 setActiveReplyCommentId(null);
 
                 setEntryInfo((prevState) => {
-                    // Deep clone the entry state to ensure immutability
                     const updatedComments = prevState.comments.map(comment => {
                         if (comment.id === commentId) {
-                            // Create a new comment object with updated replies
+                            if (parentReplyId) {
+                                // Handle nested reply within a reply
+                                return {
+                                    ...comment,
+                                    replies: comment.replies.map(reply =>
+                                        reply.id === parentReplyId
+                                            ? { ...reply, replies: [...reply.replies, response.data.reply] }
+                                            : reply
+                                    ),
+                                };
+                            }
                             return {
                                 ...comment,
                                 replies: [...comment.replies, response.data.reply],
                             };
                         }
-                        return comment; // Return unchanged comments
+                        return comment;
                     });
 
                     return {
                         ...prevState,
                         comments: updatedComments,
-                        comments_count: prevState.comments_count + 1, // Increment comments count
+                        comments_count: prevState.comments_count + 1,
                     };
                 });
             } catch (err) {
@@ -140,6 +202,12 @@ const Entry = () => {
             }
         }
     }
+
+
+    const handleReplyChange = (content) => {
+        setCommentReplyContent(content);
+    };
+
 
 
 
@@ -200,64 +268,24 @@ const Entry = () => {
                     ) : (
                         <div className="entry-center-panel-comments">
                             {entryInfo?.comments?.map((comment, index) => (
-                                <div className="entry-center-panel-per-comment" key={index}>
-                                    <div className="entry-comment-info">
-                                        <div className="entry-comment-author">
-                                            <Link to={`/profile/${comment.author}`} >
-                                                <ProfilePicture />
-                                                <p>@{comment.author}</p>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                    <div className="entry-comment-content">
-                                        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment.content) }} />
-                                    </div>
-
-                                    <div className="entry-comment-controls">
-                                        <EntryControls replyClick={() => setActiveReplyCommentId(activeReplyCommentId === comment.id ? null : comment.id)} />
-                                    </div>
-                                    <div className={`entry-write-comment-reply`}>
-                                        <WriteReply
-                                            title={'Write a Reply'}
-                                            placeholder={"Enter reply..."}
-                                            showEditor={activeReplyCommentId === comment.id}
-                                            onContentChange={(state) => setCommentReplyContent(state)}
-                                            onSubmit={() => submitCommentReply(comment.id)}
+                                <div key={index} className="entry-center-panel-comments-inner" >
+                                    <Comment
+                                        comment={comment}
+                                        onReplyClick={handleReplyChange}
+                                        onSubmitReply={handleSubmitReply}
+                                        activeReplyCommentId={activeReplyCommentId}
+                                        setActiveReplyCommentId={setActiveReplyCommentId}
+                                        voteComment={voteComment}
+                                        voteReply={voteReply}
+                                    />
+                                    {comment.replies.map((reply, replyIndex) => (
+                                        <CurvedLine
+                                            key={replyIndex}
+                                            commentId={comment.id}
+                                            replyId={reply.id}
+                                            commentRefs={commentRefs}
                                         />
-                                    </div>
-
-                                    {comment?.replies?.length > 0 &&
-                                        <div className="entry-comment-reply-container">
-                                            {comment?.replies.map((reply, index) => (
-                                                <div key={index} className="entry-comment-per-reply">
-                                                    <div className="entry-comment-per-reply-author">
-                                                        <Link to={`/profile/${comment.author}`} >
-                                                            <ProfilePicture />
-                                                            <p>@{reply.author}</p>
-                                                        </Link>
-                                                    </div>
-                                                    <div className="entry-comment-per-reply-content">
-                                                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} />
-                                                    </div>
-
-                                                    <div className="entry-comment-per-reply-controls">
-                                                        <EntryControls replyClick={() => setActiveReplyCommentId(activeReplyCommentId === reply.id ? null : reply.id)} />
-                                                    </div>
-
-                                                    <div className={`entry-comment-per-sub-reply-write`}>
-                                                        <WriteReply
-                                                            title={'Write a Reply'}
-                                                            placeholder={"Enter reply..."}
-                                                            showEditor={activeReplyCommentId === reply.id}
-                                                            onContentChange={(state) => setCommentReplyContent(state)}
-                                                            onSubmit={() => submitCommentReply(reply.id)}
-                                                        />
-                                                    </div>
-
-                                                </div>
-                                            ))}
-                                        </div>
-                                    }
+                                    ))}
                                 </div>
                             ))}
                         </div>

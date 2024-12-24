@@ -19,18 +19,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 0.2em;
     border-bottom: 1px solid rgb(85, 85, 85, 0.5);
     padding: 6px 5px;
-    height: 40px;
+    min-height: 40px;
     width: 100%;
     box-sizing: border-box;
 }
 
 .button {
-    padding: 6px 8px !important;
+    padding: 0.5em 0.6em !important;
     margin: 0 !important;
-    font-size: 11px;
+    font-size: 0.8em;
     cursor: pointer;
     border: 1px solid #55555590;
     border-radius: 8px;

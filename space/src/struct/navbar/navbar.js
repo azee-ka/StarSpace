@@ -18,6 +18,7 @@ import NineDotIcon from '../../utils/nine-dot';
 import AppMenu from './appMenu/appMenu';
 import SidebarMenuIcon from './iconMenu';
 import appLogo from '../../assets/logo.png';
+import appLogoComplete from '../../assets/logo-comp.png';
 
 const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount }) => {
     const { authState, logout } = useAuth();
@@ -95,7 +96,8 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
     const pagesNavbar = authState.isAuthenticated ? privatePagesNavbar : publicPagesNavbar;
 
     return (
-        <div className='navbar-conatiner neon-background'>
+        <div className='navbar-container'>
+        {/* <div className='navbar-conatiner neon-background'> */}
             <div className='navbar-left'>
                 <div className='navbar-icon-logo-container'>
                     {authState.isAuthenticated &&
@@ -105,6 +107,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                         <Link to={`/${activeSubApp === 'home' ? '' : activeSubApp.toLowerCase()}`}>
                             <img src={appLogo} />
                             <h2 className='neon-text'>4Space<span></span></h2>
+                            <img src={appLogoComplete} className='fade-image' />
                         </Link>
                     </div>
                 </div>

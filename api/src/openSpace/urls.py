@@ -13,13 +13,14 @@ urlpatterns = [
     path('exchange/<uuid:exchange_id>/entry/<uuid:entry_id>/get-details/', views.entry_detail, name='entry-detail'),
     path('exchange/<uuid:exchange_id>/entries/', views.entry_list, name='entry-list'),
 
-    path('exchange/<uuid:exchange_uuid>/vote/', views.vote_entry, name='exchange-vote'),
+    path('exchange/<uuid:exchange_uuid>/vote/', views.vote_exchange, name='exchange-vote'),
     path('exchange/entry/<uuid:entry_uuid>/vote/', views.vote_entry, name='entry-vote'),
 
     # Comment URLs
     path('exchange/entry/<uuid:entry_uuid>/comment/', views.create_comment, name='create_comment'),
     path('exchange/entry/comment/<int:comment_id>/reply/', views.reply_to_comment, name='reply_to_comment'),
     path('entries/<int:entry_id>/comments/', views.comment_list, name='comment-list'),
+    path('exchange/entry/comment/<int:comment_id>/vote/', views.vote_comment, name='vote_comment'),
 
     # Score URLs
     path('entries/<int:entry_id>/score/', views.score_entry, name='score-entry'),

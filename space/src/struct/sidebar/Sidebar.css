@@ -1,5 +1,5 @@
 .sidebar-container {
-    backdrop-filter: blur(70px) !important;
+    backdrop-filter: blur(40px) !important;
     background-color: rgba(16, 16, 16, 0.229);
     position: fixed;
     width: 270px;
@@ -11,7 +11,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    box-shadow: 0px 0px 7px 1px rgba(98, 98, 98, 0.409);
+    /* box-shadow: 0px 0px 7px 1px rgba(98, 98, 98, 0.409); */
+    box-shadow: 0 18px 15px rgba(0, 0, 0, 0.82);
     transition: transform 0.4s ease;
     transform: translateX(0);
 }

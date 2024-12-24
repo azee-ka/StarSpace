@@ -83,7 +83,7 @@ function Layout({ children, pageName }) {
 
     return (
         <div className={`parent-layout`} onClick={() => handleCloseOverlays()}>
-            <div className='layout'>
+            {/* <div className='layout'> */}
                 <div className='layout-navbar'>
                     <Navbar
                         handleProfileMenuToggle={handleProfileMenuToggle}
@@ -94,20 +94,20 @@ function Layout({ children, pageName }) {
                     />
                 </div>
                 <div className='layout-page'>
-                    <div className='layout-page-content'>
+                    {/* <div className='layout-page-content'> */}
                         {children}
-                    </div>
+                    {/* </div> */}
                     {/* Footer */}
-                <footer className="footer">
+                {/* <footer className="footer">
                     <p>© {new Date().getFullYear()} 4Space. All Copyrights Reserved.</p>
-                </footer>
+                </footer> */}
                 </div>
                 {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
                 {menuOpen && <ProfileMenu />}
                 {appMenuOpen && <AppMenu />}
                 {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
 
-            </div>
+            {/* </div> */}
         </div>
     );
 }

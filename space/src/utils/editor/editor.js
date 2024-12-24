@@ -182,11 +182,11 @@ const DraftEditor = ({ placeholder, onContentChange }) => {
                 </button>
 
                 {/* Font Family and Size */}
-                <select onChange={(e) => handleFontFamily(e.target.value)} value={fontFamily}>
+                {/* <select onChange={(e) => handleFontFamily(e.target.value)} value={fontFamily}>
                     <option value="Roboto">Roboto</option>
                     <option value="Arial">Arial</option>
                     <option value="Georgia">Georgia</option>
-                </select>
+                </select> */}
                 <select onChange={(e) => handleFontSize(e.target.value)} value={fontSize}>
                     <option value="14px">14px</option>
                     <option value="16px">16px</option>

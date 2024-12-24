@@ -172,16 +172,29 @@ class Entry(models.Model):
         return self.title
 
 
-class Vote(models.Model):
+class EntryVote(models.Model):
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
     vote_type = models.CharField(choices=[('upvote', 'Upvote'), ('downvote', 'Downvote')], max_length=8)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     class Meta:
         unique_together = ('user', 'entry')  # Ensures a user can only vote once per entry
 
     def __str__(self):
         return f"{self.user.username} voted {self.vote_type} on {self.entry.title}"
+
+class ExchangeVote(models.Model):
+    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
+    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name="votes")
+    vote_type = models.CharField(choices=[('upvote', 'Upvote'), ('downvote', 'Downvote')], max_length=8)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'exchange')  # Ensures a user can only vote once per entry
+
+    def __str__(self):
+        return f"{self.user.username} voted {self.vote_type} on {self.exchange.title}"
 
 
 class Comment(models.Model):
@@ -198,6 +211,19 @@ class Comment(models.Model):
             return f'Reply by {self.author.get_current_username()} on comment ID {self.parent_comment.id}'
         return f'Comment by {self.author.get_current_username()} on {self.entry.title}'
     
+class CommentVote(models.Model):
+    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    vote_type = models.CharField(choices=[('upvote', 'Upvote'), ('downvote', 'Downvote')], max_length=8)
+
+    class Meta:
+        unique_together = ('user', 'comment')  # Prevent multiple votes by the same user
+
+    def __str__(self):
+        return f"{self.user.username} voted {self.vote_type} on comment ID {self.comment.id}"
+
+
+
 class Score(models.Model):
     SCORE_CHOICES = [
         ('upvote', 'Upvote'),

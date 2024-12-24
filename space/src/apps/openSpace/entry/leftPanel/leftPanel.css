@@ -1,24 +1,14 @@
-.entry-left-panel {
-    width: 290px;
-    height: 100%;
-    background-color: rgb(0, 255, 221, 0);
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    perspective: 1000px;
-    position: fixed;
-    left: 10px;
-}
+
 
 .entry-left-panel-inner {
-    position: fixed;
-    margin-top: 20px;
+    /* position: fixed; */
+    position: sticky;
+    /* margin-top: 15px; */
     width: 92%;
-    height: 88vh;
-    background-color: rgba(65, 65, 65, 0.289);
+    height: 89vh;
+    background-color: rgba(131, 131, 131, 0.12);
+    backdrop-filter: blur(60px);
     box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
-    backdrop-filter: blur(100px);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -67,7 +57,7 @@
     margin-bottom: 9px;
     margin-top: 4px;
     color: rgb(190, 190, 190);
-    font-size: 15px;
+    font-size: 0.95em;
 }
 
 .entry-left-panel-section-content-stats {
@@ -89,17 +79,17 @@
     color: rgb(197, 197, 197);
 }
 .entry-left-panel-count p:first-child {
-    font-size: 18px;
+    font-size: 1.05em;
 }
 .entry-left-panel-count p:last-child {
-    font-size: 12px;
+    font-size: 0.7em;
 }
 .entry-left-panel-count {
     height: 85%;
-    padding: 4px 7px;
+    padding: 0.4em 0.5em;
     box-sizing: border-box;
     background-color: rgba(152, 28, 28, 0);
-    font-size: 12px;
+    font-size: 1em;
     gap: 5px;
     display: flex;
     flex-direction: column;
@@ -146,7 +136,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding: 4px 6px;
+    padding: 4px 15px;
     box-sizing: border-box;
     border-radius: 6px;
 }

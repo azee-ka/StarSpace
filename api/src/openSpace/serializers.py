@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember, CommentVote
 from ..user.models import BaseUser
 
 # Exchange Serializer
@@ -37,13 +37,22 @@ class CommentSerializer(serializers.ModelSerializer):
     entry_title = serializers.CharField(source='entry.title', read_only=True)
     parent_comment_id = serializers.IntegerField(source='parent_comment.id', read_only=True)
     replies = serializers.SerializerMethodField()
-
+    upvotes = serializers.SerializerMethodField()
+    downvotes = serializers.SerializerMethodField()
+    
     class Meta:
         model = Comment
         fields = [
             'id', 'entry', 'author', 'content', 'parent_comment_id',
-            'created_at', 'updated_at', 'score', 'entry_title', 'replies'
+            'created_at', 'updated_at', 'score', 'entry_title', 'replies',
+            'upvotes', 'downvotes',
         ]
+
+    def get_upvotes(self, obj):
+        return CommentVote.objects.filter(comment=obj, vote_type='upvote').count()
+
+    def get_downvotes(self, obj):
+        return CommentVote.objects.filter(comment=obj, vote_type='downvote').count()
 
     def get_replies(self, obj):
         # Fetch only direct replies to the current comment
@@ -109,6 +118,10 @@ class ExchangeMemberSerializer(serializers.ModelSerializer):
         return ExchangeMember.objects.create(**validated_data)
 
 
+class CommentVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentVote
+        fields = ['user', 'comment', 'vote_type']
 
 
 
@@ -133,7 +146,6 @@ class EntrySerializer(serializers.ModelSerializer):
     def get_comments(self, obj):
         # Fetch top-level comments only
         top_level_comments = obj.comments.filter(parent_comment__isnull=True)
-        print(f"get_comments called. Top-level comments: {top_level_comments}")
         return CommentSerializer(top_level_comments, many=True).data
     
     def create(self, validated_data):

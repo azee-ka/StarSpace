@@ -1,26 +1,30 @@
 .exchange-page {
     width: 100%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 0px 13px 0px;
+    background-color: rgba(255, 0, 0, 0);
+    box-sizing: border-box;
+}
+
+.exchange-page-inner {
+    box-sizing: border-box;
+    width: 78.8%;
     height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
-    background-color: rgba(255, 0, 0, 0);
-}
-
-.exchange-page-inner {
-    margin-top: 20px;
-    width: 98%;
-    height: 96%;
-    display: flex;
-    flex-direction: row;
-    gap: 25px;
     background-color: rgb(0, 255, 8, 0);
+    padding: 0px 10px;
 }
 
 .exchange-page-sidebar {
     background-color: rgba(128, 0, 128, 0);
-    width: 265px;
+    width: 20%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -29,14 +33,15 @@
     flex-shrink: 0;
     perspective: 1000px;
     position: fixed;
+    left: 15px;
 }
 
 .exchange-page-sidebar-inner {
-    width: 265px;
-    height: 88vh;
+    width: 100%;
+    height: 89vh;
     border-radius: 10px;
     background-color: rgba(65, 65, 65, 0.209);
-    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.243);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.043);
     backdrop-filter: blur(100px);
     border-radius: 10px;
     position: fixed;
@@ -50,7 +55,7 @@
 }
 
 .exchange-page-sidebar-inner:hover {
-    transform: rotateY(12deg);
+    transform: rotateY(9deg);
 }
 
 .exchange-sidebar-section:first-child {
@@ -216,13 +221,15 @@
 
 .exchange-page-content {
     background-color: rgba(0, 0, 255, 0);
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 22px;
+    gap: 15px;
     justify-content: flex-start;
-    margin-left: 290px;
+    /* margin-left: 290px; */
 }
 
 .exchange-page-header {
@@ -250,7 +257,7 @@
 
 
 .exchange-page-header-inner {
-    width: 98%;
+    width: 100%;
     background-color: rgba(65, 65, 65, 0.209);
     box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
     backdrop-filter: blur(100px);
@@ -271,7 +278,7 @@
     background-color: rgba(0, 128, 0, 0);
     max-width: 500px;
     margin-left: 15px;
-    color: rgb(221, 246, 255);
+    color: rgb(208, 208, 208);
     font-family: 'Orbitron', monospace;
     font-size: 14px;
     height: 100%;
@@ -313,13 +320,13 @@
 }
 
 .exchange-page-info-inner {
-    width: 98%;
+    width: 100%;
     height: 100% !important;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
     background-color: rgba(0, 128, 0, 0);
 }
 
@@ -336,7 +343,6 @@
 }
 
 .exchange-header-description-card:hover,
-.exchange-header-control-card:hover,
 .exchange-header-charts-card:hover,
 .exchange-header-metrics-card:hover {
     transform: scale(1.03);
@@ -511,7 +517,7 @@
 
 
 .exchange-page-entries-inner {
-    width: 98%;
+    width: 100%;
     height: 100%;
     transition: transform 0.4s ease;
     display: flex;
@@ -613,6 +619,13 @@
     backdrop-filter: blur(100px);
     border-radius: 8px;
     flex-grow: 1;
+    height: 100%;
+    padding: 5px 4px;
+}
+
+.exchange-page-per-entry-metrics-inner {
+    background-color: rgba(0, 128, 0, 0.2);
+    width: 100%;
     height: 100%;
 }
 

@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember, Vote
+from .models import Exchange, Entry, Comment, Score, Flag, ImpactScore, ExchangeMember, ExchangeVote, EntryVote, CommentVote
 from .serializers import ExchangeSerializer, MinimalExchangeSerializer, EntrySerializer, CommentSerializer, ScoreSerializer, FlagSerializer, ImpactScoreSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -12,6 +12,49 @@ from django.db import IntegrityError
 from rest_framework import status
 from ..user.models import BaseUser
 
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def vote_comment(request, comment_id):
+    try:
+        # Retrieve the comment
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({"error": "Comment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Get vote type from request data
+    vote_type = request.data.get('vote_type')
+    if vote_type not in ['upvote', 'downvote']:
+        return Response({"error": "Invalid vote type."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if the user has already voted on this comment
+    existing_vote = CommentVote.objects.filter(user=request.user, comment=comment).first()
+
+    if existing_vote:
+        if existing_vote.vote_type == vote_type:
+            # User wants to remove their existing vote
+            existing_vote.delete()
+        else:
+            # User wants to change their vote
+            existing_vote.vote_type = vote_type
+            existing_vote.save()
+    else:
+        # Create a new vote
+        CommentVote.objects.create(user=request.user, comment=comment, vote_type=vote_type)
+
+    # Calculate updated vote counts
+    upvotes = CommentVote.objects.filter(comment=comment, vote_type='upvote').count()
+    downvotes = CommentVote.objects.filter(comment=comment, vote_type='downvote').count()
+    net_votes = upvotes - downvotes
+
+    # Return only vote counts
+    return Response({
+        "upvotes": upvotes,
+        "downvotes": downvotes,
+        "net_votes": net_votes
+    }, status=status.HTTP_200_OK)
+    
 
 
 @api_view(['POST'])
@@ -90,10 +133,6 @@ def create_comment(request, entry_uuid):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def vote_exchange(request, exchange_uuid):
-    # Check if user is authenticated
-    if not request.user.is_authenticated:
-        return Response({"error": "Authentication required."}, status=401)
-
     try:
         # Retrieve the exchange
         exchange = Exchange.objects.get(uuid=exchange_uuid)
@@ -102,32 +141,45 @@ def vote_exchange(request, exchange_uuid):
 
     # Get vote_type from request data
     vote_type = request.data.get('vote_type')
-
-    if vote_type == 'upvote':
-        exchange.upvotes += 1
-    elif vote_type == 'downvote':
-        exchange.downvotes += 1
-    else:
+    if vote_type not in ['upvote', 'downvote']:
         return Response({"error": "Invalid vote type."}, status=400)
 
-    # Calculate net votes
+    # Check if the user has already voted on this exchange
+    existing_vote = ExchangeVote.objects.filter(user=request.user, exchange=exchange).first()
+
+    if existing_vote:
+        if existing_vote.vote_type == vote_type:
+            # If the same vote type is clicked again, delete the vote
+            existing_vote.delete()
+            message = "Your vote has been removed."
+        else:
+            # Change the existing vote
+            existing_vote.vote_type = vote_type
+            existing_vote.save()
+            message = "Your vote has been updated."
+    else:
+        # Create a new vote record
+        ExchangeVote.objects.create(user=request.user, exchange=exchange, vote_type=vote_type)
+        message = "Your vote has been registered."
+
+    # Update vote counts
+    exchange.upvotes = ExchangeVote.objects.filter(exchange=exchange, vote_type='upvote').count()
+    exchange.downvotes = ExchangeVote.objects.filter(exchange=exchange, vote_type='downvote').count()
     exchange.net_votes = exchange.upvotes - exchange.downvotes
     exchange.save()
 
-    # Return the updated exchange data
+    # Return updated exchange data
     return Response({
-        "message": "Vote registered successfully.",
-        "exchange": ExchangeSerializer(exchange).data
+        "message": message,
+        "upvotes": exchange.upvotes,
+        "downvotes": exchange.downvotes,
+        "net_votes": exchange.net_votes
     }, status=200)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def vote_entry(request, entry_uuid):
-    # Check if user is authenticated
-    if not request.user.is_authenticated:
-        return Response({"error": "Authentication required."}, status=401)
-
     try:
         # Retrieve the entry
         entry = Entry.objects.get(uuid=entry_uuid)
@@ -141,44 +193,37 @@ def vote_entry(request, entry_uuid):
         return Response({"error": "Invalid vote type."}, status=400)
 
     # Check if the user has already voted on this entry
-    existing_vote = Vote.objects.filter(user=request.user, entry=entry).first()
+    existing_vote = EntryVote.objects.filter(user=request.user, entry=entry).first()
 
     if existing_vote:
-        # If the user has voted and wants to change their vote
         if existing_vote.vote_type == vote_type:
-            # They are trying to vote the same type, so we don't need to do anything
-            return Response({"message": "You have already voted this way."}, status=400)
-        else:
-            # User is changing their vote, so we remove the previous vote
+            # If the same vote type is clicked again, delete the vote
             existing_vote.delete()
+            message = "Your vote has been removed."
+        else:
+            # Change the existing vote
+            existing_vote.vote_type = vote_type
+            existing_vote.save()
+            message = "Your vote has been updated."
+    else:
+        # Create a new vote record
+        EntryVote.objects.create(user=request.user, entry=entry, vote_type=vote_type)
+        message = "Your vote has been registered."
 
-    # Create or update the vote
-    try:
-        new_vote = Vote.objects.create(user=request.user, entry=entry, vote_type=vote_type)
-    except IntegrityError:
-        return Response({"error": "An error occurred while saving your vote."}, status=500)
-
-    # Adjust the vote counts based on the new vote
-    if vote_type == 'upvote':
-        entry.upvotes += 1
-        if existing_vote and existing_vote.vote_type == 'downvote':
-            entry.downvotes -= 1
-    elif vote_type == 'downvote':
-        entry.downvotes += 1
-        if existing_vote and existing_vote.vote_type == 'upvote':
-            entry.upvotes -= 1
-
-    # Update net votes
+    # Update vote counts
+    entry.upvotes = EntryVote.objects.filter(entry=entry, vote_type='upvote').count()
+    entry.downvotes = EntryVote.objects.filter(entry=entry, vote_type='downvote').count()
     entry.net_votes = entry.upvotes - entry.downvotes
     entry.save()
 
     # Return the updated vote counts and net votes
     return Response({
-        "message": "Vote registered successfully.",
+        "message": message,
         "upvotes": entry.upvotes,
         "downvotes": entry.downvotes,
         "net_votes": entry.net_votes
     }, status=200)
+
         
         
 

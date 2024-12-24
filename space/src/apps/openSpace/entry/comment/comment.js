@@ -1,18 +1,40 @@
-import React from "react";
+// Comment.js
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import './comment.css';
 import ProfilePicture from "../../../../utils/profilePicture/getProfilePicture";
+import DOMPurify from "dompurify";
 import EntryControls from "../entryControls/entryControl";
+import WriteReply from "../writeReply/writeReply";
+import Replies from "./replies";
 
+const Comment = ({ comment, onReplyClick, onSubmitReply, activeReplyCommentId, setActiveReplyCommentId, voteComment, voteReply }) => {
+    const [isCollapsed, setIsCollapsed] = useState(true); // Collapse state for the current comment's replies
 
-const Comment = ({ comment }) => {
+    const toggleRepliesCollapse = () => setIsCollapsed(prevState => !prevState);
+
     return (
-        <div>
+        <div className="entry-center-panel-per-comment">
             <div className="entry-comment-info">
                 <div className="entry-comment-author">
-                    <Link to={`/profile/${comment.author}`} >
+                    <Link to={`/profile/${comment.author}`}>
                         <ProfilePicture />
                         <p>@{comment.author}</p>
                     </Link>
+                </div>
+                <div className="entry-comment-stats">
+                    <div>
+                        <p>{comment.upvotes}</p>
+                        <p>Upvotes</p>
+                    </div>
+                    <div>
+                        <p>{comment.downvotes}</p>
+                        <p>Downvotes</p>
+                    </div>
+                    <div>
+                        <p>{comment?.replies?.length}</p>
+                        <p>Replies</p>
+                    </div>
                 </div>
             </div>
             <div className="entry-comment-content">
@@ -20,52 +42,46 @@ const Comment = ({ comment }) => {
             </div>
 
             <div className="entry-comment-controls">
-                <EntryControls replyClick={() => setActiveReplyCommentId(activeReplyCommentId === comment.id ? null : comment.id)} />
+                <EntryControls
+                    upVoteClick={() => voteComment(comment?.id, 'upvote')}
+                    downVoteClick={() => voteComment(comment?.id, 'downvote')}
+                    replyClick={() => setActiveReplyCommentId(activeReplyCommentId === comment.id ? null : comment.id)} 
+                />
             </div>
-            <div className={`entry-write-comment-reply`}>
+
+            <div className={`entry-write-comment-reply ${activeReplyCommentId === comment.id ? 'open' : ''}`}>
                 <WriteReply
                     title={'Write a Reply'}
                     placeholder={"Enter reply..."}
                     showEditor={activeReplyCommentId === comment.id}
-                    onContentChange={(state) => setCommentReplyContent(state)}
-                    onSubmit={() => submitCommentReply(comment.id)}
+                    onContentChange={onReplyClick}
+                    onSubmit={() => onSubmitReply(comment.id)}
                 />
             </div>
 
-            {comment?.replies?.length > 0 &&
-                <div className="entry-comment-reply-container">
-                    {comment?.replies.map((reply, index) => (
-                        <div key={index} className="entry-comment-per-reply">
-                            <div className="entry-comment-per-reply-author">
-                                <Link to={`/profile/${comment.author}`} >
-                                    <ProfilePicture />
-                                    <p>@{reply.author}</p>
-                                </Link>
-                            </div>
-                            <div className="entry-comment-per-reply-content">
-                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} />
-                            </div>
-
-                            <div className="entry-comment-per-reply-controls">
-                                <EntryControls replyClick={() => setActiveReplyCommentId(activeReplyCommentId === reply.id ? null : reply.id)} />
-                            </div>
-
-                            <div className={`entry-comment-per-sub-reply-write`}>
-                                <WriteReply
-                                    title={'Write a Reply'}
-                                    placeholder={"Enter reply..."}
-                                    showEditor={activeReplyCommentId === reply.id}
-                                    onContentChange={(state) => setCommentReplyContent(state)}
-                                    onSubmit={() => submitCommentReply(reply.id)}
-                                />
-                            </div>
-
-                        </div>
-                    ))}
+            {/* Button to collapse/uncollapse replies */}
+            {comment?.replies?.length > 0 && (
+                <div className="toggle-replies-button">
+                    <button onClick={toggleRepliesCollapse}>
+                        {isCollapsed ? '(+) Show Replies' : '(-) Hide Replies'}
+                    </button>
                 </div>
-            }
+
+            )}
+
+            {/* Render replies recursively */}
+            {!isCollapsed && comment?.replies?.length > 0 && (
+                <Replies
+                    replies={comment.replies}
+                    activeReplyCommentId={activeReplyCommentId}
+                    setActiveReplyCommentId={setActiveReplyCommentId}
+                    onReplyClick={onReplyClick}
+                    onSubmitReply={onSubmitReply}
+                    voteReply={voteReply}
+                />
+            )}
         </div>
     );
-}
+};
 
 export default Comment;
