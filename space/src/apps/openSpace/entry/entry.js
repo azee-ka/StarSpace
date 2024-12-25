@@ -23,7 +23,7 @@ import CurvedLine from "./CurvedLine";
 const Entry = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { entryId, exchangeId } = useParams();
+    const { entryId } = useParams();
     const { authState } = useAuth();
     const { callApi } = useApi();
 
@@ -44,25 +44,30 @@ const Entry = () => {
 
     useEffect(() => {
         // Pass authState to apiCall
-        callApi(`openspace/exchange/${exchangeId}/entry/${entryId}/get-details/`)
+        callApi(`openspace/entry/${entryId}/get-details/`)
             .then((response) => {
                 setEntryInfo(response.data);
                 console.log(response.data);
             }).catch(console.error);
 
-        callApi(`openspace/exchange/${exchangeId}/entries/`,)
+    }, [entryId, authState]);
+
+    useEffect(() => {
+        if (!entryInfo?.exchange_uuid) return;
+
+        callApi(`openspace/exchange/${entryInfo?.exchange_uuid}/entries/`,)
             .then((response) => {
                 setExchangeTrendingEntries(response.data);
                 // console.log(response.data);
             }).catch(console.error);
 
-        callApi(`openspace/exchange/${exchangeId}/minimal-info/`)
+        callApi(`openspace/exchange/${entryInfo?.exchange_uuid}/minimal-info/`)
             .then((response) => {
                 setParentExchangeInfo(response.data);
                 // console.log(response.data);
             }).catch(console.error);
 
-    }, [exchangeId, entryId, authState]);
+    }, [entryId, entryInfo, authState]);
 
 
     async function voteEntry(entryUUID, voteType) {

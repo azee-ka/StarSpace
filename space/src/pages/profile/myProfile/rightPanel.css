@@ -3,9 +3,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    /* overflow-y: auto; */
 }
 
 .my-profile-right-top-panel {
@@ -15,6 +16,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding: 0 15px 0 0px;
+    box-sizing: border-box;
 }
 
 .my-profile-right-panel-tabs {
@@ -24,8 +27,8 @@
     align-items: center;
     list-style: none;
     gap: 5px;
-    background-color: rgba(255, 0, 0, 0);
-    flex-grow: 1;
+    background-color: rgba(65, 65, 65, 0);
+    /* flex-grow: 1; */
     height: 100%;
     padding: 0em 0em;
     margin: 0;
@@ -35,7 +38,7 @@
 .my-profile-right-panel-tabs li {
     height: 85%;
     background-color: rgba(0, 0, 255, 0);
-    border-radius: 6px;
+    border-radius: 8px;
     transition: background-color 0.3s ease;
 }
 .my-profile-right-panel-tab-item.active {
@@ -46,13 +49,14 @@
 .my-profile-right-panel-tabs li button {
     background-color: rgba(0, 128, 0, 0);
     border: 0;
-    padding: 0px 15px;
+    padding: 0px 16px;
     height: 100%;
-    font-size: 0.9em;
+    font-size: 1.05em;
     color: white;
     box-sizing: border-box;
-    border-radius: 6px;
+    border-radius: 8px;
     transition: background-color 0.3s ease;
+    font-family: monospace;
 }
 
 .my-profile-right-panel-tabs li button:hover {
@@ -61,18 +65,20 @@
 }
 
 
+
+
+
 .my-profile-right-panel-info {
     background-color: rgba(65, 65, 65, 0.317);
     box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.043);
     backdrop-filter: blur(60px);
     border-radius: 10px;
     height: 100%;
-    width: 30%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    padding: 8px 14px;
+    padding: 9px 14px;
     box-sizing: border-box;
 }
 .my-profile-right-panel-info div {
@@ -97,10 +103,9 @@
 
 
 .my-profile-right-bottom-panel {
-    background-color: rgba(65, 65, 65, 0.317);
-    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.043);
-    backdrop-filter: blur(60px);
-    border-radius: 10px;
     width: 100%;
     flex-grow: 1;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 0 15px 0 0px;
 }

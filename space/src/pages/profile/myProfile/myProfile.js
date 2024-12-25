@@ -13,14 +13,18 @@ const MyProfile = () => {
 
     useEffect(() => {
         const fetchProfileData = async () => {
-            const response = await callApi(`profile/get-user-info/`);
-            console.log(response.data);
-            setProfileInfo(response.data);
+            try {
+                const response = await callApi(`profile/get-user-info/`);
+                console.log(response.data);
+                setProfileInfo(response.data);
+            } catch (err) {
+                console.error('Erre fetching profile data', err);
+            }
         };
 
         fetchProfileData();
     }, []);
-    
+
     return (
         <div className="my-profile-page">
             <div className="my-profile-left-panel">
@@ -32,49 +36,75 @@ const MyProfile = () => {
                         <p>@{profileInfo?.username}</p>
                     </Link>
                     <div className="my-profile-user-stats">
-                        <h3>Stats</h3>
-                        <button>
-                            <p>{profileInfo?.followers_count}0</p>
-                            <p>Followers</p>
-                        </button>
-                        <button>
-                            <p>{profileInfo?.followers_count}0</p>
-                            <p>Following</p>
-                        </button>
-                        <button>
-                            <p>{profileInfo?.cotributions_count}0</p>
-                            <p>Contributions</p>
-                        </button>
+                        <div className="my-profile-user-stat-counts">
+                            <button>
+                                <p>{profileInfo?.followers_count}0</p>
+                                <p>Followers</p>
+                            </button>
+                            <button>
+                                <p>{profileInfo?.followers_count}0</p>
+                                <p>Following</p>
+                            </button>
+                        </div>
+                        <div className="my-profile-user-stat-counts">
+                            <button>
+                                <p>{profileInfo?.affiliated_count}0</p>
+                                <p>Affiliations</p>
+                            </button>
+                            <button>
+                                <p>{profileInfo?.affiliated_count}0</p>
+                                <p>Affiliations</p>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="my-profile-metrics-container">
-                    <h3>Metrics</h3>
-                    <div className="my-profile-metrics-collection">
-                        <div>
-                            <p>0</p>
-                            <p>Impact Score</p>
+                    <section>
+                        <h3>Stats</h3>
+                        <div className="my-profile-metrics-stats">
+                            <div>
+                                <p>{profileInfo?.entries_count}0</p>
+                                <p>Entries</p>
+                            </div>
+                            <div>
+                                <p>{profileInfo?.posts_count}0</p>
+                                <p>Posts</p>
+                            </div>
+                            <div>
+                                <p>{profileInfo?.spaces_count}0</p>
+                                <p>Spaces</p>
+                            </div>
                         </div>
-                        <div>
-                            <p>0</p>
-                            <p>Impact Score</p>
+                    </section>
+                    <section>
+                        <h3>Metrics</h3>
+                        <div className="my-profile-metrics-collection">
+                            <div>
+                                <p>0</p>
+                                <p>Impact Score</p>
+                            </div>
+                            <div>
+                                <p>0</p>
+                                <p>Impact Score</p>
+                            </div>
+                            <div>
+                                <p>0</p>
+                                <p>Impact Score</p>
+                            </div>
+                            <div>
+                                <p>0</p>
+                                <p>Impact Score</p>
+                            </div>
+                            <div>
+                                <p>0</p>
+                                <p>Impact Score</p>
+                            </div>
+                            <div>
+                                <p>0</p>
+                                <p>Impact Score</p>
+                            </div>
                         </div>
-                        <div>
-                            <p>0</p>
-                            <p>Impact Score</p>
-                        </div>
-                        <div>
-                            <p>0</p>
-                            <p>Impact Score</p>
-                        </div>
-                        <div>
-                            <p>0</p>
-                            <p>Impact Score</p>
-                        </div>
-                        <div>
-                            <p>0</p>
-                            <p>Impact Score</p>
-                        </div>
-                    </div>
+                    </section>
                 </div>
             </div>
             <div className="my-profile-right-panel">

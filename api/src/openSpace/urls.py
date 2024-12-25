@@ -10,7 +10,7 @@ urlpatterns = [
 
     # Entry URLs
     path('exchange/<uuid:uuid>/create-entry/', views.create_entry, name='create_entry'),
-    path('exchange/<uuid:exchange_id>/entry/<uuid:entry_id>/get-details/', views.entry_detail, name='entry-detail'),
+    path('entry/<uuid:entry_id>/get-details/', views.entry_detail, name='entry-detail'),
     path('exchange/<uuid:exchange_id>/entries/', views.entry_list, name='entry-list'),
 
     path('exchange/<uuid:exchange_uuid>/vote/', views.vote_exchange, name='exchange-vote'),

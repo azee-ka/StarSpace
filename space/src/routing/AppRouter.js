@@ -28,7 +28,7 @@ const privateRoutes = {
         { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
         { name: 'Create Exchange', path: '/openspace/create-exchange', component: CreateExchange, key: 'CreateExchange' },
         { name: 'Exchange', path: '/openspace/exchange/:exchangeId', component: ExchangePage, key: 'ExchangePage' },
-        { name: 'Exchange', path: '/openspace/exchange/:exchangeId/entry/:entryId', component: Entry, key: 'EntryPage' },
+        { name: 'Exchange', path: '/openspace/entry/:entryId', component: Entry, key: 'EntryPage' },
         { name: 'Profile', path: '/profile/:username', component: Profile, key: 'Profile' },
         { name: 'My Profile', path: '/profile', component: MyProfile, key: 'MyProfile' },
         { name: 'Settings', path: '/settings', component: Settings, key: 'Settings' },

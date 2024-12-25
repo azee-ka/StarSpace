@@ -136,7 +136,7 @@ class ExchangeMember(models.Model):
 class Entry(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE, related_name='entries')
-    author = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='entries')
+    author = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='authored_entries')
     title = models.CharField(max_length=255)
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)

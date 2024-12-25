@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from .models import BaseUser
 from rest_framework import serializers
-
+from ..openspace.serializers import EntrySerializer
 
 class MyProfilelProfileSerializer(serializers.ModelSerializer):
+    entries = EntrySerializer(many=True, read_only=True)
+
     class Meta:
         model = BaseUser
-        fields = ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined']
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined', 'entries']
 
 
 class MinimalUserSerializer(serializers.ModelSerializer):

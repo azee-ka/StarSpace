@@ -9,15 +9,15 @@ const Profile = () => {
     const { authState } = useAuth();
 
     useEffect(() => {
-        if(authState.user.username === username) {
-            window.history.replaceState(null, "", '/profile');
+        if(authState.user.username === username || window.location.pathname === "/profile") {
+            window.history.replaceState(null, "", "/profile");
         }
     }, []);
 
     return authState.user.username === username ? (
-        <OtherProfile username={username} />
-    ) : (
         <MyProfile />
+    ) : (
+        <OtherProfile username={username} />
     )
 };
 

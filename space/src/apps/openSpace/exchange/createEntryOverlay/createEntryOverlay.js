@@ -58,7 +58,7 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
             
             const response = await callApi(`openspace/exchange/${exchangeUUID}/create-entry/`, 'POST', formData, "multipart/form-data")
             console.log(response.data);
-            navigate(`/openspace/exchange/${exchangeUUID}/entry/${response.data.entry_uuid}`, { replace: true });
+            navigate(`/openspace/entry/${response.data.entry_uuid}`);
             // console.log('location.href', location);
             onClose();
         } catch (err) {

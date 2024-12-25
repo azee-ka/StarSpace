@@ -124,7 +124,7 @@ const ExchangePage = () => {
     };
 
     const handleEntryClick = (entryUUID) => {
-        navigate(`entry/${entryUUID}`);
+        navigate(`/openspace/entry/${entryUUID}`);
     };
 
     if (loading) return <div className="loading">Loading...</div>;

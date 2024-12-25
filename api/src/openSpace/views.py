@@ -336,6 +336,7 @@ def create_entry(request, uuid):
             title=title,
             content=text
         )
+        request.user.entries.add(entry)
 
         # Optionally attach file paths to the entry
         entry.uploaded_files = saved_uploaded_files  # Assume uploaded_files is a JSONField or similar
@@ -355,9 +356,9 @@ def create_entry(request, uuid):
 
 # Entry Detail View
 @api_view(['GET', 'PUT', 'DELETE'])
-def entry_detail(request, exchange_id, entry_id):
-    exchange = get_object_or_404(Exchange, uuid=exchange_id)
+def entry_detail(request, entry_id):
     entry = get_object_or_404(Entry, uuid=entry_id)
+    exchange = entry.exchange
 
     if request.method == 'GET':
         serializer = EntrySerializer(entry)

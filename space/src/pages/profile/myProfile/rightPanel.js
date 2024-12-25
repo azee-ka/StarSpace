@@ -3,12 +3,14 @@ import './rightPanel.css';
 import ProfilePosts from "./tabs/posts/posts";
 import ProfileSpaces from "./tabs/spaces/spaces";
 import { formatDateTime } from "../../../utils/formatDateTime";
+import ProfileEntries from "./tabs/entries/entries";
 
 const RightPanel = ({ profileInfo }) => {
 
     const tabs = [
-        { label: 'Posts', Component: ProfilePosts },
-        { label: 'Spaces', Component: ProfileSpaces },
+        { label: 'Posts', component: <ProfilePosts /> },
+        { label: 'Entries', component: <ProfileEntries profileInfo={profileInfo} /> },
+        { label: 'Spaces', component: <ProfileSpaces /> },
     ];
 
     const [activeTab, setActiveTab] = useState(0);
@@ -40,7 +42,7 @@ const RightPanel = ({ profileInfo }) => {
                 </div>
             </div>
             <div className="my-profile-right-bottom-panel">
-                {tabs[activeTab].Component && React.createElement(tabs[activeTab].Component)}
+                {tabs[activeTab].component && tabs[activeTab].component}
             </div>
         </div>
     )
