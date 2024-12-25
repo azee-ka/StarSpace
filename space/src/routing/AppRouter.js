@@ -6,7 +6,7 @@ import Layout from '../struct/layout/layout';
 import LoginPage from '../pages/auth/Login/login';
 import RegisterPage from '../pages/auth/Register/register';
 
-import FrontPage from '../pages/frontPage/frontPage';
+import FrontPage from '../pages/frontPage/frontpage';
 
 import Timeline from '../apps/openSpace/timeline/timeline';
 import CreateExchange from '../apps/openSpace/createExchange/createExchange';

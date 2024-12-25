@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import BaseUser
 from rest_framework import serializers
 
+
+class MyProfilelProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined']
+
+
 class MinimalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser

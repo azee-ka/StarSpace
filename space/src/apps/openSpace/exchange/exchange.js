@@ -94,6 +94,26 @@ const ExchangePage = () => {
         }
     };
 
+    async function voteEntry(entryUUID, voteType) {
+        try {
+            const response = await callApi(`openspace/exchange/entry/${entryUUID}/vote/`, 'POST', { vote_type: voteType });
+            const { upvotes, downvotes, net_votes } = response.data;
+
+            // Update the entry info state with the new vote counts from the API response
+            setEntries((prevEntries) => {
+                return prevEntries.map((entry) => {
+                    if (entry.uuid === entryUUID) {
+                        // Update the matching entry with new vote counts
+                        return { ...entry, upvotes, downvotes, net_votes };
+                    }
+                    return entry; // Return unchanged entry
+                });
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
 
     const handleShowCreateEntryOverlay = () => {
         setShowCreateEntryOverlay(true);
@@ -282,7 +302,14 @@ const ExchangePage = () => {
                                         </div>
                                         <div className="exchange-page-per-entry-metrics">
                                             <div className="exchange-page-per-entry-metrics-inner">
-
+                                                <button onClick={() => voteEntry(entry?.uuid, 'upvote')} className="exchange-page-per-entry-controls-btn">
+                                                    <FaArrowCircleUp className="icon-style" />
+                                                    <p>{entry.upvotes}</p>
+                                                </button>
+                                                <button onClick={() => voteEntry(entry?.uuid, 'downvote')} className="exchange-page-per-entry-controls-btn">
+                                                    <FaArrowCircleDown className="icon-style" />
+                                                    <p>{entry.downvotes}</p>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

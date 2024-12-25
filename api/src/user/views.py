@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from .models import BaseUser
-from .serializers import BaseUserSerializer, UserUpdateSerializer, UserProfilePictureUpdateSerializer, UserCreateSerializer, MinimalUserSerializer
+from .serializers import BaseUserSerializer, UserUpdateSerializer, UserProfilePictureUpdateSerializer, UserCreateSerializer, MinimalUserSerializer, MyProfilelProfileSerializer
 
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
@@ -39,8 +39,6 @@ def register_view(request):
 
 
 
-    
-    
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -62,7 +60,7 @@ def login_view(request):
 @permission_classes([IsAuthenticated])
 def get_user_info(request):
     base_user = request.user  # This gives you the authenticated user of type BaseUser
-    serializer = MinimalUserSerializer(base_user)
+    serializer = MyProfilelProfileSerializer(base_user)
     return Response(serializer.data, status=200)
 
 
