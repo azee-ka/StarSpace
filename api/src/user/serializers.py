@@ -3,12 +3,83 @@ from .models import BaseUser
 from rest_framework import serializers
 from ..openspace.serializers import EntrySerializer
 
-class MyProfilelProfileSerializer(serializers.ModelSerializer):
-    entries = EntrySerializer(many=True, read_only=True)
 
+def build_category_representation(instance, representation, categories):
+    data = {}
+    
+    for category, fields in categories.items():
+        if category == 'stats':
+            # Dynamically calculate the counts based on which fields are specified
+            count_data = {}
+            if 'following_count' in fields:
+                count_data['following_count'] = instance.following.count()
+            if 'followers_count' in fields:
+                count_data['followers_count'] = instance.followers.count()
+            if 'entries_count' in fields:
+                count_data['entries_count'] = instance.entries.count()
+            data[category] = count_data
+        else:
+            # For other categories, just include the relevant fields
+            data[category] = {field: representation[field] for field in fields}
+    
+    return data
+
+
+class PartialProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined', 'entries']
+        fields = [ 'username', 'profile_image', 'bio',
+                  'is_private_profile',
+                  ]
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        categories = {
+            'basicInfo': ['username', 'profile_image'],
+            'stats': ['following_count', 'followers_count'],
+            'privacy': ['is_private_profile'],
+        }
+        return build_category_representation(instance, representation, categories)
+
+
+class FullProfileSerializer(serializers.ModelSerializer):
+    entries = EntrySerializer(many=True, read_only=True)
+    class Meta:
+        model = BaseUser
+        fields =  [ 'username', 'profile_image', 'date_joined',
+                   'is_private_profile',
+                   'entries']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        categories = {
+            'basicInfo': ['username', 'profile_image', 'date_joined'],
+            'stats': ['following_count', 'followers_count', 'entries_count'],
+            'privacy': ['is_private_profile'],
+            'data': ['entries'],
+        }
+        return build_category_representation(instance, representation, categories)
+
+
+class MyProfileSerializer(serializers.ModelSerializer):
+    entries = EntrySerializer(many=True, read_only=True)
+    class Meta:
+        model = BaseUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined', 
+                  'is_private_profile',
+                  'entries']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        categories = {
+            'basicInfo': ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined'],
+            'stats': ['following_count', 'followers_count', 'entries_count'],
+            'privacy': ['is_private_profile'],
+            'data': ['entries'],
+        }
+        return build_category_representation(instance, representation, categories)
+
+
 
 
 class MinimalUserSerializer(serializers.ModelSerializer):

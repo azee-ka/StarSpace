@@ -45,12 +45,35 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     
     entries = models.ManyToManyField('openspace.Entry', related_name='linked_users', blank=True)
-
+    
+    followers = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
+    following = models.ManyToManyField('self', related_name='following_by', symmetrical=False, blank=True)
+    
+    # Profile visibility settings
+    is_private_profile = models.BooleanField(default=False)
+    profile_settings = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Customize visibility for profile fields (e.g., {'bio': 'public', 'email': 'private'})"
+    )
 
     objects = BaseUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
+
+
+    def get_profile_for_viewer(self, viewer):
+        """
+        Returns profile data based on whether the viewer is the user themselves, 
+        a follower, or a general public viewer.
+        """
+        if viewer == self:
+            return {field: getattr(self, field, None) for field in self.MY_PROFILE_FIELDS}
+        elif viewer in self.followers.all():
+            return self.get_private_profile(viewer)
+        else:
+            return self.get_public_profile()
 
     def get_current_username(self):
         return self.username

@@ -1,14 +1,17 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register_view, name='register'),
+    # Auth
+    path('', include('src.user.auth.urls')),
     
+    # Profile
     path('profile/get-user-info/', views.get_user_info, name='get-user-info'),
+    path('profile/<str:username>/', views.user_profile_view, name='profile_view'),
     
-    path('profile/assign-usernames/', views.assign_usernames, name='assign_usernames'),
-    path('profile/update/<int:user_id>/', views.update_user_profile, name='update_user_profile'),
-    path('profile/picture/update/', views.update_profile_picture, name='update_profile_picture'),  # Profile picture update route
-    path('switch_role/', views.switch_user_role, name='switch_user_role'),
+    # Interact
+    path('', include('src.user.interact.urls')),
+    
+    # Settings
+    path('settings/toggle-profile-visibility/', views.toggle_profile_visibility, name='toggle-profile-visibility'),
 ]

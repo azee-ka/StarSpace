@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import './rightPanel.css';
-import ProfilePosts from "./tabs/posts/posts";
-import ProfileSpaces from "./tabs/spaces/spaces";
-import { formatDateTime } from "../../../utils/formatDateTime";
-import ProfileEntries from "./tabs/entries/entries";
+import ProfilePosts from "../tabs/posts/posts";
+import ProfileSpaces from "../tabs/spaces/spaces";
+import { formatDateTime } from "../../../../utils/formatDateTime";
+import ProfileEntries from "../tabs/entries/entries";
 
 const RightPanel = ({ profileInfo }) => {
 
@@ -37,7 +37,7 @@ const RightPanel = ({ profileInfo }) => {
                 <div className="my-profile-right-panel-info">
                     <div>
                         <p>Member Since</p>
-                        <p>{formatDateTime(profileInfo?.date_joined)}</p>
+                        <p>{formatDateTime(profileInfo?.basicInfo?.date_joined)}</p>
                     </div>
                 </div>
             </div>

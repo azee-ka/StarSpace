@@ -30,7 +30,7 @@ const privateRoutes = {
         { name: 'Exchange', path: '/openspace/exchange/:exchangeId', component: ExchangePage, key: 'ExchangePage' },
         { name: 'Exchange', path: '/openspace/entry/:entryId', component: Entry, key: 'EntryPage' },
         { name: 'Profile', path: '/profile/:username', component: Profile, key: 'Profile' },
-        { name: 'My Profile', path: '/profile', component: MyProfile, key: 'MyProfile' },
+        { name: 'My Profile', path: '/profile', component: Profile, key: 'MyProfile' },
         { name: 'Settings', path: '/settings', component: Settings, key: 'Settings' },
     ],
 
@@ -38,8 +38,9 @@ const privateRoutes = {
         { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },
         { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
         { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
-        { name: 'My Profile', path: '/profile', component: MyProfile, key: 'MyProfile' },
+        { name: 'My Profile', path: '/profile', component: Profile, key: 'MyProfile' },
         { name: 'Profile', path: '/profile/:username', component: Profile, key: 'Profile' },
+        { name: 'Settings', path: '/settings', component: Settings, key: 'Settings' },
     ],
 };
 
