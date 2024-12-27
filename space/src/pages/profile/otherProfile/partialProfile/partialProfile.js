@@ -3,8 +3,9 @@ import './partialProfile.css';
 import ProfilePicture from "../../../../utils/profilePicture/getProfilePicture";
 import { Link, useNavigate } from "react-router-dom";
 import useApi from "../../../../utils/useApi";
+import CustomPartialProfile from "./customPartialProfile";
 
-const PartialProfile = ({ profileInfo }) => {
+const PartialProfile = ({ profileInfo, isCustomizing }) => {
     const { callApi } = useApi();
     const navigate = useNavigate();
     const [isFollowing, setIsFollowing] = useState(profileInfo?.interact?.is_following);
@@ -21,7 +22,7 @@ const PartialProfile = ({ profileInfo }) => {
         }
     };
 
-    return (
+    return !isCustomizing ? (
         <div className="partial-profile-page">
             <div className="partial-profile-panel">
                 <div className="partial-profile-panel-profile-image">
@@ -48,6 +49,11 @@ const PartialProfile = ({ profileInfo }) => {
                 </div>
             </div>
         </div>
+    ) : (
+        <CustomPartialProfile 
+            profileInfo={profileInfo} 
+            handleFollowProfile={handleFollowProfile} 
+        />
     )
 };
 

@@ -9,3 +9,11 @@ a {
   color: white;
   text-decoration: none;
 }
+
+* {
+  user-select: none;
+}
+
+p, span, div {
+  user-select: text;
+}

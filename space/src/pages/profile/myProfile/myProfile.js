@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import RightPanel from "./panels/rightPanel";
 import { useAuth } from "../../../reducers/auth/useAuth";
 
-const MyProfile = ({ username, fetchProfileData }) => {
+const MyProfile = ({ username, fetchProfileData, isCustomizing }) => {
     const { authState } = useAuth();
     const [profileInfo, setProfileInfo] = useState({});
 
@@ -14,7 +14,7 @@ const MyProfile = ({ username, fetchProfileData }) => {
         fetchProfileData(username || authState.user.username, setProfileInfo);
     }, [username]);
 
-    return (
+    return !isCustomizing ? (
         <div className="my-profile-page">
             <div className="my-profile-left-panel">
                 <div className="my-profile-user-info">
@@ -100,6 +100,8 @@ const MyProfile = ({ username, fetchProfileData }) => {
                 <RightPanel profileInfo={profileInfo} />
             </div>
         </div>
+    ) : (
+        <div>Cutsom Self</div>
     )
 }
 

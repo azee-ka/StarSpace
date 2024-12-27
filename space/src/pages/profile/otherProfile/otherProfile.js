@@ -5,7 +5,7 @@ import PartialProfile from "./partialProfile/partialProfile";
 import FullProfile from "./fullProfile/fullProfile";
 import { useLocation } from "react-router-dom";
 
-const OtherProfile = ({ username, fetchProfileData }) => {
+const OtherProfile = ({ username, fetchProfileData, enforceViewType = '', isCustomizing }) => {
     const [profileInfo, setProfileInfo] = useState({});
     const location = useLocation();
 
@@ -16,13 +16,31 @@ const OtherProfile = ({ username, fetchProfileData }) => {
     }, [location.state]);
 
     useEffect(() => {
-            fetchProfileData(username, setProfileInfo);
+        fetchProfileData(username, setProfileInfo);
+        console.log(profileInfo);
     }, []);
 
-    return profileInfo?.view_type === 'partial' ? (
-        <PartialProfile profileInfo={profileInfo} />
+
+    return enforceViewType === '' ? (
+        profileInfo?.view_type === 'partial' ? (
+            <PartialProfile profileInfo={profileInfo} isCustomizing={isCustomizing} />
+        ) : (
+            profileInfo?.view_type === 'full' ? (
+                <FullProfile profileInfo={profileInfo} isCustomizing={isCustomizing} />
+            ) : (
+                <div>Invalid</div>
+            )
+        )
     ) : (
-        <FullProfile profileInfo={profileInfo} />
+        enforceViewType === 'partial' ? (
+            <PartialProfile profileInfo={profileInfo} isCustomizing={isCustomizing} />
+        ) : (
+            enforceViewType === 'full' ? (
+                <FullProfile profileInfo={profileInfo} isCustomizing={isCustomizing} />
+            ) : (
+                <div>Invalid</div>
+            )
+        )
     )
 }
 

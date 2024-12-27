@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useApi from "../../../../utils/useApi";
 import FullProfileRightPanel from "./panels/rightPanel/rightPanel";
 
-const FullProfile = ({ profileInfo }) => {
+const FullProfile = ({ profileInfo, isCustomizing }) => {
     const { callApi } = useApi();
     const navigate = useNavigate();
     const [isFollowing, setIsFollowing] = useState(profileInfo?.interact?.is_following);
@@ -26,7 +26,7 @@ const FullProfile = ({ profileInfo }) => {
         }
     };
 
-    return profileInfo ? (
+    return !isCustomizing ? (
         <div className="full-profile-page">
             <div className="full-profile-left-panel">
                 <div className="full-profile-user-info">
@@ -83,7 +83,7 @@ const FullProfile = ({ profileInfo }) => {
             </div>
         </div>
     ) : (
-        <div>Loading...</div>
+        <div>Custom Full</div>
     )
 };
 

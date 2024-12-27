@@ -5,13 +5,13 @@ import { useAuth } from "../../reducers/auth/useAuth";
 import MyProfile from "./myProfile/myProfile";
 import useApi from "../../utils/useApi";
 
-const Profile = () => {
+const Profile = ({ enforceViewType = '', isCustomizing = false }) => {
     const { username } = useParams();
     const { authState } = useAuth();
     const { callApi } = useApi();
 
     const fetchProfileData = async (username, setProfileInfo) => {
-        if (!username) return;
+        // if (!username) return;
         try {
             const response = await callApi(`profile/${username}/`);
             console.log(response.data);
@@ -22,17 +22,25 @@ const Profile = () => {
     };
 
     useEffect(() => {
-        if (!username || authState.user.username === username || window.location.pathname === "/profile") {
+        if (enforceViewType === '' && (!username || authState.user.username === username || window.location.pathname === "/profile")) {
             window.history.replaceState(null, "", "/profile");
         }
     }, []);
 
 
-    return (!username || authState.user.username === username || window.location.pathname === "/profile") ? (
-        <MyProfile username={username} fetchProfileData={fetchProfileData} />
+    return enforceViewType === '' ? (
+        (!username || authState.user.username === username || window.location.pathname === "/profile") ? (
+        <MyProfile username={username} fetchProfileData={fetchProfileData} isCustomizing={isCustomizing} />
     ) : (
-        <OtherProfile username={username} fetchProfileData={fetchProfileData} />
-    );
+        <OtherProfile username={username} fetchProfileData={fetchProfileData} isCustomizing={isCustomizing} />
+    )
+    ) : (
+        enforceViewType === 'self' ? (
+            <MyProfile username={authState.user.username} fetchProfileData={fetchProfileData} isCustomizing={isCustomizing} />
+        ) : (
+            <OtherProfile username={authState.user.username} fetchProfileData={fetchProfileData} enforceViewType={enforceViewType} isCustomizing={isCustomizing} />
+        )
+    )
 
 };
 
