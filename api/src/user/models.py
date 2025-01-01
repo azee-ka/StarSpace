@@ -37,15 +37,19 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150, blank=True, null=True)
     last_name = models.CharField(max_length=150, blank=True, null=True)
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
-    bio = models.TextField(blank=True, null=True)
+    about_me = models.TextField(blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(
+        max_length=20,
+        choices=[('Male', 'Male'), ('Female', 'Female'), ('undisclosed', 'Prefer not to disclose')],
+        blank=True,
+        null=True
+    )
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    
-    entries = models.ManyToManyField('openspace.Entry', related_name='linked_users', blank=True)
-    
+        
     followers = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
     following = models.ManyToManyField('self', related_name='following_by', symmetrical=False, blank=True)
     
@@ -77,6 +81,12 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
 
     def get_current_username(self):
         return self.username
+    
+    def get_all_entries(self):
+        """
+        Returns all entries created by the user.
+        """
+        return self.authored_entries.all()
     
     def __str__(self):
         return self.email

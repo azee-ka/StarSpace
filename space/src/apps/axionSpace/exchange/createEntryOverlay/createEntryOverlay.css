@@ -1,0 +1,256 @@
+.create-entry-overlay {
+    background-color: rgba(0, 0, 0, 0.679);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    top: 0;
+    z-index: 5;
+}
+.create-entry-overlay-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    background-color: rgba(255, 0, 0, 0);
+    /* width: 650px; */
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.create-entry-overlay-card {
+    width: 700px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 8px;
+    padding: 8px 25px;
+    /* background: linear-gradient(145deg, #080019, #002a20); */
+    background-color: rgba(22, 22, 22, 0.862);
+    backdrop-filter: blur(20px);
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.create-entry-overlay-title {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    background-color: red;
+}
+
+
+.create-entry-overlay-textarea {
+    background-color: rgba(0, 128, 0, 0);
+    width: 100%;
+    height: 350px;
+    flex-grow: 0;
+    padding: 4px 4px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.create-entry-overlay-title {
+    width: 100%;
+    height: 40px;
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.create-entry-overlay-content {
+    width: 100%;
+    flex-grow: 1;
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.create-entry-overlay-content .editor-container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border-radius: 8px;
+    resize: none;
+}
+.create-entry-overlay-title textarea {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border-radius: 8px;
+    resize: none;
+}
+
+.entry-overlay-subtmit-btn {
+    background-color: rgba(255, 0, 0, 0);
+    width: 100%;
+    height: 40px;
+}
+.entry-overlay-subtmit-btn button {
+    background-color: rgb(132, 0, 255);
+    height: 100%;
+    aspect-ratio: 3 / 1;
+    font-size: 16px;
+    color: white;
+    border: 0;
+    border-radius: 6px;
+    transition: background-color 0.3s ease-in-out;
+}
+.entry-overlay-subtmit-btn button:hover {
+    background-color: rgba(132, 0, 255, 0.152);
+    box-shadow: 0 0 6px 3px rgb(132, 0, 255);
+    cursor: pointer;
+}
+
+.create-entry-overlay-upload {
+    width: 100%;
+    height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 8px;
+    padding: 10px 15px;
+    background-color: rgba(22, 22, 22, 0.862);
+    backdrop-filter: blur(20px);
+    box-sizing: border-box;
+}
+
+.create-entry-overlay-upload-inner {
+    border: 4px dashed gray;
+    box-sizing: border-box;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+}
+.create-entry-overlay-upload-inner:hover {
+    cursor: pointer;
+}
+
+.create-entry-overlay-click-area {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.create-entry-overlay-click-area h2:first-child {
+    font-size: 40px;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 6px;
+    height: 100%;
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+}
+.create-entry-overlay-click-area h2:last-child {
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: rgba(0, 128, 0, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+}
+
+
+.entry-overlay-content-upload-preview {
+    max-width: 725px;
+    max-height: 740px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgba(255, 0, 0, 0);
+}
+
+.entry-overlay-preview-container {
+    position: relative;
+    background-color: rgba(255, 255, 0, 0);
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-media {
+    max-width: 100%;
+    max-height: 760px;
+    object-fit: contain;
+    border-radius: 9px;
+
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    top: 50%;
+    position: absolute;
+    background-color: rgba(0, 255, 255, 0);
+    width: 98%;
+    z-index: 0;
+}
+
+.navigation-buttons button {
+    background-color: rgba(126, 126, 126, 0.772);
+    color: white;
+    border: none;
+    padding: 6px 6px;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    z-index: 2;
+    font-size: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navigation-buttons button svg {
+    font-size: 20px;
+}
+
+.navigation-buttons button:hover {
+    background-color: #aeaeaecf;
+}

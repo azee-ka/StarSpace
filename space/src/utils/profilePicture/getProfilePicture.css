@@ -1,6 +1,5 @@
 .profile-picture {
-    border-radius: 100%;
+    border-radius: 50%;
     align-self: center;
-    /* height: 100%;
-    width: 100%; */
+    border: 2px solid rgba(151, 151, 151, 0.451);
 }

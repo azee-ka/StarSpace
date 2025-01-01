@@ -2,13 +2,15 @@ import React from "react";
 import DOMPurify from 'dompurify';
 import './entries.css';
 import { useNavigate } from "react-router-dom";
+import { useSubApp } from "../../../../../../context/SubAppContext";
 
 const FullProfileEntriesTab = ({ profileInfo }) => {
     const navigate = useNavigate();
+    const { setActiveSubApp } = useSubApp();
 
     const handleEntryClick = (entryUUID) => {
-        console.log(entryUUID);
         navigate(`/openspace/entry/${entryUUID}`);
+        setActiveSubApp('openspace');
     };
 
 

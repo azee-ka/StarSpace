@@ -182,17 +182,23 @@ const DraftEditor = ({ placeholder, onContentChange }) => {
                 </button>
 
                 {/* Font Family and Size */}
-                {/* <select onChange={(e) => handleFontFamily(e.target.value)} value={fontFamily}>
+                
+                <div className="editor-selector">
+                <select onChange={(e) => handleFontFamily(e.target.value)} value={fontFamily}>
                     <option value="Roboto">Roboto</option>
                     <option value="Arial">Arial</option>
                     <option value="Georgia">Georgia</option>
-                </select> */}
+                </select>
+                </div>
+                
+                <div className="editor-selector">
                 <select onChange={(e) => handleFontSize(e.target.value)} value={fontSize}>
                     <option value="14px">14px</option>
                     <option value="16px">16px</option>
                     <option value="18px">18px</option>
                     <option value="20px">20px</option>
                 </select>
+                </div>
 
                 {/* Block Styles (Alignments and Lists) */}
                 <button className="button" onMouseDown={(e) => { e.preventDefault(); toggleBlockStyle('unordered-list-item'); }}>

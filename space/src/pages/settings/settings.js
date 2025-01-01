@@ -3,6 +3,8 @@ import './settings.css';
 import Visiblity from "./tabs/visiblity/visibility";
 import Profile from "../profile/profile";
 import ProfileAppearance from "./tabs/profileAppearance/profileAppearance";
+import BasicInfo from "./tabs/basicInfo/basicInfo";
+import NotificationsTab from "./tabs/notifications/notifications";
 
 const Settings = () => {
     const [isCustomizing, setIsCustomizing] = useState(false);
@@ -20,22 +22,49 @@ const Settings = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const tabs = {
-        Profile: [
-            { label: 'Basic Info', component: <Visiblity /> },
+        'Profile': [
+            { label: 'Basic Info', component: <BasicInfo /> },
             { label: 'Your Activity', component: <Visiblity /> },
-            { label: 'Your Activity', component: <Visiblity /> },
+            { label: 'Notifications', component: <NotificationsTab /> },
         ],
-        Privacy: [
-            { label: 'Visiblity', component: <Visiblity /> },
+        'Account Settings': [
+            { label: 'Profile Design', component: <ProfileAppearance handleStartCustomization={handleStartCustomization} /> },
             { label: 'Restrictions', component: <Visiblity /> },
-            { label: 'Local Visiblity', component: <Visiblity /> },
+            { label: 'Local Visibility', component: <Visiblity /> },
         ],
-        Appearance: [
+        'Privacy and Security': [
+            { label: 'Visibility', component: <Visiblity /> },
+            { label: 'Restrictions', component: <Visiblity /> },
+            { label: 'Two-Factor Authentication', component: <Visiblity /> },
+            { label: 'Account Activity', component: <NotificationsTab /> },
+            { label: 'Local Visibility', component: <Visiblity /> },
+        ],
+        'Appearance': [
             { label: 'Profile Appearance', component: <ProfileAppearance handleStartCustomization={handleStartCustomization} /> },
+            { label: 'Theme Preferences', component: <ProfileAppearance /> },
             { label: 'Restrictions', component: <Visiblity /> },
-            { label: 'Local Visiblity', component: <Visiblity /> },
+            { label: 'Local Visibility', component: <Visiblity /> },
+        ],
+        'Notifications': [
+            { label: 'Email Notifications', component: <NotificationsTab /> },
+            { label: 'Push Notifications', component: <NotificationsTab /> },
+            { label: 'In-App Notifications', component: <NotificationsTab /> },
+        ],
+        'Subscriptions': [
+            { label: 'Billing Information', component: <ProfileAppearance /> },
+            { label: 'Subscription Plans', component: <ProfileAppearance /> },
+            { label: 'Payment Methods', component: <ProfileAppearance /> },
+        ],
+        'Connected Accounts': [
+            { label: 'Social Media Accounts', component: <Visiblity /> },
+            { label: 'External Services', component: <Visiblity /> },
+        ],
+        'Management': [
+            { label: 'Download Your Data', component: <Visiblity /> },
+            { label: 'Delete Your Account', component: <Visiblity /> },
         ],
     }
+
 
 
     const tabKeys = Object.entries(tabs).flatMap(([sectionKey, sectionItems], parentIndex) =>
@@ -94,7 +123,11 @@ const Settings = () => {
                         <h3>{sectionKey}</h3>
                         <div>
                             {sectionItems.map((item, index) => (
-                                <div key={index} onClick={() => handleTabClick(parentIndex, index)}>
+                                <div
+                                    key={index}
+                                    onClick={() => handleTabClick(parentIndex, index)}
+                                    className={`tab-item ${selectedParentIndex === parentIndex && selectedIndex === index ? 'active' : ''}`}
+                                >
                                     <p>{item.label}</p>
                                 </div>
                             ))}

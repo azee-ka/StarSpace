@@ -26,7 +26,7 @@
 
 .full-profile-user-info {
     width: 100%;
-    height: 36%;
+    height: 40%;
     background-color: rgba(46, 46, 46, 0.254);
     backdrop-filter: blur(60px);
     border-radius: 10px;
@@ -40,7 +40,7 @@
 }
 
 .full-profile-user-info-profile-picture {
-    width: 100px;
+    width: 140px;
     aspect-ratio: 1 / 1;
     background-color: rgba(255, 0, 0, 0);
 }
@@ -51,7 +51,7 @@
 
 .full-profile-user-info-username {
     background-color: rgba(0, 128, 0, 0);
-    margin-top: -10px;
+    margin-top: -6px;
 }
 .full-profile-user-info-username p {
     margin: 0;

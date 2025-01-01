@@ -8,14 +8,14 @@ import { useSubApp } from '../../context/SubAppContext';
 
 function Sidebar({ isOpen, onClose }) {
     const navigate = useNavigate();
-    const { activeSubApp, setActiveSubApp } = useSubApp();
+    const { setActiveSubApp } = useSubApp();
 
 
     const taskFlow = [
         { icon: <FontAwesomeIcon icon={faStream} />, label: 'Central', path: '/', type: 'context' },
-        { icon: <FontAwesomeIcon icon={faStream} />, label: 'OpenSpace', path: '/openspace', type: 'context' },
-        { icon: <FontAwesomeIcon icon={faLayerGroup} />, label: 'ProSpace', path: '/prospace', type: 'context' },
-        { icon: <FontAwesomeIcon icon={faCog} />, label: 'Impact Space', path: '/impactspace', type: 'context' },
+        { icon: <FontAwesomeIcon icon={faStream} />, label: 'AxionSpace', path: '/axionspace', type: 'context' },
+        { icon: <FontAwesomeIcon icon={faLayerGroup} />, label: 'QuantaSpace', path: '/quantaspace', type: 'context' },
+        { icon: <FontAwesomeIcon icon={faCog} />, label: 'RadianSpace', path: '/radianspace', type: 'context' },
     ];
 
     const [options] = useState(taskFlow);
@@ -28,7 +28,7 @@ function Sidebar({ isOpen, onClose }) {
         } else if (item.type === 'link') {
             navigate(item.path);
         } else if (item.type === 'context') {
-            setActiveSubApp(item.label.toLowerCase() === 'central' ? 'home' : item.label.toLowerCase());
+            setActiveSubApp(item.label);
             navigate(item.path);
         }
         onClose();

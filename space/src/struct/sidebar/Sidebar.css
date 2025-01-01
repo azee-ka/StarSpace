@@ -2,7 +2,7 @@
     backdrop-filter: blur(40px) !important;
     background-color: rgba(16, 16, 16, 0.229);
     position: fixed;
-    width: 270px;
+    width: 300px;
     height: 100vh;
     top: 0px;
     left: 0px;
@@ -18,7 +18,7 @@
 }
 
 .sidebar-container.close {
-    transform: translateX(-280px);
+    transform: translateX(-310px);
 }
 
 .sidebar-container-content {

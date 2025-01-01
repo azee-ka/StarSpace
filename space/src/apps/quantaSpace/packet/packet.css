@@ -1,0 +1,172 @@
+.packet-page {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0em 2em;
+    box-sizing: border-box;
+}
+
+.packet-card {
+    width: 50%;
+    background-color: rgba(0, 128, 0, 0);
+    border-left: 1px solid rgba(128, 128, 128, 0.480);
+    border-right: 1px solid rgba(128, 128, 128, 0.480);
+    padding: 1em 0em 0em 0em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    gap: 10px;
+}
+
+
+.packet-card-top-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.2em 1em;
+    background-color: rgba(255, 0, 0, 0);
+    box-sizing: border-box;
+}
+.packet-card-back-btn {
+    background-color: rgba(30, 149, 111, 0);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    gap: 9px;
+    justify-content: flex-start;
+    align-items: center;
+}
+.packet-card-back-btn button {
+    padding: 0.45em;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    font-size: 1.2em;
+    color: white;
+    border-radius: 7px;
+    background-color: rgba(0, 255, 255, 0);
+}
+.packet-card-back-btn button:hover {
+    background-color: rgba(128, 128, 128, 0.268);
+    cursor: pointer;
+}
+.packet-card-back-btn p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.1em;
+}
+
+
+
+.packet-card-inner {
+    background-color: rgba(255, 0, 0, 0);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+
+.packet-info {
+    padding: 0em 1em;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(128, 128, 128, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.packet-author-panel {
+    width: 100%;
+    background-color: rgba(0, 0, 255, 0);
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0px;
+    box-sizing: border-box;
+}
+
+.packet-author {
+    background-color: rgba(0, 255, 255, 0);
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.packet-author img {
+    height: 100%;
+    width: auto;
+}
+
+.packet-author p {
+    margin: 0;
+    padding: 0;
+}
+
+.packet-content {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(0, 255, 255, 0);
+}
+
+.packet-interaction {
+    border-top: 1px solid rgba(128, 128, 128, 0.480);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.480);
+    background-color: rgba(255, 0, 0, 0);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0.4em 0;
+}
+
+.packet-interaction button {
+    padding: 6px;
+    margin: 0;
+    border: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-right: 1px solid rgba(128, 128, 128, 0.480);
+    background-color: rgba(127, 255, 212, 0);
+    box-sizing: border-box;
+}
+.packet-interaction button:last-child {
+    border: 0;
+}
+.packet-interaction button:hover{
+    cursor: pointer;
+}
+
+.packet-interaction button .icon-style {
+    font-size: 1.6em;
+    color: rgb(163, 163, 163);
+}
+.packet-interaction button:hover .icon-style {
+    color: rgb(240, 240, 240);
+}

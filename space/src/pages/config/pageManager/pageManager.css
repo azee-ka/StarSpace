@@ -1,0 +1,52 @@
+
+.customizer-contorls-btn button,
+.exit-customizer-btn {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    background-color: rgb(26, 26, 26);
+    border: 1px solid rgba(128, 128, 128, 0.288);
+    color: white;
+    font-size: 1em;
+    transition: border 0.3s ease, backgroundo-color 0.3s ease;
+    z-index: 3;
+}
+.exit-customizer-btn:hover {
+    background-color: rgba(0, 50, 56, 0.253);
+    cursor: pointer;
+    border: 1px solid rgba(0, 255, 255, 0.597);
+}
+
+
+
+
+.customizer-controls-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+.customizer-controls-btn button {
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: 0;
+    background-color: rgb(26, 26, 26);
+    border: 1px solid rgba(128, 128, 128, 0.288);
+    color: white;
+    font-size: 1em;
+    transition: border 0.3s ease, backgroundo-color 0.3s ease;
+    z-index: 3;
+}
+.customizer-controls-btn button:hover {
+    background-color: rgba(0, 50, 56, 0.253);
+    cursor: pointer;
+    border: 1px solid rgba(0, 255, 255, 0.597);
+}

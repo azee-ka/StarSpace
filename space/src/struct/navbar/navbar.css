@@ -73,11 +73,16 @@
 }
 .navbar-logo-container:hover h2 {
   background: linear-gradient(120deg, #00ffd0, #7500f9);
+  background-clip: 3;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .navbar-logo-container h2 span {
-  margin-left: 5px;
+  margin-left: 3px;
+  font-size: 0.5em;
+  font-family: monospace;
+  font-weight: normal;
+  letter-spacing: -0.08em;
 }
 
 .navbar-logo-container a {
@@ -224,24 +229,28 @@
 
 
 .navbar-items li:nth-child(3) button {
-  background-color: rgba(244, 244, 244, 0.642);
+  background-color: rgba(244, 244, 244, 0);
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  /* flex-direction: row; */
+  justify-content: center !important;
+  align-items: center !important;
   border-radius: 50%;
-  height: 36px;
-  width: 36px;
+  height: 43px;
+  width: 43px;
+  padding: 0;
+  border: 2px solid rgba(244, 244, 244, 0);
+  transition: border 0.3 ease;
 }
 .navbar-items li:nth-child(3) button:hover {
-  background-color: rgb(255, 255, 255);
+  border: 2px solid rgb(255, 255, 255);
   cursor: pointer;
 }
 .navbar-items li:nth-child(3) button img {
   display: flex;
   align-self: center;
-  height: 115%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
+  width: 100%;
+  /* aspect-ratio: 1 / 1; */
 }
 .navbar-items li::nth-child(3) button img:hover {
   cursor: pointer;

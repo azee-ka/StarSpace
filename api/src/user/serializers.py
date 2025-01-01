@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import BaseUser
 from rest_framework import serializers
-from ..openspace.serializers import EntrySerializer
+# from ..axionspace.serializers import EntrySerializer
 
 
 def build_category_representation(instance, representation, categories):
@@ -16,7 +16,7 @@ def build_category_representation(instance, representation, categories):
             if 'followers_count' in fields:
                 count_data['followers_count'] = instance.followers.count()
             if 'entries_count' in fields:
-                count_data['entries_count'] = instance.entries.count()
+                count_data['entries_count'] = instance.authored_entries.count()  # Ensure we use 'authored_entries'
             data[category] = count_data
         else:
             # For other categories, just include the relevant fields
@@ -25,10 +25,28 @@ def build_category_representation(instance, representation, categories):
     return data
 
 
+
+
+
+class EntriesCountMixin:
+    """
+    Mixin that adds the 'entries_count' field to any serializer.
+    """
+    entries_count = serializers.SerializerMethodField()
+
+    def get_entries_count(self, obj):
+        # Assuming 'authored_entries' is the reverse relationship on BaseUser for the entries they authored
+        return obj.authored_entries.count()
+
+
+
+
+
+
 class PartialProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = [ 'username', 'profile_image', 'bio',
+        fields = [ 'username', 'profile_image', 'about_me',
                   'is_private_profile',
                   ]
         
@@ -42,13 +60,14 @@ class PartialProfileSerializer(serializers.ModelSerializer):
         return build_category_representation(instance, representation, categories)
 
 
-class FullProfileSerializer(serializers.ModelSerializer):
-    entries = EntrySerializer(many=True, read_only=True)
+class FullProfileSerializer(EntriesCountMixin, serializers.ModelSerializer):
+    entries = serializers.SerializerMethodField() #EntrySerializer(many=True, read_only=True, source='authored_entries')
     class Meta:
         model = BaseUser
         fields =  [ 'username', 'profile_image', 'date_joined',
                    'is_private_profile',
-                   'entries']
+                   'entries'
+                   ]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -56,18 +75,21 @@ class FullProfileSerializer(serializers.ModelSerializer):
             'basicInfo': ['username', 'profile_image', 'date_joined'],
             'stats': ['following_count', 'followers_count', 'entries_count'],
             'privacy': ['is_private_profile'],
-            'data': ['entries'],
+            'data': [
+                'entries'
+                ],
         }
         return build_category_representation(instance, representation, categories)
 
 
-class MyProfileSerializer(serializers.ModelSerializer):
-    entries = EntrySerializer(many=True, read_only=True)
+class MyProfileSerializer(EntriesCountMixin, serializers.ModelSerializer):
+    entries = serializers.SerializerMethodField() #EntrySerializer(many=True, read_only=True, source='authored_entries')
     class Meta:
         model = BaseUser
         fields = ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined', 
                   'is_private_profile',
-                  'entries']
+                  'entries'
+                  ]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -75,17 +97,31 @@ class MyProfileSerializer(serializers.ModelSerializer):
             'basicInfo': ['first_name', 'last_name', 'username', 'email', 'profile_image', 'date_joined'],
             'stats': ['following_count', 'followers_count', 'entries_count'],
             'privacy': ['is_private_profile'],
-            'data': ['entries'],
+            'data': [
+                'entries'
+                ],
         }
         return build_category_representation(instance, representation, categories)
 
 
 
+class EditUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'display_name', 'profile_image', 'about_me', 'gender']
 
+
+
+class EssentialUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ['username', 'profile_image']
+        
+        
 class MinimalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_image']
         
 class BaseUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -125,7 +161,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = ['display_name', 'bio', 'username_anon', 'username_pro', 'role', 'profile_image']
+        fields = ['display_name', 'about_me', 'username_anon', 'username_pro', 'role', 'profile_image']
 
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():
@@ -138,4 +174,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 class UserProfilePictureUpdateSerializer(serializers.Serializer):
     profile_picture = serializers.ImageField()
+    
+    
     

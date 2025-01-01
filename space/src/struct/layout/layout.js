@@ -8,19 +8,19 @@ import API_BASE_URL from '../../apiUrl';
 import Navbar from '../navbar/navbar';
 import Sidebar from '../sidebar/Sidebar';
 import NotificationsMenu from '../navbar/notificationsMenu/notificationsMenu';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { unstable_useBlocker, useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from '../navbar/profileMenu/profileMenu';
 import AppMenu from '../navbar/appMenu/appMenu';
 import useApi from '../../utils/useApi';
+import { useSubApp } from '../../context/SubAppContext';
 
 
 function Layout({ children, pageName }) {
-    const { authState } = useAuth();
-    const config = getConfig(authState);
     const navigate = useNavigate();
+    const { authState } = useAuth();
     const location = useLocation();
-    const { apiCall } = useApi();
-
+    const { callApi } = useApi();
+    const { activeSubApp, setActiveSubApp } = useSubApp();
     const [menuOpen, setMenuOpen] = useState(false);
     const [appMenuOpen, setAppMenuOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,10 +29,37 @@ function Layout({ children, pageName }) {
     const [notificationsList, setNotificationsList] = useState([]);
     const [countNotifications, setCountNotifications] = useState(0);
 
+    const [profileData, setProfileData] = useState();
+
+
+    useEffect(() => {
+            if (window.location.pathname.includes('openspace')) {
+                setActiveSubApp('openspace');
+            } else if (window.location.pathname.includes('home')) {
+                setActiveSubApp('home');
+            }
+        }, [window.location.pathname, activeSubApp, setActiveSubApp, navigate]);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const response = await callApi(`profile/get-user-info/`);
+                console.log(response.data);
+                setProfileData(response.data);
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+
+        if (authState.isAuthenticated) {
+            fetchProfileData();
+        }
+
+    }, [authState.isAuthenticated, setProfileData]);
 
     const fetchNotifications = async () => {
         try {
-            const response = await apiCall(`get-notifications/`);
+            const response = await callApi(`get-notifications/`);
             setNotificationsList(response.data);
             setCountNotifications(response.data.length);
             // console.log(response.data);
@@ -84,28 +111,29 @@ function Layout({ children, pageName }) {
     return (
         <div className={`parent-layout`} onClick={() => handleCloseOverlays()}>
             {/* <div className='layout'> */}
-                <div className='layout-navbar'>
-                    <Navbar
-                        handleProfileMenuToggle={handleProfileMenuToggle}
-                        handleAppMenuToggle={handleAppMenuToggle}
-                        handleNotificationsMenuToggle={handleNotificationsMenuToggle}
-                        sidebarOpen={sidebarOpen}
-                        setSidebarOpen={setSidebarOpen}
-                    />
-                </div>
-                <div className='layout-page'>
-                    {/* <div className='layout-page-content'> */}
-                        {children}
-                    {/* </div> */}
-                    {/* Footer */}
+            <div className='layout-navbar'>
+                <Navbar
+                    handleProfileMenuToggle={handleProfileMenuToggle}
+                    handleAppMenuToggle={handleAppMenuToggle}
+                    handleNotificationsMenuToggle={handleNotificationsMenuToggle}
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                    profileData={profileData}
+                />
+            </div>
+            <div className='layout-page'>
+                {/* <div className='layout-page-content'> */}
+                {children}
+                {/* </div> */}
+                {/* Footer */}
                 {/* <footer className="footer">
                     <p>© {new Date().getFullYear()} 4Space. All Copyrights Reserved.</p>
                 </footer> */}
-                </div>
-                {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
-                {menuOpen && <ProfileMenu />}
-                {appMenuOpen && <AppMenu />}
-                {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
+            </div>
+            {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
+            {menuOpen && <ProfileMenu profileData={profileData} />}
+            {appMenuOpen && <AppMenu />}
+            {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
 
             {/* </div> */}
         </div>

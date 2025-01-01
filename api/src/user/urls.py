@@ -14,4 +14,5 @@ urlpatterns = [
     
     # Settings
     path('settings/toggle-profile-visibility/', views.toggle_profile_visibility, name='toggle-profile-visibility'),
+    path('settings/edit-basic-info/', views.edit_basic_info, name='edit-basic-info'),
 ]

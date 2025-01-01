@@ -17,14 +17,15 @@
 
 .toolbar {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start !important;
+    align-items: center !important;
     gap: 0.2em;
     border-bottom: 1px solid rgb(85, 85, 85, 0.5);
-    padding: 6px 5px;
-    min-height: 40px;
+    padding: 5px 5px;
+    /* height: 40px; */
     width: 100%;
     box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 .button {
@@ -72,4 +73,48 @@
     padding: 6px 8px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+
+
+
+.editor-selector {
+    flex-grow: 1;
+    min-width: 75px;
+    position: relative;
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    box-sizing: border-box;
+}
+.editor-selector select {
+    background-color: rgba(255, 0, 0, 0);
+    width: 100%;
+    padding: 0.5em 0.5em !important;
+    height: 100%;
+    margin: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid rgba(204, 204, 204, 0.353);
+    outline: none;
+    cursor: pointer;
+    font-size: 0.8em;
+    color: rgb(187, 187, 187);
+}
+.editor-selector select:focus {
+    box-shadow: none;
+    border: 1px solid rgb(0, 187, 190);
+}
+
+.editor-selector::after {
+    content: "▼";
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.71);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-40%);
+    pointer-events: none;
 }

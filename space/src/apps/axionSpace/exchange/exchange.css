@@ -1,0 +1,677 @@
+.exchange-page {
+    width: 100%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 4px 13px 0px;
+    background-color: rgba(255, 0, 0, 0);
+    box-sizing: border-box;
+}
+
+.exchange-page-inner {
+    box-sizing: border-box;
+    width: 78.8%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: rgb(0, 255, 8, 0);
+    padding: 0px 10px;
+}
+
+.exchange-page-sidebar {
+    background-color: rgba(128, 0, 128, 0);
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex-shrink: 0;
+    perspective: 1000px;
+    position: fixed;
+    left: 15px;
+}
+
+.exchange-page-sidebar-inner {
+    width: 100%;
+    height: 89vh;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.043);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.4s ease-in-out;
+    perspective: 1000px;
+}
+
+.exchange-page-sidebar-inner:hover {
+    transform: rotateY(9deg);
+}
+
+.exchange-sidebar-section:first-child {
+    margin-top: 15px;
+}
+
+.exchange-sidebar-section {
+    background-color: rgba(0, 255, 191, 0);
+    width: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-family: 'Orbitron', monospace;
+}
+
+.exchange-sidebar-section-title {
+    background-color: rgba(55, 85, 85, 0);
+    width: 98%;
+    height: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-self: center;
+    margin-bottom: 9px;
+    margin-top: 4px;
+    color: rgb(190, 190, 190);
+    font-size: 15px;
+}
+
+.exchange-sidebar-section-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    background-color: rgba(43, 61, 61, 0);
+    list-style: none;
+    box-sizing: border-box;
+}
+
+.exchange-sidebar-section-content-stats {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 128, 0, 0);
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.exchange-sidebar-section-content-stats div p {
+    margin: 0;
+    padding: 0;
+    color: rgb(197, 197, 197);
+}
+.exchange-sidebar-section-content-stats div p:first-child {
+    font-size: 18px;
+}
+.exchange-sidebar-section-content-stats div p:last-child {
+    font-size: 12px;
+}
+.exchange-sidebar-section-content-stats div {
+    height: 85%;
+    min-width: 75px;
+    /* padding: 5px; */
+    box-sizing: border-box;
+    background-color: rgba(255, 0, 0, 0);
+    font-size: 12px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    background-color: rgba(128, 128, 128, 0.145);
+}
+
+.exchange-sidebar-section-content ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    background-color: rgba(0, 0, 255, 0);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.exchange-sidebar-section-content li {
+    background-color: rgba(255, 0, 0, 0);
+    width: 98%;
+    height: 21px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    list-style: none;
+    border-radius: 6px;
+    font-size: 13px;
+    /* padding: 5px 13px; */
+}
+
+
+.exchange-sidebar-section-content li a.active {
+    font-weight: bold;
+    background-color: rgba(128, 128, 128, 0.091);
+}
+
+.exchange-sidebar-section-content li a {
+    color: rgb(183, 183, 183);
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 255, 0);
+    padding: 5px 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.exchange-sidebar-section-content li a:hover {
+    background-color: rgba(128, 128, 128, 0.251);
+    cursor: pointer;
+}
+
+.exchange-sidebar-section-content li a p {
+    margin: 0;
+    padding: 0;
+
+}
+
+
+.exchange-sidebar-section-content input {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.exchange-sidebar-section-content button {
+    width: 100%;
+    height: 35px;
+    border-radius: 8px;
+    border: 0;
+    border-radius: 6px;
+    background-color: rgba(75, 0, 88, 0.701);
+    background: linear-gradient(135deg, rgba(21, 0, 128, 0.686), rgba(0, 210, 185, 0.73));
+    color: white;
+    font-size: 15px;
+    transition: background 0.3s ease;
+    box-shadow: 0px 0px 0px 0px rgba(1, 188, 175, 0);
+    font-family: 'Orbitron', monospace;
+}
+.exchange-sidebar-section-content button:hover {
+    background-color: black;
+    background: linear-gradient(135deg, rgb(21, 0, 128), rgba(0, 210, 185));
+    cursor: pointer;
+}
+
+
+.exchange-page-content {
+    background-color: rgba(0, 0, 255, 0);
+    /* flex-grow: 1; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    justify-content: flex-start;
+    /* margin-left: 290px; */
+}
+
+.exchange-page-header {
+    width: 100%;
+    height: 45px;
+    display: flex;
+    background-color: rgba(255, 255, 0, 0);
+}
+
+.exchange-page-info {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgb(0, 255, 174, 0);
+}
+
+.exchange-page-entries {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+}
+
+
+.exchange-page-header-inner {
+    width: 100%;
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+.exchange-page-header-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(65, 65, 65, 0.309);
+}
+
+.exchange-page-header-title {
+    background-color: rgba(0, 128, 0, 0);
+    max-width: 500px;
+    margin-left: 15px;
+    color: rgb(208, 208, 208);
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.exchange-page-header-tabs {
+    margin-right: 15px;
+    flex-grow: 1;
+    min-width: 100px;
+    height: 100%;
+    background-color: rgba(0, 128, 0, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+.exchange-page-header-tabs-inner {
+    background-color: rgba(0, 0, 255, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 15px;
+}
+.exchange-page-header-tabs-inner p {
+    font-size: 12px;
+    color: rgb(171, 171, 171);
+    display: flex;
+    flex-direction: column;
+}
+.exchange-page-header-tabs-inner p span {
+    font-size: 11px;
+    color: rgb(136, 136, 136);
+}
+
+.exchange-page-info-inner {
+    width: 100%;
+    height: 100% !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background-color: rgba(0, 128, 0, 0);
+}
+
+
+.exchange-header-description-card,
+.exchange-header-control-card,
+.exchange-header-charts-card,
+.exchange-header-metrics-card {
+    background-color: rgba(65, 65, 65, 0.209);
+    /* box-shadow: 0 3px 4px 2px rgba(128, 128, 128, 0.243); */
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+.exchange-header-description-card:hover,
+.exchange-header-charts-card:hover,
+.exchange-header-metrics-card:hover {
+    transform: scale(1.025);
+}
+
+
+.exchange-header-description-control-card {
+    flex-grow: 1;
+    height: 100%;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    gap: 15px;
+    /* overflow-y: auto; */
+}
+.exchange-header-control-card {
+    width: 100%;
+    /* height: 50px; */
+    padding: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0.243);
+}
+.exchange-header-control-btn {
+    margin-left: 8px;
+    background-color: rgba(0, 128, 0, 0);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 8px;
+    border: 0;
+}
+.exchange-header-control-btn:hover {
+    background-color: rgba(128, 128, 128, 0.17);
+    cursor: pointer;
+}
+.exchange-header-control-btn p {
+    font-size: 12px;
+    color: rgb(143, 143, 143);
+    margin: 0;
+    padding: 0;
+}
+.exchange-header-control-btn .icon-style {
+    font-size: 20px;
+    padding: 0;
+    margin: 0;
+    color: rgb(166, 166, 166);
+}
+
+.exchange-header-description-card {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* align-items: flex-start; */
+    overflow: hidden;
+    box-shadow: 0 0 0 0 rgba(128, 128, 128, 0);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.exchange-header-description-card-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(0, 128, 0, 0);
+    height: 13px;
+    width: 96%;
+}
+.exchange-header-description-card h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    color: rgb(198, 198, 198);
+}
+
+
+.exchange-header-description-card-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 8px 8px;
+
+}
+.exchange-header-description-card-inner p {
+    color: rgba(192, 192, 192, 0.891);
+    font-family: 'Roboto Mono', monospace;
+}
+
+.exchange-header-charts-card {
+    width: 250px;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exchange-header-charts-card-inner {
+    width: 90%;
+    height: 90%;
+}
+
+
+.exchange-header-metrics-card {
+    width: 250px;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.metric-card:first-child {
+    margin-top: 10px;
+}
+
+.metric-card {
+    width: 86%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    padding: 0px 9px;
+    background-color: rgba(149, 149, 149, 0.08);
+}
+
+.metric-card:hover {
+    background-color: rgba(149, 149, 149, 0.364);
+    cursor: pointer;
+}
+
+.metric-card-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.metric-card h3 {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.metric-card p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.metric-card svg {
+    font-size: 1.2rem;
+}
+
+
+
+.exchange-page-entries-inner {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 255, 0);
+}
+
+
+.exchange-page-per-entry {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(0, 128, 0, 0);
+}
+.exchange-page-per-entry-content {
+    background-color: rgba(65, 65, 65, 0.209);
+    backdrop-filter: blur(100px);
+    border-radius: 8px;
+    width: 92%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.exchange-page-per-entry-content:hover {
+    background-color: rgba(65, 65, 65, 0.411);
+    cursor: pointer;
+}
+
+.exchange-page-per-entry-content-inner {
+    width: 96%;
+    height: 86%;
+    background-color: rgba(255, 0, 0, 0.);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Orbitron', monospace;
+    word-spacing: -2px;
+}
+
+.exhcange-page-per-entry-title {
+    width: 100%;
+    min-height: 20px;
+    max-height: 40px;
+    background-color: rgba(0, 128, 0, 0);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: rgb(202, 202, 202);
+    font-size: 14px;
+    padding: 6px 4px;
+}
+
+.exhcange-page-per-entry-title h3 {
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0;
+    margin: 0;
+}
+
+.exhcange-page-per-entry-content {
+    width: 100%;
+    flex-grow: 1;
+    background-color: rgb(107, 210, 107, 0);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-top: 1px solid gray;
+    padding: 10px 0px;
+
+    display: -webkit-box;
+    line-clamp: 7;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.exhcange-page-per-entry-content p {
+    padding: 0;
+    margin: 0;
+    color: rgb(169, 169, 169);
+    font-size: 13px;
+}
+
+
+.exchange-page-per-entry-metrics {
+    background-color: rgba(65, 65, 65, 0.300);
+    backdrop-filter: blur(100px);
+    border-radius: 8px;
+    flex-grow: 1;
+    height: 100%;
+    padding: 5px 4px;
+    box-sizing: border-box;
+}
+
+.exchange-page-per-entry-metrics-inner {
+    background-color: rgba(0, 128, 0, 0);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0px;
+    box-sizing: border-box;
+}
+
+.exchange-page-per-entry-controls-btn {
+    color: rgb(229, 229, 229);
+    padding: 1em 1em;
+    border-radius: 8px;
+    background-color: rgba(186, 186, 186, 0.0);
+    border: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.exchange-page-per-entry-controls-btn:hover {
+    background-color: rgba(88, 88, 88, 0.74);
+    cursor: pointer;
+}
+
+.exchange-page-per-entry-controls-btn .icon-style {
+    font-size: 1.4em;
+}
+.exchange-page-per-entry-controls-btn p {
+    color: rgb(214, 214, 214);
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+}
+
+
+.exchange-page-metrics {
+    width: 98%;
+    flex-grow: 1;
+    /* height: 80.4vh; */
+    background-color: rgba(65, 65, 65, 0.209);
+    box-shadow: 0 0px 0px 0px rgba(128, 128, 128, 0);
+    backdrop-filter: blur(100px);
+    border-radius: 10px;
+}

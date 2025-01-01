@@ -8,16 +8,20 @@ const FullProfileRightPanel = ({ profileInfo }) => {
 
     const tabs = [
         { 
-            label: 'Posts', 
+            label: 'Axion Pings', 
             component: <FullProfilePostsTab />,
             condition: profileInfo?.stats?.posts_count > 0,
         },
         { 
-            label: 'Entries', 
+            label: 'Qunata Pulses', 
             component: <FullProfileEntriesTab profileInfo={profileInfo} />,
             condition: profileInfo?.stats?.entries_count > 0,
         },
-        // { label: 'Spaces', component: <ProfileSpaces /> },
+        { 
+            label: 'Raidan Flares', 
+            component: <FullProfileEntriesTab profileInfo={profileInfo} />,
+            condition: profileInfo?.stats?.entries_count > 0,
+        },
     ];
 
     const filteredTabs = tabs.filter(tab => tab.condition === undefined || tab.condition);
@@ -27,8 +31,6 @@ const FullProfileRightPanel = ({ profileInfo }) => {
     const handleTabClick = (index) => {
         setActiveTab(index);
     };
-
-    console.log(profileInfo);
 
     return (
         <div className="full-profile-right-panel-inner">

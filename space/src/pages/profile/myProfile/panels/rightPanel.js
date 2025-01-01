@@ -8,8 +8,22 @@ import ProfileEntries from "../tabs/entries/entries";
 const RightPanel = ({ profileInfo }) => {
 
     const tabs = [
-        { label: 'Posts', component: <ProfilePosts /> },
-        { label: 'Entries', component: <ProfileEntries profileInfo={profileInfo} /> },
+        { 
+            label: 'Pings', 
+            component: <ProfilePosts />,
+            condition: profileInfo?.stats?.entries_count > 0,
+        }, // AxionSpace (Twitter-like)
+        { 
+            label: 'Flares', 
+            component: <ProfilePosts />,
+            condition: profileInfo?.stats?.entries_count > 0,
+        }, // RadianSpace (Insta-like)
+        { 
+            label: 'Pulses', 
+            component: <ProfileEntries profileInfo={profileInfo} />,
+            condition: profileInfo?.stats?.entries_count > 0,
+        }, // QuantaSpace (Reddit-like)
+        
         { label: 'Spaces', component: <ProfileSpaces /> },
     ];
 
@@ -23,6 +37,7 @@ const RightPanel = ({ profileInfo }) => {
     return (
         <div className="my-profile-right-panel-inner">
             <div className="my-profile-right-top-panel">
+                <div className="my-profile-right-top-panel-inner">
                 <ul className="my-profile-right-panel-tabs">
                     {tabs.map((tab, index) => (
                         <li
@@ -34,6 +49,12 @@ const RightPanel = ({ profileInfo }) => {
                         </li>
                     ))}
                 </ul>
+                {tabs[activeTab]?.label === 'Entries' &&
+                    <div className="my-profile-right-top-panel-other-btns">
+                        <button>Create Entry</button>
+                    </div>
+                }
+                </div>
                 <div className="my-profile-right-panel-info">
                     <div>
                         <p>Member Since</p>
@@ -42,7 +63,7 @@ const RightPanel = ({ profileInfo }) => {
                 </div>
             </div>
             <div className="my-profile-right-bottom-panel">
-                {tabs[activeTab].component && tabs[activeTab].component}
+                {tabs[activeTab]?.component}
             </div>
         </div>
     )

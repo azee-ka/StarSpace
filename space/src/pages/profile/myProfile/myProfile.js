@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import './myProfile.css';
 import useApi from "../../../utils/useApi";
 import ProfilePicture from "../../../utils/profilePicture/getProfilePicture";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import RightPanel from "./panels/rightPanel";
 import { useAuth } from "../../../reducers/auth/useAuth";
+import { FaCog } from "react-icons/fa";
 
 const MyProfile = ({ username, fetchProfileData, isCustomizing }) => {
+    const navigate = useNavigate();
     const { authState } = useAuth();
     const [profileInfo, setProfileInfo] = useState({});
 
@@ -18,6 +20,7 @@ const MyProfile = ({ username, fetchProfileData, isCustomizing }) => {
         <div className="my-profile-page">
             <div className="my-profile-left-panel">
                 <div className="my-profile-user-info">
+                    <FaCog className="icon-style" onClick={() => navigate('/settings#profile-basic-info')} />
                     <div className="my-profile-user-profile-picture">
                         <ProfilePicture src={profileInfo?.basicInfo?.profile_image} />
                     </div>

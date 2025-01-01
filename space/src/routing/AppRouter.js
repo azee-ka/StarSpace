@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from '../reducers/auth/useAuth'; // assuming your auth hook exists
 import Layout from '../struct/layout/layout';
 
@@ -8,56 +8,89 @@ import RegisterPage from '../pages/auth/Register/register';
 
 import FrontPage from '../pages/frontPage/frontpage';
 
-import Timeline from '../apps/openSpace/timeline/timeline';
-import CreateExchange from '../apps/openSpace/createExchange/createExchange';
-import ExchangePage from '../apps/openSpace/exchange/exchange';
+import Timeline from '../apps/axionSpace/timeline/timeline';
+import CreateExchange from '../apps/axionSpace/createExchange/createExchange';
+import ExchangePage from '../apps/axionSpace/exchange/exchange';
 
-import OpenSpace from '../apps/openSpace/explore/openSpace';
+import OpenSpace from '../apps/axionSpace/explore/explore';
 import Profile from '../pages/profile/profile';
 import { useSubApp } from '../context/SubAppContext';
-import Entry from '../apps/openSpace/entry/entry';
+import Entry from '../apps/axionSpace/entry/entry';
 import Settings from '../pages/settings/settings';
 import MyProfile from '../pages/profile/myProfile/myProfile';
-
-
-
-const privateRoutes = {
-    openspace: [
-        { name: 'OpenSpace Dasboard', path: '/', component: OpenSpace, key: 'OpenSpaceDasboard' },
-        { name: 'OpenSpace Dasboard', path: '/openspace', component: Timeline, key: 'OpenSpaceDasboard' },
-        { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
-        { name: 'Create Exchange', path: '/openspace/create-exchange', component: CreateExchange, key: 'CreateExchange' },
-        { name: 'Exchange', path: '/openspace/exchange/:exchangeId', component: ExchangePage, key: 'ExchangePage' },
-        { name: 'Exchange', path: '/openspace/entry/:entryId', component: Entry, key: 'EntryPage' },
-        { name: 'Profile', path: '/profile/:username', component: Profile, key: 'Profile' },
-        { name: 'My Profile', path: '/profile', component: Profile, key: 'MyProfile' },
-        { name: 'Settings', path: '/settings', component: Settings, key: 'Settings' },
-    ],
-
-    home: [
-        { name: 'Explore', path: '/', component: OpenSpace, key: 'Timeline' },
-        { name: 'Timeline', path: '/openspace/timeline', component: Timeline, key: 'Timeline' },
-        { name: 'Explore', path: '/openspace/explore', component: OpenSpace, key: 'Explore' },
-        { name: 'My Profile', path: '/profile', component: Profile, key: 'MyProfile' },
-        { name: 'Profile', path: '/profile/:username', component: Profile, key: 'Profile' },
-        { name: 'Settings', path: '/settings', component: Settings, key: 'Settings' },
-    ],
-};
-
-const publicRoutes = [
-    { name: 'Login', path: '/login', component: LoginPage, key: 'Login' },
-    { name: 'Register', path: '/register', component: RegisterPage, key: 'Register' },
-    { name: 'Home', path: '/', component: FrontPage, key: 'FrontPage' },
-    { name: 'Home', path: '/home', component: FrontPage, key: 'FrontPage' },
-];
+import PageViewer from '../pages/config/pageViewer/pageViewer';
+import PageEditor from '../pages/config/pageEditor/pageEditor';
+import PageManager from '../pages/config/pageManager/pageManager';
+import CreatePacketOverlay from '../apps/quantaSpace/createPacket/createPacket';
+import QunataTimeline from '../apps/quantaSpace/timeline/timeline';
+import QunataExplore from '../apps/quantaSpace/explore/explore';
+import CreateFlarePage from '../apps/radianSpace/createFlare/createFlare';
+import RadianExplore from '../apps/radianSpace/explore/explore';
+import RadianTimeline from '../apps/radianSpace/timeline/timeline';
+import AxionTimeline from '../apps/axionSpace/timeline/timeline';
+import AxionExplore from '../apps/axionSpace/explore/explore';
+import AxionDashboard from '../apps/axionSpace/dashboard/dashboard';
+import QuantaDashboard from '../apps/quantaSpace/dashboard/dashboard';
+import RadianDashboard from '../apps/radianSpace/dashboard/dashboard';
+import Packet from '../apps/quantaSpace/packet/packet';
 
 
 const AppRouter = () => {
     const { authState, isLoading } = useAuth();
     const isAuthenticated = authState.isAuthenticated;
-    const { activeSubApp } = useSubApp();
+    const { activeSubApp, setActiveSubApp } = useSubApp()
 
-    // console.log(activeSubApp);
+    useEffect(() => {
+        if (window.location.pathname.includes('openspace')) {
+            setActiveSubApp('openspace');
+        } else if (window.location.pathname.includes('home')) {
+            setActiveSubApp('home');
+        }
+    }, [window.location.pathname, activeSubApp, setActiveSubApp]);
+
+    const privateRoutes = {
+        AxionSpace: [
+            { name: 'AxionSpace Dasboard', path: '/', component: <AxionDashboard />, key: 'AxionDashboard' },
+            { name: 'AxionSpace Dasboard', path: '/axionspace', component: <AxionDashboard />, key: 'AxionDashboard' },
+            { name: 'AxionSpace Explore', path: '/axionspace/timeline', component: <AxionExplore />, key: 'AxionExplore' },
+            { name: 'Create Exchange', path: '/axionspace/create-exchange', component: <CreateExchange />, key: 'CreateExchange' },
+            { name: 'Exchange', path: '/axionspace/exchange/:exchangeId', component: <ExchangePage />, key: 'ExchangePage' },
+            { name: 'Entry', path: '/axionspace/entry/:entryId', component: <Entry />, key: 'EntryPage' },
+        ],
+        QuantaSpace: [
+            { name: 'QuantaSpace Dasboard', path: '/', component: <QuantaDashboard />, key: 'QuantaDashboard' },
+            { name: 'QuantaSpace Dasboard', path: '/quantaspace', component: <QuantaDashboard />, key: 'QuantaDashboard' },
+            { name: 'QuantaSpace Timeline', path: '/quantaspace/timeline', component: <QunataTimeline />, key: 'QuantaTimeline' },
+            { name: 'QuantaSpace Explore', path: '/quantaspace/explore', component: <QunataExplore />, key: 'QuantaExplore' },
+            { name: 'Create Packet', path: '/quantaspace/create-packet', component: <CreatePacketOverlay />, key: 'CreatePacket' },
+            { name: 'QuantaSpace Packet', path: '/quantaspace/packet/:packetId', component: <Packet />, key: 'QuantaPacket' },
+        ],
+        RadianSpace: [
+            { name: 'RadianSpace Dasboard', path: '/', component: <RadianDashboard />, key: 'RadianDashboard' },
+            { name: 'RadianSpace Dasboard', path: '/radianspace', component: <RadianDashboard />, key: 'RadianDashboard' },
+            { name: 'RadianSpace Timeline', path: '/radianspace/timeline', component: <RadianTimeline />, key: 'RadianTimeline' },
+            { name: 'RadianSpace Explore', path: '/radianspace/explore', component: <RadianExplore />, key: 'RadianExplore' },
+            { name: 'Create Packet', path: '/radianspace/create-flare', component: <CreateFlarePage />, key: 'CreateFlare' },
+        ],
+        Central: [
+
+            { name: 'PageViewer', path: '/page', component: <PageViewer />, key: 'PageViewer' },
+            { name: 'PageCustom', path: '/custom', component: <PageManager />, key: 'PageCustomizer' },
+        ],
+        Universal: [
+            { name: 'Profile', path: '/profile/:username', component: <Profile />, key: 'Profile' },
+            { name: 'My Profile', path: '/profile', component: <Profile />, key: 'MyProfile' },
+            { name: 'Settings', path: '/settings', component: <Settings />, key: 'Settings' },
+        ],
+    };
+
+    const publicRoutes = [
+        { name: 'Login', path: '/login', component: <LoginPage />, key: 'Login' },
+        { name: 'Register', path: '/register', component: <RegisterPage />, key: 'Register' },
+        { name: 'Home', path: '/', component: <FrontPage />, key: 'FrontPage' },
+        { name: 'Home', path: '/home', component: <FrontPage />, key: 'FrontPage' },
+    ];
+
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -67,7 +100,16 @@ const AppRouter = () => {
 
     const renderPrivateRoutes = () => {
         const currentRoutes = privateRoutes[activeSubApp] || [];
-        return currentRoutes.map((route, index) => {
+        // const allRoutes = [...currentRoutes, ...privateRoutes['Universal']];
+        const allRoutes = [
+            ...privateRoutes['AxionSpace'],
+            ...privateRoutes['QuantaSpace'],
+            ...privateRoutes['RadianSpace'],
+            ...privateRoutes['Central'],
+            ...privateRoutes['Universal'],
+        ];
+
+        return allRoutes.map((route, index) => {
             const Component = route.component;
             return (
                 <Route
@@ -78,9 +120,8 @@ const AppRouter = () => {
                             key={`${index}-${route.path}`}
                             className={route.path.substring(1)}
                             pageName={route.pageName}
-                        // showSidebar={route.showSidebar}
                         >
-                            <Component />
+                            {Component}
                         </Layout>
                     }
                 />
@@ -105,7 +146,7 @@ const AppRouter = () => {
                                         className={`${route.path.substring(1)}`}
                                         pageName={route.pageName}
                                     >
-                                        <Component />
+                                        {Component}
                                     </Layout>
                                 }
                             />

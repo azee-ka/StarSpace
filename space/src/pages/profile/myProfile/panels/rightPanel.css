@@ -19,6 +19,35 @@
     padding: 0 15px 0 0px;
     box-sizing: border-box;
 }
+.my-profile-right-top-panel-inner {
+    height: 100%;
+    width: 72%;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    justify-content: space-between;
+}
+
+.my-profile-right-top-panel-other-btns {
+    background-color: rgba(0, 128, 0, 0);
+    height: 100%;
+}
+.my-profile-right-top-panel-other-btns button {
+    background-color: rgba(0, 222, 211, 0.379);
+    border: 0;
+    padding: 0px 16px;
+    height: 100%;
+    font-size: 1.05em;
+    color: white;
+    box-sizing: border-box;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-family: monospace;
+}
+.my-profile-right-top-panel-other-btns button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 222, 211, 0.083);
+    box-shadow: 0 0 3px 3px rgba(0, 222, 211, 0.379);
+}
 
 .my-profile-right-panel-tabs {
     display: flex;
@@ -80,6 +109,7 @@
     align-items: center;
     padding: 9px 14px;
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 .my-profile-right-panel-info div {
     display: flex;

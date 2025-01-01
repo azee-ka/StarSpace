@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from .models import BaseUser
-from .serializers import BaseUserSerializer, UserUpdateSerializer, UserProfilePictureUpdateSerializer, UserCreateSerializer, MinimalUserSerializer, MyProfileSerializer, PartialProfileSerializer, FullProfileSerializer
+from .serializers import MinimalUserSerializer, MyProfileSerializer, PartialProfileSerializer, FullProfileSerializer, EditUserInfoSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
@@ -56,6 +56,28 @@ def user_profile_view(request, username):
         }
     }
     return Response(response_data, status=200)
+
+
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def edit_basic_info(request):
+    base_user = request.user
+
+    if request.method == 'GET':
+        serializer = EditUserInfoSerializer(base_user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        serializer = EditUserInfoSerializer(base_user, data=request.data, partial=True)
+        if serializer.is_valid():
+            if 'profile_image' in request.FILES:
+                base_user.profile_image = request.FILES['profile_image']
+                base_user.save()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

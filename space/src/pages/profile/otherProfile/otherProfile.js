@@ -17,7 +17,7 @@ const OtherProfile = ({ username, fetchProfileData, enforceViewType = '', isCust
 
     useEffect(() => {
         fetchProfileData(username, setProfileInfo);
-        console.log(profileInfo);
+        // console.log(profileInfo);
     }, []);
 
 
@@ -28,7 +28,7 @@ const OtherProfile = ({ username, fetchProfileData, enforceViewType = '', isCust
             profileInfo?.view_type === 'full' ? (
                 <FullProfile profileInfo={profileInfo} isCustomizing={isCustomizing} />
             ) : (
-                <div>Invalid</div>
+                <div>Loading...</div>
             )
         )
     ) : (
@@ -38,7 +38,7 @@ const OtherProfile = ({ username, fetchProfileData, enforceViewType = '', isCust
             enforceViewType === 'full' ? (
                 <FullProfile profileInfo={profileInfo} isCustomizing={isCustomizing} />
             ) : (
-                <div>Invalid</div>
+                <div>Loading...</div>
             )
         )
     )

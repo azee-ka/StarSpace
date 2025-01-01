@@ -6,7 +6,7 @@ const SubAppContext = createContext();
 export const SubAppProvider = ({ children }) => {
     const [activeSubApp, setActiveSubApp] = useState(() => {
         // Load from localStorage, default to "home"
-        return localStorage.getItem("activeSubApp") || "home";
+        return localStorage.getItem("activeSubApp") || "Central";
     });
 
     // Update localStorage whenever activeSubApp changes

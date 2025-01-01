@@ -4,29 +4,19 @@ import { useNavigate } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
 import './navbar.css';
 import { useAuth } from '../../reducers/auth/useAuth';
-import API_BASE_URL from '../../apiUrl';
-import axios from 'axios';
-// import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faEdit, faPlus, faCompass, faCalculator, faTachometerAlt, faChartLine, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from '../../utils/profilePicture/getProfilePicture';
-import ProfileMenu from './profileMenu/profileMenu';
-import NotificationsMenu from './notificationsMenu/notificationsMenu';
-import getConfig from '../../config';
 import { useSubApp } from '../../context/SubAppContext';
 import NineDotIcon from '../../utils/nine-dot';
-import AppMenu from './appMenu/appMenu';
 import SidebarMenuIcon from './iconMenu';
 import appLogo from '../../assets/logo.png';
 import appLogoComplete from '../../assets/logo-comp.png';
 
-const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount }) => {
-    const { authState, logout } = useAuth();
-    const config = getConfig(authState);
+const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount, profileData }) => {
+    const { authState } = useAuth();
 
     const { activeSubApp, setActiveSubApp } = useSubApp();
-
-    const [profileData, setProfileData] = useState();
 
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
 
@@ -63,21 +53,36 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
     }, []);
 
 
+
     const publicPagesNavbar = [
         { path: '/home', label: 'Home', id: 'navbar-phrase', role: 'public' },
         { path: '/login', label: 'Sign In', id: 'navbar-access', role: 'public' },
     ];
 
     const privatePagesNavbar = {
-        openspace: [
-            { label: "Dashboard", path: "/openspace" },
-            { label: "Timeline", path: "/openspace/timeline" },
-            { label: "Create Exchange", path: "/openspace/create-exchange" },
-            { label: "Explore", path: "/openspace/explore" },
+        'RadianSpace': [
+            { label: "Radian Dashboard", path: "/radianspace" },
+            { label: "Radian Timeline", path: "/radianspace/timeline" },
+            { label: "Radian Explore", path: "/radianspace/explore" },
+            { label: "Create Flare", path: "/radianspace/create-flare" },
         ],
-        home: [
+        'QuantaSpace': [
+            { label: "Quanta Dashboard", path: "/quantaspace" },
+            { label: "Quanta Timeline", path: "/quantaspace/timeline" },
+            { label: "Quanta Explore", path: "/quantaspace/explore" },
+            { label: "Create Packet", path: "/quantaspace/create-packet" },
+        ],
+        'AxionSpace': [
+            { label: "Axion Dashboard", path: "/axionspace" },
+            { label: "Axion Timeline", path: "/axionspace/timeline" },
+            { label: "Create Exchange", path: "/axionspace/create-exchange" },
+            { label: "Axion Explore", path: "/axionspace/explore" },
+        ],
+        'Central': [
             { label: "Dashbaord", path: "/" },
             { label: "Metrics", path: "/metrics" },
+            { label: 'PageViewer', path: "/page" },
+            { label: 'PageCustomizer', path: "/custom" },
         ],
     };
 
@@ -97,16 +102,15 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
 
     return (
         <div className='navbar-container'>
-        {/* <div className='navbar-conatiner neon-background'> */}
             <div className='navbar-left'>
                 <div className='navbar-icon-logo-container'>
                     {authState.isAuthenticated &&
                         <SidebarMenuIcon sidebarOpen={sidebarOpen} handleHighOrderSidebarToggle={handleHighOrderSidebarToggle} />
                     }
                     <div className='navbar-logo-container'>
-                        <Link to={`/${activeSubApp === 'home' ? '' : activeSubApp.toLowerCase()}`}>
+                        <Link to={`/${activeSubApp === 'Central' ? '' : activeSubApp.toLowerCase()}`}>
                             <img src={appLogo} />
-                            <h2 className='neon-text'>4Space<span></span></h2>
+                            <h2 className='neon-text'>4Space<span>{activeSubApp}</span></h2>
                             <img src={appLogoComplete} className='fade-image' />
                         </Link>
                     </div>
@@ -173,7 +177,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <button onClick={handleProfileMenuToggle}>
-                                    <ProfilePicture src={profileData} />
+                                    <ProfilePicture src={profileData?.profile_image} />
                                 </button>
                             </li>
                         </ul>
