@@ -3,43 +3,41 @@ from django.utils import timezone
 from ..user.models import BaseUser
 import uuid
 
-def upload_to(instance, filename):
-    return f'flares/{instance.author.username}/{filename}'
+
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    flare = models.ForeignKey('Flare', related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user.username}"
+
+
+class MediaFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file = models.FileField(upload_to='post_media/')
+    media_type = models.CharField(max_length=10, default="default")
+    order = models.IntegerField(default=0)
 
 class Flare(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     author = models.ForeignKey(BaseUser, on_delete=models.SET_NULL, null=True, related_name='flares')
-    image = models.ImageField(upload_to='flares/', null=True, blank=True)
-    video = models.FileField(upload_to='flares/', null=True, blank=True)
-    caption = models.TextField(blank=True, null=True)  # Optional caption for the flare
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    likes = models.PositiveIntegerField(default=0)  # Number of likes
-    comments_count = models.PositiveIntegerField(default=0)  # Number of comments
-    shares_count = models.PositiveIntegerField(default=0)  # Number of shares
-    location_tag = models.CharField(max_length=255, blank=True, null=True)  # Geo-location tag
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    text = models.TextField(blank=True)  # Make the text field optional
+    media_files = models.ManyToManyField(MediaFile, related_name='post_media', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes_count = models.PositiveIntegerField(default=0)  # Field for the number of likes
+    comments_count = models.PositiveIntegerField(default=0)  # Field for the number of comments
+    likes = models.ManyToManyField(BaseUser, related_name='liked_posts', blank=True)
+    dislikes_count = models.PositiveIntegerField(default=0)  # Field for the number of dislikes
+    dislikes = models.ManyToManyField(BaseUser, related_name='disliked_posts', blank=True)
 
-    # Flare Editing Features
-    filters = models.JSONField(default=dict, blank=True)  # Filters applied to the flare
-    collaborative = models.BooleanField(default=False)  # Whether the flare was created collaboratively
+    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
 
-    # Story-related Features
-    is_highlight = models.BooleanField(default=False)  # Is it added to highlights
-
-    # Voting & Reactions
-    creativity_votes = models.PositiveIntegerField(default=0)  # Votes on creativity
-    aesthetics_votes = models.PositiveIntegerField(default=0)  # Votes on aesthetics
-
-    # Related Files and Metadata
-    tags = models.JSONField(default=list, blank=True)  # Product tags, virtual overlays, etc.
-    uploaded_files = models.JSONField(default=list, blank=True)  # Additional media files
-
-    def update_metrics(self):
-        """Update metrics: likes, comments, shares, etc."""
-        self.likes = self.likes
-        self.comments_count = self.comments.count()
-        self.shares_count = self.shares.count()
-        self.save()
-
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
-        return f'Flare by {self.author.get_current_username()}'
+        return f"Post by {self.user.username}"

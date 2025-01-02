@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './createPacket.css';
 import useApi from "../../../utils/useApi";
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
 import DraftEditor from "../../../utils/editor/editor";
 import { stateToHTML } from 'draft-js-export-html';
+import { FaCross, FaTimes } from "react-icons/fa";
 
-const CreatePacketOverlay = () => {
+const CreatePacketOverlay = ({ onClose }) => {
     const { callApi } = useApi();
     const navigate = useNavigate();
     // State for various fields
@@ -21,6 +22,12 @@ const CreatePacketOverlay = () => {
     const handlePublicChange = (e) => setIsPrivate(e.target.checked);
     const handleUploadedFilesChange = (e) => setUploadedFiles([...e.target.files]);
     const handleSensitiveChange = (e) => setIsSensitive(e.target.checked);
+
+
+    useEffect(() => {
+        window.history.pushState(null, '', '/quantaspace/create-packet');
+    }, []);
+
 
     const handleSubmit = async () => {
         const formData = new FormData();
@@ -51,8 +58,11 @@ const CreatePacketOverlay = () => {
     };
 
     return (
-        <div className="create-packet-page">
-            <div className="create-packet-inner">
+        <div className="create-packet-page" onClick={onClose}>
+            <div className="create-packet-inner" onClick={(e) => e.stopPropagation(e)}>
+                <button className="create-packet-overlay-close-btn" onClick={onClose}>
+                    <FaTimes className="icon-style" />
+                </button>
                 <h3>Create Packet</h3>
                 <div className="create-packet-content-editor">
                     <DraftEditor

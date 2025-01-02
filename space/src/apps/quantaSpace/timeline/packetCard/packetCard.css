@@ -1,0 +1,105 @@
+
+
+.quanta-timeline-packet-card-per-item {
+    width: 100%;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.562);
+    padding: 0 2.5em;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+
+
+
+.quanta-timeline-packet-info {
+    padding: 0em 0em;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(128, 128, 128, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+
+.quanta-timeline-packet-author-panel {
+    width: 100%;
+    background-color: rgba(0, 0, 255, 0);
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0px;
+    box-sizing: border-box;
+}
+
+.quanta-timeline-packet-author {
+    background-color: rgba(0, 255, 255, 0);
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.quanta-timeline-packet-author img {
+    height: 100%;
+    width: auto;
+}
+
+.quanta-timeline-packet-author p {
+    margin: 0;
+    padding: 0;
+}
+
+.quanta-timeline-packet-content {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(0, 255, 255, 0);
+}
+
+.quanta-timeline-packet-interaction {
+    border-top: 1px solid rgba(128, 128, 128, 0.480);
+    background-color: rgba(255, 0, 0, 0);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0.4em 0;
+}
+
+.quanta-timeline-packet-interaction button {
+    padding: 6px;
+    margin: 0;
+    border: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-right: 1px solid rgba(128, 128, 128, 0.480);
+    background-color: rgba(127, 255, 212, 0);
+    box-sizing: border-box;
+}
+.quanta-timeline-packet-interaction button:last-child {
+    border: 0;
+}
+.quanta-timeline-packet-interaction button:hover{
+    cursor: pointer;
+}
+
+.quanta-timeline-packet-interaction button .icon-style {
+    font-size: 1.6em;
+    color: rgb(163, 163, 163);
+    transition: color 0.3s ease;
+}
+.quanta-timeline-packet-interaction button:hover .icon-style {
+    color: rgb(240, 240, 240);
+}

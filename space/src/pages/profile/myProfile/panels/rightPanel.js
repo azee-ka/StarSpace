@@ -9,22 +9,25 @@ const RightPanel = ({ profileInfo }) => {
 
     const tabs = [
         { 
-            label: 'Pings', 
+            label: 'Packets',
             component: <ProfilePosts />,
             condition: profileInfo?.stats?.entries_count > 0,
         }, // AxionSpace (Twitter-like)
         { 
-            label: 'Flares', 
+            label: 'Flares',
             component: <ProfilePosts />,
             condition: profileInfo?.stats?.entries_count > 0,
         }, // RadianSpace (Insta-like)
         { 
-            label: 'Pulses', 
+            label: 'Entries',
             component: <ProfileEntries profileInfo={profileInfo} />,
             condition: profileInfo?.stats?.entries_count > 0,
         }, // QuantaSpace (Reddit-like)
-        
-        { label: 'Spaces', component: <ProfileSpaces /> },
+
+        { 
+            label: 'Spaces',
+            component: <ProfileSpaces />,
+        },
     ];
 
     const [activeTab, setActiveTab] = useState(0);

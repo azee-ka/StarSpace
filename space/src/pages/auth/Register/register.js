@@ -6,10 +6,11 @@ import { useAuth } from '../../../reducers/auth/useAuth';
 import API_BASE_URL from '../../../apiUrl';
 import './register.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useSubApp } from '../../../context/SubAppContext';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
-
+    const { setActiveSubApp } = useSubApp();
     const { login } = useAuth();
 
 
@@ -60,6 +61,7 @@ const RegisterPage = () => {
             console.log(response.data);
             login(response.data);
             navigate('/timeline');
+            setActiveSubApp('Central');
 
         } catch (error) {
             // Handle registration error

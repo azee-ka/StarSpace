@@ -1,0 +1,196 @@
+.create-post-overlay-non-overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.create-post-card-non-overlay {
+    width: 530px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    background-color: rgb(24, 24, 24);
+    border-radius: 8px;
+    padding: 1em 1.5em;
+    box-sizing: border-box;
+}
+
+.create-post-card-non-overlay form {
+    width: 100%;
+    min-height: 200px;
+    max-height: 550px;
+    flex-grow: 1;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+.create-post-card-non-overlay form .editor-container {
+    max-height: 430px;
+}
+
+.create-post-buttons-non-overlay {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.create-post-buttons-non-overlay button {
+    padding: 0.7em 1.4em;
+    background-color: rgb(0, 139, 121);
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+.create-post-buttons-non-overlay button:hover {
+    box-shadow: 0 0 4px 4px rgb(0, 139, 121);
+    background-color: rgb(0, 139, 121, 0.2);
+    cursor: pointer;
+}
+
+.create-post-to-upload-media-non-overlay {
+    width: 100%;
+    max-width: 500px;
+    min-width: 500px;
+    height: 120px;
+    background-color: rgb(24, 24, 24);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.1em 1.0em;
+    box-sizing: border-box;
+    border-radius: 12px;
+}
+.create-post-to-upload-media-non-overlay-inner {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 5px dashed gray;
+    border-radius: 12px;
+    color: rgb(175, 175, 175);
+}
+.create-post-to-upload-media-non-overlay-inner:hover {
+  cursor: pointer;
+}
+
+.create-post-to-upload-media-non-overlay-inner div:first-child {
+  font-size: 2em;
+}
+.create-post-to-upload-media-non-overlay-inner div:last-child {
+  font-size: 1em;
+}
+
+
+
+
+
+
+.media-container-non-overlay {
+    background-color: rgba(255, 0, 0, 0);
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+
+.uploaded-media-card-non-overlay {
+    background-color: rgb(0, 242, 255, 0);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: flex;
+    position: relative;
+}
+
+.create-post-previous-next-media-buttons-non-overlay {
+    position: absolute;
+    width: 100%;
+    background-color: rgba(255, 0, 0, 0);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    top: 50%;
+}
+.create-post-previous-next-media-buttons-non-overlay div {
+    width: 35px;
+    height: 35px;
+    background-color: rgba(0, 128, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+    box-sizing: border-box;
+}
+.create-post-previous-next-media-buttons-non-overlay div button {
+    border-radius: 50%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(115, 115, 115);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+.create-post-previous-next-media-buttons-non-overlay div button:hover {
+    background-color: rgb(0, 152, 142);
+    cursor: pointer;
+}
+
+
+.create-post-media-display-non-overlay {
+    /* min-width: 0vh !important;
+    max-width: 80vh;
+    min-height: 0vh;
+    max-height: 30vh; */
+    background-color: rgba(255, 0, 0, 0);
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.create-post-media-display-non-overlay video {
+    /* min-width: 0vh !important;
+    max-width: 80vh !important;
+    min-height: 0vh;
+    max-height: 83vh; */
+    width: auto;
+    height: auto;
+    object-fit: cover;
+}
+
+.create-post-media-display-non-overlay img {
+    min-width: 0vh !important;
+    max-width: 105vh;
+    min-height: 0vh;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}

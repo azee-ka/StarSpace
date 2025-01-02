@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../reducers/auth/useAuth'; // assuming your auth hook exists
 import Layout from '../struct/layout/layout';
 
@@ -24,7 +24,6 @@ import PageManager from '../pages/config/pageManager/pageManager';
 import CreatePacketOverlay from '../apps/quantaSpace/createPacket/createPacket';
 import QunataTimeline from '../apps/quantaSpace/timeline/timeline';
 import QunataExplore from '../apps/quantaSpace/explore/explore';
-import CreateFlarePage from '../apps/radianSpace/createFlare/createFlare';
 import RadianExplore from '../apps/radianSpace/explore/explore';
 import RadianTimeline from '../apps/radianSpace/timeline/timeline';
 import AxionTimeline from '../apps/axionSpace/timeline/timeline';
@@ -33,12 +32,59 @@ import AxionDashboard from '../apps/axionSpace/dashboard/dashboard';
 import QuantaDashboard from '../apps/quantaSpace/dashboard/dashboard';
 import RadianDashboard from '../apps/radianSpace/dashboard/dashboard';
 import Packet from '../apps/quantaSpace/packet/packet';
+import CreateFlare from '../apps/radianSpace/createFlare/createPost';
+import ExpandPost from '../apps/radianSpace/postUI/expandPost/expandPost';
 
 
 const AppRouter = () => {
     const { authState, isLoading } = useAuth();
     const isAuthenticated = authState.isAuthenticated;
     const { activeSubApp, setActiveSubApp } = useSubApp()
+
+    const [expandPostIdReciever, setExpandPostIdReciever] = useState();
+
+    const [currentExpandPostIndex, setCurrentExpandPostIndex] = useState();
+
+    const [expandPostOnCloseUrl, setExpandPostOnCloseUrl] = useState();
+
+    const [postsList, setPostsList] = useState([]);
+
+    const [showPreviousPostButton, setShowPreviousPostButton] = useState(true)
+    const [showNextPostButton, setShowNextPostButton] = useState(true);
+
+    const handleExpandPostOpen = (postIdToExpand, posts, originalPreviousUrl, index) => {
+        console.log('posts', posts, index);
+        setExpandPostIdReciever(postIdToExpand);
+        setShowPreviousPostButton(index > 0);
+        setShowNextPostButton(index < posts.length - 1);
+        setCurrentExpandPostIndex(index);
+        setPostsList(posts);
+        setExpandPostOnCloseUrl(originalPreviousUrl);
+        window.history.replaceState(null, null, `/radianspace/flare/${postIdToExpand}`);
+    };
+    const handlePreviousPostClick = () => {
+        if (currentExpandPostIndex > 0) {
+            const newIndex = currentExpandPostIndex - 1;
+            handleExpandPostOpen(postsList[newIndex].uuid, postsList, expandPostOnCloseUrl, newIndex);
+            setCurrentExpandPostIndex(newIndex);
+        } else {
+            setShowPreviousPostButton(false)
+        }
+    }
+    const handleNextPostClick = () => {
+        if (currentExpandPostIndex < postsList.length - 1) {
+            const newIndex = currentExpandPostIndex + 1;
+            handleExpandPostOpen(postsList[newIndex].uuid, postsList, expandPostOnCloseUrl, newIndex);
+            setCurrentExpandPostIndex(newIndex);
+        } else {
+            setShowNextPostButton(false);
+        }
+    }
+
+
+
+
+
 
     useEffect(() => {
         if (window.location.pathname.includes('openspace')) {
@@ -62,15 +108,16 @@ const AppRouter = () => {
             { name: 'QuantaSpace Dasboard', path: '/quantaspace', component: <QuantaDashboard />, key: 'QuantaDashboard' },
             { name: 'QuantaSpace Timeline', path: '/quantaspace/timeline', component: <QunataTimeline />, key: 'QuantaTimeline' },
             { name: 'QuantaSpace Explore', path: '/quantaspace/explore', component: <QunataExplore />, key: 'QuantaExplore' },
-            { name: 'Create Packet', path: '/quantaspace/create-packet', component: <CreatePacketOverlay />, key: 'CreatePacket' },
+            { name: 'Create Packet', path: '/quantaspace/create-packet', component: <QunataTimeline />, key: 'CreatePacket' },
             { name: 'QuantaSpace Packet', path: '/quantaspace/packet/:packetId', component: <Packet />, key: 'QuantaPacket' },
         ],
         RadianSpace: [
             { name: 'RadianSpace Dasboard', path: '/', component: <RadianDashboard />, key: 'RadianDashboard' },
             { name: 'RadianSpace Dasboard', path: '/radianspace', component: <RadianDashboard />, key: 'RadianDashboard' },
-            { name: 'RadianSpace Timeline', path: '/radianspace/timeline', component: <RadianTimeline />, key: 'RadianTimeline' },
-            { name: 'RadianSpace Explore', path: '/radianspace/explore', component: <RadianExplore />, key: 'RadianExplore' },
-            { name: 'Create Packet', path: '/radianspace/create-flare', component: <CreateFlarePage />, key: 'CreateFlare' },
+            { name: 'RadianSpace Timeline', path: '/radianspace/timeline', component: <RadianTimeline handleExpandPostOpen={handleExpandPostOpen} />, key: 'RadianTimeline' },
+            { name: 'RadianSpace Explore', path: '/radianspace/explore', component: <RadianExplore handleExpandPostOpen={handleExpandPostOpen} />, key: 'RadianExplore' },
+            { name: 'Create Flare', path: '/radianspace/create-flare', component: <CreateFlare />, key: 'CreateFlare' },
+            { name: 'Expand Flare', path: '/radianspace/flare/:postId', component: <ExpandPost />, key: 'ExpandFlare' },
         ],
         Central: [
 
@@ -96,8 +143,6 @@ const AppRouter = () => {
         return <div>Loading...</div>;
     }
 
-
-
     const renderPrivateRoutes = () => {
         const currentRoutes = privateRoutes[activeSubApp] || [];
         // const allRoutes = [...currentRoutes, ...privateRoutes['Universal']];
@@ -105,7 +150,7 @@ const AppRouter = () => {
             ...privateRoutes['AxionSpace'],
             ...privateRoutes['QuantaSpace'],
             ...privateRoutes['RadianSpace'],
-            ...privateRoutes['Central'],
+            // ...privateRoutes['Central'],
             ...privateRoutes['Universal'],
         ];
 
@@ -120,6 +165,13 @@ const AppRouter = () => {
                             key={`${index}-${route.path}`}
                             className={route.path.substring(1)}
                             pageName={route.pageName}
+                            expandPostOnCloseUrl={expandPostOnCloseUrl}
+                            expandPostIdReciever={expandPostIdReciever}
+                            setExpandPostIdReciever={setExpandPostIdReciever}
+                            handlePreviousPostClick={handlePreviousPostClick}
+                            handleNextPostClick={handleNextPostClick}
+                            showPreviousPostButton={showPreviousPostButton}
+                            showNextPostButton={showNextPostButton}
                         >
                             {Component}
                         </Layout>

@@ -13,9 +13,24 @@ import ProfileMenu from '../navbar/profileMenu/profileMenu';
 import AppMenu from '../navbar/appMenu/appMenu';
 import useApi from '../../utils/useApi';
 import { useSubApp } from '../../context/SubAppContext';
+import CentralLayout from '../../apps/central/centralLayout/centralLayout';
+import QuantaLayout from '../../apps/quantaSpace/quantaLayout/quantaLayout';
+import AxionLayout from '../../apps/axionSpace/axionLayout/axionLayout';
+import RadianLayout from '../../apps/radianSpace/radianLayout/radianLayout';
+import CreatePacketOverlay from '../../apps/quantaSpace/createPacket/createPacket';
+import ExpandPost from '../../apps/radianSpace/postUI/expandPost/expandPost';
+import CreateFlare from '../../apps/radianSpace/createFlare/createPost';
 
 
-function Layout({ children, pageName }) {
+function Layout({ children, pageName,
+    expandPostIdReciever, 
+    handlePreviousPostClick, 
+    handleNextPostClick, 
+    showPreviousPostButton, 
+    showNextPostButton,
+    setExpandPostIdReciever,
+    expandPostOnCloseUrl,
+ }) {
     const navigate = useNavigate();
     const { authState } = useAuth();
     const location = useLocation();
@@ -29,16 +44,40 @@ function Layout({ children, pageName }) {
     const [notificationsList, setNotificationsList] = useState([]);
     const [countNotifications, setCountNotifications] = useState(0);
 
+    const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
+
     const [profileData, setProfileData] = useState();
 
 
+    const [showCreateFlareOverlay, setShowCreateFlareOverlay] = useState(false);
+    const [originalUrlBeforeCreateFlareOverlay, setOriginalUrlBeforeCreateFlareOverlay] = useState(null);
+
+    const handleCreateFlareOverlayOpen = () => {
+        if (window.location.pathname !== '/radianspace/create-flare') {
+            setOriginalUrlBeforeCreateFlareOverlay(window.location.pathname);
+            setShowCreateFlareOverlay(true);
+        }
+    };
+
+    const handleCreateFlareOverlayClose = () => {
+        setShowCreateFlareOverlay(false);
+        navigate(originalUrlBeforeCreateFlareOverlay);
+    }
+
+    const handleExpandPostClose = () => {
+        // e.stopPropagation();
+        setExpandPostIdReciever(null);
+
+        navigate(expandPostOnCloseUrl);
+    };
+
     useEffect(() => {
-            if (window.location.pathname.includes('openspace')) {
-                setActiveSubApp('openspace');
-            } else if (window.location.pathname.includes('home')) {
-                setActiveSubApp('home');
-            }
-        }, [window.location.pathname, activeSubApp, setActiveSubApp, navigate]);
+        if (window.location.pathname.includes('openspace')) {
+            setActiveSubApp('openspace');
+        } else if (window.location.pathname.includes('home')) {
+            setActiveSubApp('home');
+        }
+    }, [window.location.pathname, activeSubApp, setActiveSubApp, navigate]);
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -104,9 +143,43 @@ function Layout({ children, pageName }) {
         setNotificationsMenuOpen(false);
     };
 
+    const handleCloseCreatePacketOverlay = () => {
+        setCreatePacketOverlay(false);
+        navigate(`/`);
+    }
+
     useEffect(() => {
         handleCloseOverlays();
     }, [location]);
+
+
+    useEffect(() => {
+        if (window.location.pathname === '/quantaspace/create-packet') {
+            setCreatePacketOverlay(true);
+        }
+    }, [])
+
+    const layoutDict = {
+        // Central: {
+        //     component: CentralLayout,
+        //     props: {}
+        // },
+        QuantaSpace: {
+            component: QuantaLayout,
+            props: {},
+        },
+        // AxionSpace: {
+        //     component: AxionLayout,
+        //     props: {}
+        // },
+        RadianSpace: {
+            component: RadianLayout,
+            props: {}
+        },
+    };
+
+    // Get the correct layout component
+    const ActiveLayoutConfig = layoutDict[activeSubApp] || null;
 
     return (
         <div className={`parent-layout`} onClick={() => handleCloseOverlays()}>
@@ -119,12 +192,23 @@ function Layout({ children, pageName }) {
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                     profileData={profileData}
+                    setCreatePacketOverlay={setCreatePacketOverlay}
+                    handleCreateFlareOverlayOpen={handleCreateFlareOverlayOpen}
                 />
             </div>
             <div className='layout-page'>
-                {/* <div className='layout-page-content'> */}
-                {children}
-                {/* </div> */}
+                {authState?.isAuthenticated ? (
+                    ActiveLayoutConfig ? (
+                        <ActiveLayoutConfig.component {...ActiveLayoutConfig.props}>
+                            {children}
+                        </ActiveLayoutConfig.component>
+                    ) : (
+                        children
+                    )
+                ) : (
+                    children
+                )}
+
                 {/* Footer */}
                 {/* <footer className="footer">
                     <p>© {new Date().getFullYear()} 4Space. All Copyrights Reserved.</p>
@@ -135,7 +219,22 @@ function Layout({ children, pageName }) {
             {appMenuOpen && <AppMenu />}
             {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
 
-            {/* </div> */}
+            {showCreatePacketOverlay && <CreatePacketOverlay onClose={handleCloseCreatePacketOverlay} />}
+
+            {expandPostIdReciever !== undefined && expandPostIdReciever !== null &&
+                <ExpandPost
+                    overlayPostId={expandPostIdReciever}
+                    handleExpandPostClose={handleExpandPostClose} 
+                    handlePreviousPostClick={handlePreviousPostClick} 
+                    handleNextPostClick={handleNextPostClick} 
+                    showPreviousPostButton={showPreviousPostButton}
+                    showNextPostButton={showNextPostButton}
+                />
+            }
+
+            {showCreateFlareOverlay &&
+                <CreateFlare originalUrl={originalUrlBeforeCreateFlareOverlay} handleCreateFlareOverlayClose={handleCreateFlareOverlayClose} />
+            }
         </div>
     );
 }

@@ -1,0 +1,32 @@
+.quanta-layout {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.quanta-layout-sidebar-left {
+    width: 23%;
+    height: 100%;
+    /* background-color: rgba(96, 96, 96, 0.150); */
+    backdrop-filter: blur(50px);
+}
+.quanta-layout-sidebar-right {
+    width: 26%;
+    height: 100%;
+    /* background-color: rgba(96, 96, 96, 0.150); */
+    backdrop-filter: blur(50px);
+}
+
+.quanta-layout-child {
+    background-color: transparent !important;
+    backdrop-filter: blur(0px) !important;
+    flex-grow: 1;
+    height: 100%;
+    border-left: 1px solid rgba(128, 128, 128, 0.480);
+    border-right: 1px solid rgba(128, 128, 128, 0.480);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    overflow: hidden;
+}

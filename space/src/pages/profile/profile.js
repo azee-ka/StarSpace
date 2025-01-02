@@ -4,11 +4,13 @@ import OtherProfile from "./otherProfile/otherProfile";
 import { useAuth } from "../../reducers/auth/useAuth";
 import MyProfile from "./myProfile/myProfile";
 import useApi from "../../utils/useApi";
+import { useSubApp } from "../../context/SubAppContext";
 
 const Profile = ({ enforceViewType = '', isCustomizing = false }) => {
     const { username } = useParams();
     const { authState } = useAuth();
     const { callApi } = useApi();
+    const { setActiveSubApp } = useSubApp();
 
     const fetchProfileData = async (username, setProfileInfo) => {
         // if (!username) return;
@@ -25,6 +27,7 @@ const Profile = ({ enforceViewType = '', isCustomizing = false }) => {
         if (enforceViewType === '' && (!username || authState.user.username === username || window.location.pathname === "/profile")) {
             window.history.replaceState(null, "", "/profile");
         }
+        setActiveSubApp('Central');
     }, []);
 
 

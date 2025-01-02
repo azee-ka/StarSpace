@@ -33,10 +33,16 @@ class EntriesCountMixin:
     Mixin that adds the 'entries_count' field to any serializer.
     """
     entries_count = serializers.SerializerMethodField()
+    entries = serializers.SerializerMethodField()
 
     def get_entries_count(self, obj):
         # Assuming 'authored_entries' is the reverse relationship on BaseUser for the entries they authored
         return obj.authored_entries.count()
+    def get_entries(self, obj):
+        # Serialize the authored entries using a dedicated serializer
+        from ..axionspace.serializers import EntrySerializer  # Import EntrySerializer if needed
+        authored_entries = obj.authored_entries.all()  # Fetch related entries
+        return EntrySerializer(authored_entries, many=True).data
 
 
 

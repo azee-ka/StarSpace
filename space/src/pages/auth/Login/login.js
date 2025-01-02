@@ -1,15 +1,16 @@
 // LoginForm.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // Import Axios
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../reducers/auth/useAuth';
 import './login.css';
 import API_BASE_URL from '../../../apiUrl';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useSubApp } from '../../../context/SubAppContext';
 
 const LoginPage = () => {
     const navigate = useNavigate();
-
+    const { activeSubApp, setActiveSubApp } = useSubApp()
     const { login } = useAuth();
 
     const [username, setUsername] = useState('');
@@ -19,6 +20,11 @@ const LoginPage = () => {
 
     const [loginError, setLoginError] = useState('');
 
+
+    useEffect(() => {
+        setActiveSubApp(null);
+    }, []);
+
     const handleLoginSuccess = () => {
         navigate('/timeline');
     };
@@ -27,6 +33,8 @@ const LoginPage = () => {
         setShowPassword(!showPassword);
     };
 
+
+    
     // Handle form submission
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
@@ -39,7 +47,7 @@ const LoginPage = () => {
             console.log(response.data)
             login(response.data);
             handleLoginSuccess(response.data);
-
+            setActiveSubApp('Central');
             // Handle successful login here, for example, update state or redirect
         } catch (error) {
             console.error('Error logging in:', error.message);

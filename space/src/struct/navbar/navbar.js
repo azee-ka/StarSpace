@@ -13,7 +13,7 @@ import SidebarMenuIcon from './iconMenu';
 import appLogo from '../../assets/logo.png';
 import appLogoComplete from '../../assets/logo-comp.png';
 
-const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount, profileData }) => {
+const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount, profileData, setCreatePacketOverlay, handleCreateFlareOverlayOpen }) => {
     const { authState } = useAuth();
 
     const { activeSubApp, setActiveSubApp } = useSubApp();
@@ -64,13 +64,13 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
             { label: "Radian Dashboard", path: "/radianspace" },
             { label: "Radian Timeline", path: "/radianspace/timeline" },
             { label: "Radian Explore", path: "/radianspace/explore" },
-            { label: "Create Flare", path: "/radianspace/create-flare" },
+            { label: "Create Flare", action: () => handleCreateFlareOverlayOpen() },
         ],
         'QuantaSpace': [
             { label: "Quanta Dashboard", path: "/quantaspace" },
             { label: "Quanta Timeline", path: "/quantaspace/timeline" },
             { label: "Quanta Explore", path: "/quantaspace/explore" },
-            { label: "Create Packet", path: "/quantaspace/create-packet" },
+            { label: "Create Packet", action: () => setCreatePacketOverlay(true) },
         ],
         'AxionSpace': [
             { label: "Axion Dashboard", path: "/axionspace" },
@@ -108,9 +108,12 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                         <SidebarMenuIcon sidebarOpen={sidebarOpen} handleHighOrderSidebarToggle={handleHighOrderSidebarToggle} />
                     }
                     <div className='navbar-logo-container'>
-                        <Link to={`/${activeSubApp === 'Central' ? '' : activeSubApp.toLowerCase()}`}>
+                        <Link to={`/${activeSubApp?.toLowerCase()}`}>
                             <img src={appLogo} />
-                            <h2 className='neon-text'>4Space<span>{activeSubApp}</span></h2>
+                            <h2 className='neon-text'>
+                                4Space
+                                <span>{activeSubApp !== 'null' ? activeSubApp : ''}</span>
+                            </h2>
                             <img src={appLogoComplete} className='fade-image' />
                         </Link>
                     </div>
