@@ -36,7 +36,7 @@ function Layout({ children, pageName,
     const { callApi } = useApi();
     const { activeSubApp, setActiveSubApp } = useSubApp();
 
-    const { minimalProfileData, isLoading, error, fetchProfile } = useProfile();
+    const { minimalProfileData : profileData } = useProfile();
 
 
     const [menuOpen, setMenuOpen] = useState(false);
@@ -45,8 +45,6 @@ function Layout({ children, pageName,
     const [notificationsMenuOpen, setNotificationsMenuOpen] = useState(false);
 
     const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
-
-    const [profileData, setProfileData] = useState();
 
 
     const [showCreateFlareOverlay, setShowCreateFlareOverlay] = useState(false);
@@ -58,7 +56,6 @@ function Layout({ children, pageName,
             setShowCreateFlareOverlay(true);
         }
     };
-
     const handleCreateFlareOverlayClose = () => {
         setShowCreateFlareOverlay(false);
         navigate(originalUrlBeforeCreateFlareOverlay);
@@ -70,31 +67,6 @@ function Layout({ children, pageName,
 
         navigate(expandPostOnCloseUrl);
     };
-
-    useEffect(() => {
-        if (window.location.pathname.includes('openspace')) {
-            setActiveSubApp('openspace');
-        } else if (window.location.pathname.includes('home')) {
-            setActiveSubApp('home');
-        }
-    }, [window.location.pathname, activeSubApp, setActiveSubApp, navigate]);
-
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-                const response = await callApi(`profile/get-user-info/`);
-                console.log(response.data);
-                setProfileData(response.data);
-            } catch (error) {
-                console.error('Error fetching profile data:', error);
-            }
-        };
-
-        if (authState.isAuthenticated) {
-            fetchProfileData();
-        }
-
-    }, [authState.isAuthenticated, setProfileData]);
 
 
 
@@ -109,7 +81,6 @@ function Layout({ children, pageName,
             setNotificationsMenuOpen(false);
         }
     };
-
     const handleAppMenuToggle = () => {
         setAppMenuOpen(!appMenuOpen);
         if (menuOpen || notificationsMenuOpen) {
@@ -117,7 +88,6 @@ function Layout({ children, pageName,
             setNotificationsMenuOpen(false);
         }
     };
-
     const handleNotificationsMenuToggle = () => {
         setNotificationsMenuOpen(!notificationsMenuOpen);
         if (menuOpen || appMenuOpen) {
