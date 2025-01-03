@@ -3,8 +3,10 @@ import './explore.css';
 import { useAuth } from "../../../hooks/useAuth";
 import useApi from "../../../utils/useApi";
 import PostsGrid from "../postUI/postGrid/postGrid";
+import { usePostContext } from "../../../context/PostContext";
 
-const RadianExplore = ({ handleExpandPostOpen }) => {
+const RadianExplore = () => {
+    const { handleExpandPostOpen } = usePostContext();
     const { authState } = useAuth();
     const { callApi } = useApi();
     const [posts, setPosts] = useState([]);
@@ -35,6 +37,7 @@ const RadianExplore = ({ handleExpandPostOpen }) => {
                                     <PostsGrid classname={'explore'} postsData={posts} handleExpandPostOpen={handleExpandPostOpen} />
                                 ) : (
                                     <div>
+                                        Loading...
                                     </div>
                                 )
                                 }

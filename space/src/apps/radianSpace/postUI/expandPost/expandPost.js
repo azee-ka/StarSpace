@@ -10,17 +10,13 @@ import { ExpandPostProvider } from './postContext';
 import { usePostContext } from '../../../../context/PostContext';
 
 const ExpandPost = ({ 
-    // overlayPostId, 
     // handleExpandPostClose, 
-    handlePreviousPostClick, 
-    handleNextPostClick, 
-    showPreviousPostButton, 
-    showNextPostButton,
 }) => {
     const { 
         expandPostIdReciever : overlayPostId,
         handleExpandPostClose,
     } = usePostContext();
+    
     const { postId } = useParams();
     const [expandPostIdFinal, setExpandPostIdFinal] = useState(overlayPostId ? overlayPostId : postId);
 
@@ -32,16 +28,11 @@ const ExpandPost = ({
 
     return (
         <ExpandPostProvider postId={expandPostIdFinal}>
-            <div className={`expanded-post-container ${!overlayPostId ? 'non-overlay' : 'overlay'}`} onClick={handleExpandPostClose}>
+            <div className={`expanded-post-container ${!overlayPostId ? 'non-overlay' : 'overlay'}`}>
                 {overlayPostId ?
                     (
-                        <div className='expanded-post-overlay' onClick={(e) => e.stopPropagation()}>
-                            <ExpandedPostOverlay
-                                handlePreviousPostClick={handlePreviousPostClick}
-                                handleNextPostClick={handleNextPostClick}
-                                showPreviousPostButton={showPreviousPostButton}
-                                showNextPostButton={showNextPostButton}
-                            />
+                        <div className='expanded-post-overlay' onClick={handleExpandPostClose}>
+                            <ExpandedPostOverlay />
                         </div>
                     ) : (
                         <ExpandedPostNonOverlay />

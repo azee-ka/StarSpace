@@ -48,7 +48,6 @@ function Layout({ children, pageName,
 
     const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
 
-
     const [showCreateFlareOverlay, setShowCreateFlareOverlay] = useState(false);
     const [originalUrlBeforeCreateFlareOverlay, setOriginalUrlBeforeCreateFlareOverlay] = useState(null);
 
@@ -62,13 +61,6 @@ function Layout({ children, pageName,
         setShowCreateFlareOverlay(false);
         navigate(originalUrlBeforeCreateFlareOverlay);
     }
-
-    // const handleExpandPostClose = () => {
-    //     // e.stopPropagation();
-    //     setExpandPostIdReciever(null);
-
-    //     navigate(expandPostOnCloseUrl);
-    // };
 
 
 
@@ -184,14 +176,7 @@ function Layout({ children, pageName,
             {showCreatePacketOverlay && <CreatePacketOverlay onClose={handleCloseCreatePacketOverlay} />}
 
             {expandPostIdReciever &&
-                <ExpandPost
-                    // overlayPostId={expandPostIdReciever}
-                    // handleExpandPostClose={handleExpandPostClose}
-                    // handlePreviousPostClick={handlePreviousPostClick}
-                    // handleNextPostClick={handleNextPostClick}
-                    // showPreviousPostButton={showPreviousPostButton}
-                    // showNextPostButton={showNextPostButton}
-                />
+                <ExpandPost />
             }
 
             {showCreateFlareOverlay &&

@@ -20,18 +20,14 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useExpandPostContext } from '../postContext';
 import { usePostContext } from '../../../../../context/PostContext';
 
-const ExpandedPostOverlay = ({
-    // handlePreviousPostClick,
-    // handleNextPostClick,
-    // showPreviousPostButton,
-    // showNextPostButton,
-}) => {
+const ExpandedPostOverlay = () => {
     const {
         handlePreviousPostClick, 
         handleNextPostClick, 
         showPreviousPostButton, 
         showNextPostButton,
     } = usePostContext();
+
     const {
         post,
         postLiked,
@@ -57,7 +53,7 @@ const ExpandedPostOverlay = ({
 
     return post ? (
         <div className="expanded-post-overlay-container">
-            <div className='expanded-post-overlay-user-info-comments-container'>
+            <div className='expanded-post-overlay-user-info-comments-container' onClick={(e) => e.stopPropagation()}>
                 <div className='expanded-post-overlay-comment-top-panel'>
                     <div className='expanded-post-overlay-user-info-container'>
                         <div className='expanded-post-overlay-user-info-profile-image'>
@@ -122,7 +118,7 @@ const ExpandedPostOverlay = ({
                     </div>
                 </div>
             </div>
-            <div className='expanded-post-overlay-post-info-img-container'>
+            <div className='expanded-post-overlay-post-info-img-container' onClick={(e) => e.stopPropagation()}>
                 <div className='expanded-post-overlay-post-info-container'>
                     <div className='expanded-post-overlay-post-info-container-inner'>
                         <div className='expanded-post-overlay-post-creation-time'>
@@ -145,14 +141,14 @@ const ExpandedPostOverlay = ({
                     {post?.media_files?.length > 1 &&
                         <div className='expanded-post-overlay-img-previous-next-buttons-container'>
                             <div className='expanded-post-overlay-img-previous-next-buttons-container-inner'>
-                                <div className='expanded-post-overlay-img-previous-button-container'>
+                                <div className='expanded-post-overlay-img-previous-button-container' onClick={(e) => e.stopPropagation()}>
                                     {currentMediaIndex > 0 &&
                                         <div className='expanded-post-overlay-img-previous-button-container-inner' onClick={() => navigateMedia('prev')}>
                                             <FaChevronLeft className='icon-style' />
                                         </div>
                                     }
                                 </div>
-                                <div className='expanded-post-overlay-img-next-button-container'>
+                                <div className='expanded-post-overlay-img-next-button-container' onClick={(e) => e.stopPropagation()}>
                                     {currentMediaIndex !== post?.media_files?.length - 1 &&
                                         <div className='expanded-post-overlay-img-next-button-container-inner' onClick={() => navigateMedia('next')}>
                                             <FaChevronRight className='icon-style' />
@@ -165,7 +161,7 @@ const ExpandedPostOverlay = ({
                     }
                 </div>
             </div>
-            <div className='expanded-post-overlay-interaction-container'>
+            <div className='expanded-post-overlay-interaction-container' onClick={(e) => e.stopPropagation()}>
                 <div onClick={() => toggleLike()}>
                     <img src={postLiked ? liked : unliked} />
                 </div>
@@ -186,14 +182,14 @@ const ExpandedPostOverlay = ({
             )}
             <div className='expand-overlay-previous-next-post-button-container'>
                 <div className='expand-overlay-previous-next-post-button-container-inner '>
-                    <div className='expanded-post-overlay-previous-post-button-container'>
+                    <div className='expanded-post-overlay-previous-post-button-container' onClick={(e) => e.stopPropagation()}>
                         {showPreviousPostButton &&
                             <div className='expanded-post-overlay-previous-post-button-container-inner' onClick={handlePreviousPostClick}>
                                 <FaChevronLeft className='icon-style' />
                             </div>
                         }
                     </div>
-                    <div className='expanded-post-overlay-next-post-button-container'>
+                    <div className='expanded-post-overlay-next-post-button-container' onClick={(e) => e.stopPropagation()}>
                         {showNextPostButton &&
                             <div className='expanded-post-overlay-next-post-button-container-inner' onClick={handleNextPostClick}>
                                 <FaChevronRight className='icon-style' />

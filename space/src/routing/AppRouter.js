@@ -42,58 +42,14 @@ const AppRouter = () => {
     const isAuthenticated = authState.isAuthenticated;
     const { activeSubApp, setActiveSubApp } = useSubApp()
 
-    // const [expandPostIdReciever, setExpandPostIdReciever] = useState();
 
-    // const [currentExpandPostIndex, setCurrentExpandPostIndex] = useState();
-
-    // const [expandPostOnCloseUrl, setExpandPostOnCloseUrl] = useState();
-
-    // const [postsList, setPostsList] = useState([]);
-
-    // const [showPreviousPostButton, setShowPreviousPostButton] = useState(true)
-    // const [showNextPostButton, setShowNextPostButton] = useState(true);
-
-    // const handleExpandPostOpen = (postIdToExpand, posts, originalPreviousUrl, index) => {
-    //     console.log('posts', posts, index);
-    //     setExpandPostIdReciever(postIdToExpand);
-    //     setShowPreviousPostButton(index > 0);
-    //     setShowNextPostButton(index < posts.length - 1);
-    //     setCurrentExpandPostIndex(index);
-    //     setPostsList(posts);
-    //     setExpandPostOnCloseUrl(originalPreviousUrl);
-    //     window.history.replaceState(null, null, `/radianspace/flare/${postIdToExpand}`);
-    // };
-    // const handlePreviousPostClick = () => {
-    //     if (currentExpandPostIndex > 0) {
-    //         const newIndex = currentExpandPostIndex - 1;
-    //         handleExpandPostOpen(postsList[newIndex].uuid, postsList, expandPostOnCloseUrl, newIndex);
-    //         setCurrentExpandPostIndex(newIndex);
-    //     } else {
-    //         setShowPreviousPostButton(false)
+    // useEffect(() => {
+    //     if (window.location.pathname.includes('openspace')) {
+    //         setActiveSubApp('openspace');
+    //     } else if (window.location.pathname.includes('home')) {
+    //         setActiveSubApp('home');
     //     }
-    // }
-    // const handleNextPostClick = () => {
-    //     if (currentExpandPostIndex < postsList.length - 1) {
-    //         const newIndex = currentExpandPostIndex + 1;
-    //         handleExpandPostOpen(postsList[newIndex].uuid, postsList, expandPostOnCloseUrl, newIndex);
-    //         setCurrentExpandPostIndex(newIndex);
-    //     } else {
-    //         setShowNextPostButton(false);
-    //     }
-    // }
-
-
-
-
-
-
-    useEffect(() => {
-        if (window.location.pathname.includes('openspace')) {
-            setActiveSubApp('openspace');
-        } else if (window.location.pathname.includes('home')) {
-            setActiveSubApp('home');
-        }
-    }, [window.location.pathname, activeSubApp, setActiveSubApp]);
+    // }, [window.location.pathname, activeSubApp, setActiveSubApp]);
 
     const privateRoutes = {
         AxionSpace: [
@@ -166,13 +122,6 @@ const AppRouter = () => {
                             key={`${index}-${route.path}`}
                             className={route.path.substring(1)}
                             pageName={route.pageName}
-                            // expandPostOnCloseUrl={expandPostOnCloseUrl}
-                            // expandPostIdReciever={expandPostIdReciever}
-                            // setExpandPostIdReciever={setExpandPostIdReciever}
-                            // handlePreviousPostClick={handlePreviousPostClick}
-                            // handleNextPostClick={handleNextPostClick}
-                            // showPreviousPostButton={showPreviousPostButton}
-                            // showNextPostButton={showNextPostButton}
                         >
                             {Component}
                         </Layout>

@@ -30,7 +30,6 @@ const TimelinePerPost = ({ postId, posts, index }) => {
     const [showDislikesOverlay, setShowDislikesOverlay] = useState(false);
 
     const handlePostClick = (index) => {
-        console.log('inner idx', postId)
         handleExpandPostOpen(postId, posts, window.location.pathname, index);
       };
 
@@ -109,7 +108,7 @@ const TimelinePerPost = ({ postId, posts, index }) => {
             const method = (postDisliked === true) ? 'DELETE' : 'POST';
             const response = await callApi(`radianspace/flare/${flareId}/dislike/`, method);
             setPost(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch(err) {
                 console.error('Error toggling like:', err);
             };
