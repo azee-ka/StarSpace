@@ -22,6 +22,7 @@ import useProfile from '../../hooks/useProfile';
 import { usePostContext } from '../../context/PostContext';
 import { useCreateFlareContext } from '../../context/CreateFlareContext';
 import { useCreatePacketContext } from '../../context/CreatePacketContext';
+import NotificationSidebar from '../sidebar/notificationSidebar/notificationSidebar';
 
 
 function Layout({ children, pageName }) {
@@ -37,6 +38,8 @@ function Layout({ children, pageName }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [appMenuOpen, setAppMenuOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [notificationSidebarOpen, setNotificationSidebarOpen] = useState(false);
+    const [notificationIdForSidebar, setNotificationIdForSidebar] = useState(null);
     const [notificationsMenuOpen, setNotificationsMenuOpen] = useState(false);
 
     // const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
@@ -48,6 +51,16 @@ function Layout({ children, pageName }) {
     const handleSidebarClose = () => {
         setSidebarOpen(false);
     };
+
+    const handleNotificationSidebarOpen = (notificationId) => {
+        handleCloseOverlays();
+        setNotificationSidebarOpen(true);
+        setNotificationIdForSidebar(notificationId);
+    };
+    const handleNotificationSidebarClose = () => {
+        setNotificationSidebarOpen(false);
+    };
+
 
     const handleProfileMenuToggle = () => {
         setMenuOpen(!menuOpen);
@@ -73,6 +86,7 @@ function Layout({ children, pageName }) {
 
     const handleCloseOverlays = () => {
         setSidebarOpen(false);
+        setNotificationSidebarOpen(false);
         setMenuOpen(false);
         setAppMenuOpen(false);
         setNotificationsMenuOpen(false);
@@ -122,7 +136,6 @@ function Layout({ children, pageName }) {
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                     profileData={profileData}
-                    // handleCreateFlareOverlayOpen={handleCreateFlareOverlayOpen}
                 />
             </div>
             <div className='layout-page'>
@@ -144,9 +157,20 @@ function Layout({ children, pageName }) {
                 </footer> */}
             </div>
             {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
+            {authState.isAuthenticated && <NotificationSidebar
+                notificationSidebarOpen={notificationSidebarOpen}
+                notificationIdForSidebar={notificationIdForSidebar}
+                setNotificationIdForSidebar={setNotificationIdForSidebar}
+                handleNotificationSidebarClose={handleNotificationSidebarClose}
+                handleNotificationSidebarOpen={handleNotificationSidebarOpen}
+             />
+            }
             {menuOpen && <ProfileMenu profileData={profileData} />}
             {appMenuOpen && <AppMenu />}
-            {notificationsMenuOpen && <NotificationsMenu />}
+            {notificationsMenuOpen &&
+            <NotificationsMenu
+                    handleNotificationSidebarOpen={handleNotificationSidebarOpen}
+            />}
 
             {showCreatePacketOverlay && <CreatePacketOverlay  />}
 

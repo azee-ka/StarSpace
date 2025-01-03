@@ -53,7 +53,7 @@ const CreatePacketOverlay = () => {
             const packetId = response.data.uuid;
 
             // Navigate to the newly created packet page
-            navigate(`/quantaspace/packet/${packetId}`);
+            onClose(`/quantaspace/packet/${packetId}`);
         } catch (err) {
             console.error('Error posting packet', err);
         }

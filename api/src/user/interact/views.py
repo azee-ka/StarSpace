@@ -54,7 +54,7 @@ def toggle_follow(request, username):
                 title="Follow Request",
                 message=f"Requested to follow your account.",
                 type="action",
-                action_url=f"/approve-follow-request/{user.id}/",
+                action_url=f"profile/resolve-follow-request/{user.id}/",
             )
             send_notification_to_user(target_user.id, notification)
             return Response({'detail': 'Follow request sent. Awaiting approval.'}, status=status.HTTP_200_OK)
@@ -69,7 +69,7 @@ def toggle_follow(request, username):
         
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def approve_or_disapprove_follow_request(request, requester_id):
+def resolve_follow_request(request, requester_id):
     requester = get_object_or_404(BaseUser, id=requester_id)
     user = request.user
 
@@ -78,13 +78,14 @@ def approve_or_disapprove_follow_request(request, requester_id):
         return Response({'detail': 'You cannot send a follow request to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # Check if a follow request exists for the user
-    existing_notification = Notification.objects.filter(
-        user=user,
-        title__icontains="Follow Request",  # Can also filter based on request type
-        message__icontains=requester.username,
-        request_type="follow_request",
-        is_approved=False
-    ).first()
+    existing_notification = Notification.objects.get(
+                user=user,
+                sender=requester,
+                title="Follow Request",
+                message__icontains=f"Requested to follow your account.",
+                type="action",
+                status='pending'  # Assuming pending requests are not approved
+            )
 
     if not existing_notification:
         return Response({'detail': 'No pending follow request from this user.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -96,33 +97,37 @@ def approve_or_disapprove_follow_request(request, requester_id):
         user.followers.add(requester)
         requester.following.add(user)
 
-        # Mark the notification as approved
-        existing_notification.is_approved = True
-        existing_notification.save()
+        # Mark the notification as approved/delete
+        # existing_notification.status = 'approved'
+        # existing_notification.save()
+        existing_notification.delete()
 
         # Notify the requester about approval
         Notification.objects.create(
             user=requester,
+            sender=user,
             title="Follow Request Approved",
-            message=f"{user.username} has approved your follow request.",
+            message=f"Approved your follow request.",
             type="info",
-            request_type="follow_request"
+            status="approved",
         )
 
         return Response({'detail': 'Follow request approved.'}, status=status.HTTP_200_OK)
 
     elif action == "reject":
         # Mark the notification as rejected or delete it
-        existing_notification.is_approved = False
-        existing_notification.save()
+        # existing_notification.status = 'disapproved'
+        # existing_notification.save()
+        existing_notification.delete()
 
         # Notify the requester about rejection
         Notification.objects.create(
             user=requester,
+            sender=user,
             title="Follow Request Rejected",
-            message=f"{user.username} has rejected your follow request.",
+            message=f"Rejected your follow request.",
             type="info",
-            request_type="follow_request"
+            status="disapproved",
         )
 
         return Response({'detail': 'Follow request rejected.'}, status=status.HTTP_200_OK)

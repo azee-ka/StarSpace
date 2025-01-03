@@ -16,7 +16,14 @@ import useNotifications from '../../hooks/useNotifications';
 import { useCreateFlareContext } from '../../context/CreateFlareContext';
 import { useCreatePacketContext } from '../../context/CreatePacketContext';
 
-const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, profileData }) => {
+const Navbar = ({ 
+    handleProfileMenuToggle, 
+    handleAppMenuToggle, 
+    handleNotificationsMenuToggle, 
+    sidebarOpen, 
+    setSidebarOpen, 
+    profileData,
+}) => {
     const { authState } = useAuth();
     const { count : notificationsCount } = useNotifications();
 

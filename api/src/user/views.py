@@ -21,14 +21,17 @@ def user_profile_view(request, username):
 
     # Fetch actionable notification (e.g., follow request) status
     if profile_user.is_private_profile and not is_following:
-        follow_request = Notification.objects.filter(
-            user=profile_user,
-            type="action",
-            status__in=["pending", "approved", "disapproved"],
-            message__icontains=f"Requested to follow your account."            
-        ).first()
-        if follow_request:
+        try:
+            follow_request = Notification.objects.get(
+                sender=request.user,
+                user=profile_user,
+                type="action",
+                status__in=["pending", "approved", "disapproved"],
+                message__icontains=f"Requested to follow your account."            
+            )
             follow_request_status = follow_request.status
+        except Notification.DoesNotExist:
+            pass
                 
     # If the user is viewing their own profile
     if request.user == profile_user:

@@ -4,6 +4,23 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Notification
 from .serializers import NotificationSerializer
 
+class NotificationDetailView(APIView):
+    """
+    API endpoint to fetch details of a specific notification by ID.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, notification_id):
+        try:
+            # Fetch the notification for the authenticated user
+            notification = Notification.objects.get(id=notification_id, user=request.user)
+            serializer = NotificationSerializer(notification)
+            return Response(serializer.data)
+        except Notification.DoesNotExist:
+            # Return error if notification is not found
+            return Response({"status": "error", "message": "Notification not found"}, status=404)
+        
+        
 class NotificationListView(APIView):
     permission_classes = [IsAuthenticated]
 

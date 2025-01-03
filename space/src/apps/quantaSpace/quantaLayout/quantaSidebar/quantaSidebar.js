@@ -25,16 +25,13 @@ const QuantaSidebar = () => {
 
     return (
         <div className="quanta-sidebar">
-            <ul>
                 {options.map((item, index) => (
                     <div key={index} className="sidebar-item" onClick={() => handleClick(item)}>
                         <div className="sidebar-item-inner">
                             {item.icon}
-                            <p>{item.label}</p>
                         </div>
                     </div>
                 ))}
-            </ul>
         </div>
     );
 }
