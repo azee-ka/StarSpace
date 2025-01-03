@@ -16,7 +16,7 @@ import { Link, useNavigate } from 'react-router';
 import useApi from '../../../../../utils/useApi';
 import ProfilePicture from '../../../../../utils/profilePicture/getProfilePicture';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { usePostContext } from '../postContext';
+import { useExpandPostContext } from '../postContext';
 
 const ExpandedPostNonOverlay = () => {
     const {
@@ -37,7 +37,7 @@ const ExpandedPostNonOverlay = () => {
         navigateMedia,
         renderMediaContent,
         handleCloseLikesOverlay,
-    } = usePostContext();
+    } = useExpandPostContext();
 
     const { authState } = useAuth();
 

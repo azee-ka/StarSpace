@@ -17,14 +17,21 @@ import ProfilePicture from '../../../../../utils/profilePicture/getProfilePictur
 import { Link } from 'react-router-dom';
 import useApi from '../../../../../utils/useApi';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { usePostContext } from '../postContext';
+import { useExpandPostContext } from '../postContext';
+import { usePostContext } from '../../../../../context/PostContext';
 
 const ExpandedPostOverlay = ({
-    handlePreviousPostClick,
-    handleNextPostClick,
-    showPreviousPostButton,
-    showNextPostButton,
+    // handlePreviousPostClick,
+    // handleNextPostClick,
+    // showPreviousPostButton,
+    // showNextPostButton,
 }) => {
+    const {
+        handlePreviousPostClick, 
+        handleNextPostClick, 
+        showPreviousPostButton, 
+        showNextPostButton,
+    } = usePostContext();
     const {
         post,
         postLiked,
@@ -43,7 +50,7 @@ const ExpandedPostOverlay = ({
         navigateMedia,
         renderMediaContent,
         handleCloseLikesOverlay,
-    } = usePostContext();
+    } = useExpandPostContext();
 
     const { authState } = useAuth();
 

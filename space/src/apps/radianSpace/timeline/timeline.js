@@ -3,10 +3,9 @@ import './timeline.css';
 import useApi from "../../../utils/useApi";
 import TimelinePerPost from './timelinePerPost/timelinePerPost';
 
-const RadianTimeline = ({ handleExpandPostOpen }) => {
+const RadianTimeline = ({ }) => {
     const { callApi } = useApi();
     const [posts, setPosts] = useState([]);
-
 
     useEffect(() => {
         const fetchTimelinePosts = async () => {
@@ -29,7 +28,7 @@ const RadianTimeline = ({ handleExpandPostOpen }) => {
                 <div className='radian-timeline-page-content'>
                         <div className="timeline-left-side-container">
                             {posts.map((post, index) => (
-                                <TimelinePerPost key={index} postId={post.uuid} posts={posts} handleExpandPostOpen={handleExpandPostOpen} index={index} />
+                                <TimelinePerPost key={index} postId={post.uuid} posts={posts} index={index} />
                             ))
                             }
                         </div>

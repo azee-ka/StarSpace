@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import useApi from '../../../../utils/useApi';
 import API_BASE_URL from '../../../../apiUrl';
 import VideoPlayer from '../../utils/videoPlayer';
-const PostContext = createContext();
+const ExpandPostContext = createContext();
 
-export const PostProvider = ({ children, postId }) => {
+export const ExpandPostProvider = ({ children, postId }) => {
     const { callApi } = useApi();
 
     // States managed by the PostProvider
@@ -149,8 +149,8 @@ export const PostProvider = ({ children, postId }) => {
         handleCloseLikesOverlay,
     };
 
-    return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
+    return <ExpandPostContext.Provider value={value}>{children}</ExpandPostContext.Provider>;
 };
 
 // Hook to use PostContext in components
-export const usePostContext = () => useContext(PostContext);
+export const useExpandPostContext = () => useContext(ExpandPostContext);

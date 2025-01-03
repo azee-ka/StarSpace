@@ -13,11 +13,13 @@ import UserListOverlay from '../../utils/userListOverlay/userListOverlay';
 import { Link } from 'react-router';
 import { timeAgo } from '../../postUI/expandPost/convertDateTime';
 import useApi from '../../../../utils/useApi';
+import { usePostContext } from '../../../../context/PostContext';
 
-const TimelinePerPost = ({ postId, posts, handleExpandPostOpen, index }) => {
+const TimelinePerPost = ({ postId, posts, index }) => {
+    const { handleExpandPostOpen } = usePostContext();
+
     const { callApi } = useApi();
     const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
-    console.log(index);
     const [post, setPost] = useState(null);
 
 
@@ -28,14 +30,14 @@ const TimelinePerPost = ({ postId, posts, handleExpandPostOpen, index }) => {
     const [showDislikesOverlay, setShowDislikesOverlay] = useState(false);
 
     const handlePostClick = (index) => {
-        console.log('inner idx', index)
+        console.log('inner idx', postId)
         handleExpandPostOpen(postId, posts, window.location.pathname, index);
       };
 
       const handleFetchPostData = async (postId, setPost) => {
         try {
             const response = await callApi(`radianspace/flare/${postId}/`)
-            console.log(response.data);
+            // console.log(response.data);
             setPost(response.data);
         } catch (error) {
             console.error('Error fetching timeline page posts:', error);
@@ -186,10 +188,10 @@ const TimelinePerPost = ({ postId, posts, handleExpandPostOpen, index }) => {
                 </div>
             </div>
             <div className='radian-timeline-per-post-interaction'>
-                <div onClick={() => handlePostLike(post.id, setPost)}>
+                <div onClick={() => handlePostLike(postId, setPost)}>
                     <img src={postLiked ? liked : unliked} />
                 </div>
-                <div onClick={() => handlePostDislike(post.id, setPost)}>
+                <div onClick={() => handlePostDislike(postId, setPost)}>
                     <img src={postDisliked ? disliked : undisliked} />
                 </div>
             </div>

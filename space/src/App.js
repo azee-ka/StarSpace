@@ -6,6 +6,7 @@ import store from './state/store';
 import AppRouter from './routing/AppRouter';
 import { SubAppProvider } from './context/SubAppContext';
 import ErrorBoundary from './ErrorBoundary';
+import { PostProvider } from './context/PostContext';
 
 const App = () => {
   return (

@@ -19,16 +19,17 @@ import ExpandPost from '../../apps/radianSpace/postUI/expandPost/expandPost';
 import CreateFlare from '../../apps/radianSpace/createFlare/createPost';
 import { useSelector } from 'react-redux';
 import useProfile from '../../hooks/useProfile';
+import { usePostContext } from '../../context/PostContext';
 
 
 function Layout({ children, pageName,
-    expandPostIdReciever,
-    handlePreviousPostClick,
-    handleNextPostClick,
-    showPreviousPostButton,
-    showNextPostButton,
-    setExpandPostIdReciever,
-    expandPostOnCloseUrl,
+    // expandPostIdReciever,
+    // handlePreviousPostClick,
+    // handleNextPostClick,
+    // showPreviousPostButton,
+    // showNextPostButton,
+    // setExpandPostIdReciever,
+    // expandPostOnCloseUrl,
 }) {
     const navigate = useNavigate();
     const { authState } = useAuth();
@@ -38,6 +39,7 @@ function Layout({ children, pageName,
 
     const { minimalProfileData : profileData } = useProfile();
 
+    const { expandPostIdReciever } = usePostContext();
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [appMenuOpen, setAppMenuOpen] = useState(false);
@@ -61,12 +63,12 @@ function Layout({ children, pageName,
         navigate(originalUrlBeforeCreateFlareOverlay);
     }
 
-    const handleExpandPostClose = () => {
-        // e.stopPropagation();
-        setExpandPostIdReciever(null);
+    // const handleExpandPostClose = () => {
+    //     // e.stopPropagation();
+    //     setExpandPostIdReciever(null);
 
-        navigate(expandPostOnCloseUrl);
-    };
+    //     navigate(expandPostOnCloseUrl);
+    // };
 
 
 
@@ -183,12 +185,12 @@ function Layout({ children, pageName,
 
             {expandPostIdReciever &&
                 <ExpandPost
-                    overlayPostId={expandPostIdReciever}
-                    handleExpandPostClose={handleExpandPostClose}
-                    handlePreviousPostClick={handlePreviousPostClick}
-                    handleNextPostClick={handleNextPostClick}
-                    showPreviousPostButton={showPreviousPostButton}
-                    showNextPostButton={showNextPostButton}
+                    // overlayPostId={expandPostIdReciever}
+                    // handleExpandPostClose={handleExpandPostClose}
+                    // handlePreviousPostClick={handlePreviousPostClick}
+                    // handleNextPostClick={handleNextPostClick}
+                    // showPreviousPostButton={showPreviousPostButton}
+                    // showNextPostButton={showNextPostButton}
                 />
             }
 

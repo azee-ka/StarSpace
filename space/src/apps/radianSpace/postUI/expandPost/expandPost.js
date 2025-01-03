@@ -6,16 +6,21 @@ import './expandPost.css';
 import ExpandedPostOverlay from './expandPostOverlay/expandPostOverlay';
 import ExpandedPostNonOverlay from './expandPostNonOverlay/expandPostNonOverlay';
 import useApi from '../../../../utils/useApi';
-import { PostProvider } from './postContext';
+import { ExpandPostProvider } from './postContext';
+import { usePostContext } from '../../../../context/PostContext';
 
 const ExpandPost = ({ 
-    overlayPostId, 
-    handleExpandPostClose, 
+    // overlayPostId, 
+    // handleExpandPostClose, 
     handlePreviousPostClick, 
     handleNextPostClick, 
     showPreviousPostButton, 
-    showNextPostButton 
+    showNextPostButton,
 }) => {
+    const { 
+        expandPostIdReciever : overlayPostId,
+        handleExpandPostClose,
+    } = usePostContext();
     const { postId } = useParams();
     const [expandPostIdFinal, setExpandPostIdFinal] = useState(overlayPostId ? overlayPostId : postId);
 
@@ -26,7 +31,7 @@ const ExpandPost = ({
 
 
     return (
-        <PostProvider postId={expandPostIdFinal}>
+        <ExpandPostProvider postId={expandPostIdFinal}>
             <div className={`expanded-post-container ${!overlayPostId ? 'non-overlay' : 'overlay'}`} onClick={handleExpandPostClose}>
                 {overlayPostId ?
                     (
@@ -42,7 +47,7 @@ const ExpandPost = ({
                         <ExpandedPostNonOverlay />
                     )}
             </div>
-        </PostProvider>
+        </ExpandPostProvider>
     );
 }
 
