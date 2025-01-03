@@ -3,7 +3,7 @@ import axios from "axios";
 import "./createExchange.css";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../../apiUrl";
-import { useAuth } from "../../../reducers/auth/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import getConfig from "../../../config";
 import DOMPurify from 'dompurify';
 import useApi from "../../../utils/useApi";

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { useAuth } from '../../../reducers/auth/useAuth';
+import { useAuth } from '../../../hooks/useAuth';
 import './profileMenu.css';
 import API_BASE_URL from '../../../apiUrl';
 import ProfilePicture from '../../../utils/profilePicture/getProfilePicture';

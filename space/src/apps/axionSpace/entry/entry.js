@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import API_BASE_URL from "../../../apiUrl";
 import getConfig from "../../../config";
-import { useAuth } from "../../../reducers/auth/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import { FaArrowCircleDown, FaArrowCircleUp, FaCartArrowDown, FaComment, FaRegCaretSquareDown, FaRegCaretSquareUp, FaReply } from "react-icons/fa";
 import { formatDateTime } from "../../../utils/formatDateTime";
 import ProfilePicture from "../../../utils/profilePicture/getProfilePicture";

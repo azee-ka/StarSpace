@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Import Link
 import './userListOverlay.css'; // Import the CSS file
-import { useAuth } from '../../../../reducers/auth/useAuth';
+import { useAuth } from '../../../../hooks/useAuth';
 import ProfilePicture from '../../../../utils/profilePicture/getProfilePicture';
 import { FaTimes } from 'react-icons/fa';
 
@@ -36,9 +36,9 @@ const UserListOverlay = ({ userList, onClose, title }) => {
                     <h2>{title}</h2>
                     <div className='follow-overlay-line-seperator'></div>
                 </div>
-                {userList.length !== 0 && (
+                {userList?.length !== 0 && (
                     <div className="follow-list">
-                        {userList.map((thisUser, index) => (
+                        {userList?.map((thisUser, index) => (
                             <Link key={index} to={`profile/${thisUser.username}`}>
                                 <div className="follow-list-item">
                                     <div className='profile-picture-img-container-user-list-overlay'>
@@ -52,7 +52,7 @@ const UserListOverlay = ({ userList, onClose, title }) => {
                 )}
 
 
-                {userList.length === 0 &&
+                {userList?.length === 0 &&
                     <div className="no-follow">
                         <p>{`No ${title}`}</p>
                     </div>

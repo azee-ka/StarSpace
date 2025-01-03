@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useApi from "../../../utils/useApi";
-import { useAuth } from "../../../reducers/auth/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import PartialProfile from "./partialProfile/partialProfile";
 import FullProfile from "./fullProfile/fullProfile";
 import { useLocation } from "react-router-dom";

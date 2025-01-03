@@ -29,7 +29,7 @@
 .my-profile-user-info {
     width: 100%;
     height: 40%;
-    background-color: rgba(65, 65, 65, 0.317);
+    background-color: rgba(65, 65, 65, 0.217);
     box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.043);
     backdrop-filter: blur(60px);
     border-radius: 10px;
@@ -140,7 +140,7 @@
 .my-profile-metrics-container {
     width: 100%;
     flex-grow: 1;
-    background-color: rgba(65, 65, 65, 0.317);
+    background-color: rgba(65, 65, 65, 0.217);
     box-shadow: 0 4px 6px 2px rgba(128, 128, 128, 0.043);
     backdrop-filter: blur(60px);
     border-radius: 10px;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useAuth } from '../reducers/auth/useAuth'; // assuming your auth hook exists
+import { useAuth } from '../hooks/useAuth'; // assuming your auth hook exists
 import Layout from '../struct/layout/layout';
 
 import LoginPage from '../pages/auth/Login/login';

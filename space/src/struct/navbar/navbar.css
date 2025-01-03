@@ -257,6 +257,21 @@
 }
 
 
+.notification-button {
+  position: relative;
+}
+
+.notification-count {
+  position: absolute;
+  top: -3px;
+  right: -0px;
+  background-color: rgb(255, 0, 0);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 11px;
+}
+
 
 
 .navbar-public-btns {

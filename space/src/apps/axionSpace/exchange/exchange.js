@@ -3,7 +3,7 @@ import axios from "axios";
 import DOMPurify from 'dompurify';
 import "./exchange.css"; // Style for futuristic UI
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../../reducers/auth/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import API_BASE_URL from "../../../apiUrl";
 import getConfig from "../../../config";
 import { FaChartBar, FaFlag, FaUsers, FaInfoCircle, FaArrowUp, FaArrowCircleUp, FaArrowCircleDown } from "react-icons/fa";

@@ -4,7 +4,7 @@ import "./customPartialProfile.css";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import useApi from "../../../../utils/useApi";
-import { useAuth } from "../../../../reducers/auth/useAuth";
+import { useAuth } from "../../../../hooks/useAuth";
 import ProfilePicture from "../../../../utils/profilePicture/getProfilePicture";
 
 

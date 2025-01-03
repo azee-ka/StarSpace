@@ -3,7 +3,7 @@ import API_BASE_URL from '../apiUrl';
 import getConfig from '../config';
 // General API call function
 const apiCall = async (endpoint, method = 'GET', data = null, contentType, authState) => {
-    const config = getConfig(authState.token, contentType);
+    const config = getConfig(authState?.token, contentType);
 
     try {
         const response = await axios({

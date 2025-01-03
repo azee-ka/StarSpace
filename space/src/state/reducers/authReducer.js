@@ -23,7 +23,7 @@ export const authReducer = (state = initialAuthState, action) => {
       const { user, token } = action.payload;
       return { ...state, isAuthenticated: true, user, token };
     case authActionTypes.LOGOUT:
-      return { ...initialAuthState };
+      return { ...initialAuthState };  // Reset state to initial state on logout
     default:
       return state;
   }

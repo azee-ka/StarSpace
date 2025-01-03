@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import OtherProfile from "./otherProfile/otherProfile";
-import { useAuth } from "../../reducers/auth/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import MyProfile from "./myProfile/myProfile";
 import useApi from "../../utils/useApi";
 import { useSubApp } from "../../context/SubAppContext";

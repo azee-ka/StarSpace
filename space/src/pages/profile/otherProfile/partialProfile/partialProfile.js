@@ -8,17 +8,17 @@ import CustomPartialProfile from "./customPartialProfile";
 const PartialProfile = ({ profileInfo, isCustomizing }) => {
     const { callApi } = useApi();
     const navigate = useNavigate();
-    const [isFollowing, setIsFollowing] = useState(profileInfo?.interact?.is_following);
+    const [isPendingFollowing, setIsPendingFollowing] = useState(profileInfo?.interact?.follow_request_status === 'pending' && !profileInfo?.interact?.is_following);
 
     const handleFollowProfile = async () => {
         try {
-            setIsFollowing(prevState => !prevState);
+            setIsPendingFollowing(prevState => !prevState);
             const response = await callApi(`profile/follow-toggle/${profileInfo?.basicInfo?.username}/`, 'POST');
             console.log(response.data);
             navigate(`/profile/${profileInfo?.basicInfo?.username}`, { state: { refreshed: true } });
         } catch (err) {
             console.error('Error toggling follow', err);
-            setIsFollowing(prevState => !prevState);
+            setIsPendingFollowing(prevState => !prevState);
         }
     };
 
@@ -43,7 +43,7 @@ const PartialProfile = ({ profileInfo, isCustomizing }) => {
                     </div>
                     <div className="partial-profile-follow-button">
                         <button onClick={() => handleFollowProfile()}>
-                            {isFollowing ? 'Unfollow': 'Follow'}
+                            {isPendingFollowing ? 'Requested': 'Follow'}
                         </button>
                     </div>
                 </div>

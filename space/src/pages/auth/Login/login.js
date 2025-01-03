@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // Import Axios
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../reducers/auth/useAuth';
+import { useAuth } from '../../../hooks/useAuth';
 import './login.css';
 import API_BASE_URL from '../../../apiUrl';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';

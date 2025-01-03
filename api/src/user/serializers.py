@@ -121,7 +121,7 @@ class EditUserInfoSerializer(serializers.ModelSerializer):
 class EssentialUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = ['username', 'profile_image']
+        fields = ['id', 'username', 'profile_image']
         
         
 class MinimalUserSerializer(serializers.ModelSerializer):

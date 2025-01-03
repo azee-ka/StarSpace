@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './explore.css';
-import { useAuth } from "../../../reducers/auth/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import useApi from "../../../utils/useApi";
 import PostsGrid from "../postUI/postGrid/postGrid";
 

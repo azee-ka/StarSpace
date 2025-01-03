@@ -5,14 +5,7 @@ from rest_framework import status
 from .models import BaseUser
 from .serializers import MinimalUserSerializer, MyProfileSerializer, PartialProfileSerializer, FullProfileSerializer, EditUserInfoSerializer
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import authenticate, login
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.authtoken.models import Token
-import uuid
-from django.core.files.base import ContentFile
-import base64
-import os
-from django.http import JsonResponse
+from ..notifications.models import Notification
 
 
 
@@ -23,9 +16,20 @@ def user_profile_view(request, username):
     Retrieve user profile with a profile type indicator.
     """
     profile_user = get_object_or_404(BaseUser, username=username)
-    
     is_following = request.user in profile_user.followers.all()
+    follow_request_status = None
 
+    # Fetch actionable notification (e.g., follow request) status
+    if profile_user.is_private_profile and not is_following:
+        follow_request = Notification.objects.filter(
+            user=profile_user,
+            type="action",
+            status__in=["pending", "approved", "disapproved"],
+            message__icontains=f"Requested to follow your account."            
+        ).first()
+        if follow_request:
+            follow_request_status = follow_request.status
+                
     # If the user is viewing their own profile
     if request.user == profile_user:
         serializer = MyProfileSerializer(profile_user)
@@ -52,7 +56,8 @@ def user_profile_view(request, username):
         **serializer.data,
         'view_type': profile_type,
         'interact': {
-            'is_following': is_following
+            'is_following': is_following,
+            'follow_request_status': follow_request_status,
         }
     }
     return Response(response_data, status=200)

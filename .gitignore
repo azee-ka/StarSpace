@@ -32,6 +32,7 @@ api/media
 api/comnds.txt
 
 api/db.sqlite3
+api/dump.rdb
 api/.zshrc
 api/migrate.sh
 api/runserver.sh

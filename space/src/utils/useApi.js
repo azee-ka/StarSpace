@@ -1,5 +1,5 @@
 import getConfig from '../config';
-import { useAuth } from '../reducers/auth/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import apiCall from './api';
 
 const useApi = () => {

@@ -1,14 +1,11 @@
 // Layout.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import './layout.css';
-import getConfig from '../../config';
-import { useAuth } from '../../reducers/auth/useAuth';
-import API_BASE_URL from '../../apiUrl';
+import { useAuth } from '../../hooks/useAuth';
 import Navbar from '../navbar/navbar';
 import Sidebar from '../sidebar/Sidebar';
 import NotificationsMenu from '../navbar/notificationsMenu/notificationsMenu';
-import { unstable_useBlocker, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from '../navbar/profileMenu/profileMenu';
 import AppMenu from '../navbar/appMenu/appMenu';
 import useApi from '../../utils/useApi';
@@ -20,29 +17,32 @@ import RadianLayout from '../../apps/radianSpace/radianLayout/radianLayout';
 import CreatePacketOverlay from '../../apps/quantaSpace/createPacket/createPacket';
 import ExpandPost from '../../apps/radianSpace/postUI/expandPost/expandPost';
 import CreateFlare from '../../apps/radianSpace/createFlare/createPost';
+import { useSelector } from 'react-redux';
+import useProfile from '../../hooks/useProfile';
 
 
 function Layout({ children, pageName,
-    expandPostIdReciever, 
-    handlePreviousPostClick, 
-    handleNextPostClick, 
-    showPreviousPostButton, 
+    expandPostIdReciever,
+    handlePreviousPostClick,
+    handleNextPostClick,
+    showPreviousPostButton,
     showNextPostButton,
     setExpandPostIdReciever,
     expandPostOnCloseUrl,
- }) {
+}) {
     const navigate = useNavigate();
     const { authState } = useAuth();
     const location = useLocation();
     const { callApi } = useApi();
     const { activeSubApp, setActiveSubApp } = useSubApp();
+
+    const { minimalProfileData, isLoading, error, fetchProfile } = useProfile();
+
+
     const [menuOpen, setMenuOpen] = useState(false);
     const [appMenuOpen, setAppMenuOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [notificationsMenuOpen, setNotificationsMenuOpen] = useState(false);
-
-    const [notificationsList, setNotificationsList] = useState([]);
-    const [countNotifications, setCountNotifications] = useState(0);
 
     const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
 
@@ -96,17 +96,7 @@ function Layout({ children, pageName,
 
     }, [authState.isAuthenticated, setProfileData]);
 
-    const fetchNotifications = async () => {
-        try {
-            const response = await callApi(`get-notifications/`);
-            setNotificationsList(response.data);
-            setCountNotifications(response.data.length);
-            // console.log(response.data);
 
-        } catch (error) {
-            // console.error('Error fetching notifications:', error);
-        }
-    };
 
     const handleSidebarClose = () => {
         setSidebarOpen(false);
@@ -217,16 +207,16 @@ function Layout({ children, pageName,
             {authState.isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />}
             {menuOpen && <ProfileMenu profileData={profileData} />}
             {appMenuOpen && <AppMenu />}
-            {notificationsMenuOpen && <NotificationsMenu notificationsList={notificationsList} setNotificationCount={setCountNotifications} fetchNotifications={fetchNotifications} />}
+            {notificationsMenuOpen && <NotificationsMenu />}
 
             {showCreatePacketOverlay && <CreatePacketOverlay onClose={handleCloseCreatePacketOverlay} />}
 
-            {expandPostIdReciever !== undefined && expandPostIdReciever !== null &&
+            {expandPostIdReciever &&
                 <ExpandPost
                     overlayPostId={expandPostIdReciever}
-                    handleExpandPostClose={handleExpandPostClose} 
-                    handlePreviousPostClick={handlePreviousPostClick} 
-                    handleNextPostClick={handleNextPostClick} 
+                    handleExpandPostClose={handleExpandPostClose}
+                    handlePreviousPostClick={handlePreviousPostClick}
+                    handleNextPostClick={handleNextPostClick}
                     showPreviousPostButton={showPreviousPostButton}
                     showNextPostButton={showNextPostButton}
                 />

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './timelinePerPost.css';
-import { useAuth } from '../../../../reducers/auth/useAuth';
 import API_BASE_URL from '../../../../apiUrl';
 import ProfilePicture from '../../../../utils/profilePicture/getProfilePicture';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,9 +10,8 @@ import liked from '../../../../assets/liked.png';
 import disliked from '../../../../assets/disliked.png';
 import VideoPlayer from '../../utils/videoPlayer';
 import UserListOverlay from '../../utils/userListOverlay/userListOverlay';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router';
-import { timeAgo } from '../../expandPost/convertDateTIme';
+import { Link } from 'react-router';
+import { timeAgo } from '../../postUI/expandPost/convertDateTime';
 import useApi from '../../../../utils/useApi';
 
 const TimelinePerPost = ({ postId, posts, handleExpandPostOpen, index }) => {

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
 import './navbar.css';
-import { useAuth } from '../../reducers/auth/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from '../../utils/profilePicture/getProfilePicture';
@@ -12,9 +12,11 @@ import NineDotIcon from '../../utils/nine-dot';
 import SidebarMenuIcon from './iconMenu';
 import appLogo from '../../assets/logo.png';
 import appLogoComplete from '../../assets/logo-comp.png';
+import useNotifications from '../../hooks/useNotifications';
 
-const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, notificationCount, profileData, setCreatePacketOverlay, handleCreateFlareOverlayOpen }) => {
+const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, profileData, setCreatePacketOverlay, handleCreateFlareOverlayOpen }) => {
     const { authState } = useAuth();
+    const { count : notificationsCount } = useNotifications();
 
     const { activeSubApp, setActiveSubApp } = useSubApp();
 
@@ -23,7 +25,7 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
     const [notificationsMenuVisible, setNotificationsMenuVisible] = useState(false);
 
     const [appMenuVisible, setAppMenuVisible] = useState(false)
-
+    
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -158,9 +160,9 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
                             >
                                 <button onClick={handleNotificationsMenuToggle} className="notification-button">
                                     <FontAwesomeIcon icon={faBell} /> {/* Replace text with the bell icon */}
-                                    {notificationCount > 0 && (
+                                    {notificationsCount > 0 && (
                                         <span className="notification-count">
-                                            {notificationCount > 9 ? '9+' : notificationCount}
+                                            {notificationsCount > 9 ? '9+' : notificationsCount}
                                         </span>
                                     )}
                                 </button>

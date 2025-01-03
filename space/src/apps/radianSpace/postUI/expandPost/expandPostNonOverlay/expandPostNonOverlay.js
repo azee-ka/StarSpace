@@ -3,7 +3,7 @@ import './expandPostNonOverlay.css';
 import { faChevronDown, faChevronUp, faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import API_BASE_URL from '../../../../../apiUrl';
 import axios from 'axios';
-import { useAuth } from '../../../../../reducers/auth/useAuth';
+import { useAuth } from '../../../../../hooks/useAuth';
 import { timeAgo } from '../convertDateTime';
 import ExpandedPostLoading from '../expandedPostLoading/expandedPostLoading';
 import unliked from '../../../../../assets/unliked.png';
