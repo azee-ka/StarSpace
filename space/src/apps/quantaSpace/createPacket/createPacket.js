@@ -6,10 +6,12 @@ import DOMPurify from 'dompurify';
 import DraftEditor from "../../../utils/editor/editor";
 import { stateToHTML } from 'draft-js-export-html';
 import { FaCross, FaTimes } from "react-icons/fa";
+import { useCreatePacketContext } from "../../../context/CreatePacketContext";
 
-const CreatePacketOverlay = ({ onClose }) => {
+const CreatePacketOverlay = () => {
     const { callApi } = useApi();
     const navigate = useNavigate();
+    const { closeCreatePacketOverlay : onClose } = useCreatePacketContext();
     // State for various fields
     const [content, setContent] = useState("");
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -58,9 +60,9 @@ const CreatePacketOverlay = ({ onClose }) => {
     };
 
     return (
-        <div className="create-packet-page" onClick={onClose}>
+        <div className="create-packet-page" onClick={() => onClose(window.location.pathname)}>
             <div className="create-packet-inner" onClick={(e) => e.stopPropagation(e)}>
-                <button className="create-packet-overlay-close-btn" onClick={onClose}>
+                <button className="create-packet-overlay-close-btn" onClick={() => onClose(window.location.pathname)}>
                     <FaTimes className="icon-style" />
                 </button>
                 <h3>Create Packet</h3>

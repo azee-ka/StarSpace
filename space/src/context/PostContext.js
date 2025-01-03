@@ -27,6 +27,7 @@ export const PostProvider = ({ children }) => {
     };
 
     const handlePreviousPostClick = () => {
+        console.log('prev')
         if (currentExpandPostIndex > 0) {
             const newIndex = currentExpandPostIndex - 1;
             handleExpandPostOpen(postsList[newIndex].uuid, postsList, expandPostOnCloseUrl, newIndex);
@@ -37,6 +38,7 @@ export const PostProvider = ({ children }) => {
     };
 
     const handleNextPostClick = () => {
+        console.log('next')
         if (currentExpandPostIndex < postsList.length - 1) {
             const newIndex = currentExpandPostIndex + 1;
             handleExpandPostOpen(postsList[newIndex].uuid, postsList, expandPostOnCloseUrl, newIndex);

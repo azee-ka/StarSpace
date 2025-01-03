@@ -35,21 +35,14 @@ import Packet from '../apps/quantaSpace/packet/packet';
 import CreateFlare from '../apps/radianSpace/createFlare/createPost';
 import ExpandPost from '../apps/radianSpace/postUI/expandPost/expandPost';
 import { PostProvider } from '../context/PostContext';
+import { CreateFlareProvider } from '../context/CreateFlareContext';
+import { CreatePacketProvider } from '../context/CreatePacketContext';
 
 
 const AppRouter = () => {
     const { authState, isLoading } = useAuth();
     const isAuthenticated = authState.isAuthenticated;
     const { activeSubApp, setActiveSubApp } = useSubApp()
-
-
-    // useEffect(() => {
-    //     if (window.location.pathname.includes('openspace')) {
-    //         setActiveSubApp('openspace');
-    //     } else if (window.location.pathname.includes('home')) {
-    //         setActiveSubApp('home');
-    //     }
-    // }, [window.location.pathname, activeSubApp, setActiveSubApp]);
 
     const privateRoutes = {
         AxionSpace: [
@@ -71,8 +64,8 @@ const AppRouter = () => {
         RadianSpace: [
             { name: 'RadianSpace Dasboard', path: '/', component: <RadianDashboard />, key: 'RadianDashboard' },
             { name: 'RadianSpace Dasboard', path: '/radianspace', component: <RadianDashboard />, key: 'RadianDashboard' },
-            { name: 'RadianSpace Timeline', path: '/radianspace/timeline', component: <RadianTimeline /*handleExpandPostOpen={handleExpandPostOpen}*/ />, key: 'RadianTimeline' },
-            { name: 'RadianSpace Explore', path: '/radianspace/explore', component: <RadianExplore /*handleExpandPostOpen={handleExpandPostOpen}*/ />, key: 'RadianExplore' },
+            { name: 'RadianSpace Timeline', path: '/radianspace/timeline', component: <RadianTimeline />, key: 'RadianTimeline' },
+            { name: 'RadianSpace Explore', path: '/radianspace/explore', component: <RadianExplore />, key: 'RadianExplore' },
             { name: 'Create Flare', path: '/radianspace/create-flare', component: <CreateFlare />, key: 'CreateFlare' },
             { name: 'Expand Flare', path: '/radianspace/flare/:postId', component: <ExpandPost />, key: 'ExpandFlare' },
         ],
@@ -133,44 +126,48 @@ const AppRouter = () => {
 
     return (
         <Router>
-        <PostProvider>
-            <React.Suspense fallback={<div>Loading...</div>}>
-                <Routes>
-                    {/* Public Routes (Accessible by everyone) */}
-                    {!isAuthenticated && publicRoutes.map((route, index) => {
-                        const Component = route.component;
-                        return (
-                            <Route
-                                key={`${index}-${route.path}`}
-                                path={route.path}
-                                element={
-                                    <Layout
+            <PostProvider>
+                <CreateFlareProvider>
+                    <CreatePacketProvider>
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                            {/* Public Routes (Accessible by everyone) */}
+                            {!isAuthenticated && publicRoutes.map((route, index) => {
+                                const Component = route.component;
+                                return (
+                                    <Route
                                         key={`${index}-${route.path}`}
-                                        className={`${route.path.substring(1)}`}
-                                        pageName={route.pageName}
-                                    >
-                                        {Component}
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
+                                        path={route.path}
+                                        element={
+                                            <Layout
+                                                key={`${index}-${route.path}`}
+                                                className={`${route.path.substring(1)}`}
+                                                pageName={route.pageName}
+                                            >
+                                                {Component}
+                                            </Layout>
+                                        }
+                                    />
+                                );
+                            })}
 
-                    {/* Private Routes (Accessible only by authenticated users) */}
-                    {isAuthenticated && renderPrivateRoutes()}
+                            {/* Private Routes (Accessible only by authenticated users) */}
+                            {isAuthenticated && renderPrivateRoutes()}
 
 
-                    {/* If not authenticated, redirect to login page */}
-                    {!isAuthenticated && (
-                        <Route path="/*" element={<Navigate to="/login" />} />
-                    )}
+                            {/* If not authenticated, redirect to login page */}
+                            {!isAuthenticated && (
+                                <Route path="/*" element={<Navigate to="/login" />} />
+                            )}
 
-                    {/* If authenticated, allow access to private routes */}
-                    {isAuthenticated && (
-                        <Route path="/*" element={<Navigate to="/" />} />
-                    )}
-                </Routes>
-            </React.Suspense>
+                            {/* If authenticated, allow access to private routes */}
+                            {isAuthenticated && (
+                                <Route path="/*" element={<Navigate to="/" />} />
+                            )}
+                        </Routes>
+                    </React.Suspense>
+                    </CreatePacketProvider>
+                </CreateFlareProvider>
             </PostProvider>
         </Router>
     );

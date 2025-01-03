@@ -13,17 +13,20 @@ import SidebarMenuIcon from './iconMenu';
 import appLogo from '../../assets/logo.png';
 import appLogoComplete from '../../assets/logo-comp.png';
 import useNotifications from '../../hooks/useNotifications';
+import { useCreateFlareContext } from '../../context/CreateFlareContext';
+import { useCreatePacketContext } from '../../context/CreatePacketContext';
 
-const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, profileData, setCreatePacketOverlay, handleCreateFlareOverlayOpen }) => {
+const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificationsMenuToggle, sidebarOpen, setSidebarOpen, profileData }) => {
     const { authState } = useAuth();
     const { count : notificationsCount } = useNotifications();
+
+    const { openCreateFlareOverlay } = useCreateFlareContext();
+    const { openCreatePacketOverlay } = useCreatePacketContext();
 
     const { activeSubApp, setActiveSubApp } = useSubApp();
 
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
-
     const [notificationsMenuVisible, setNotificationsMenuVisible] = useState(false);
-
     const [appMenuVisible, setAppMenuVisible] = useState(false)
     
     const location = useLocation();
@@ -66,13 +69,13 @@ const Navbar = ({ handleProfileMenuToggle, handleAppMenuToggle, handleNotificati
             { label: "Radian Dashboard", path: "/radianspace" },
             { label: "Radian Timeline", path: "/radianspace/timeline" },
             { label: "Radian Explore", path: "/radianspace/explore" },
-            { label: "Create Flare", action: () => handleCreateFlareOverlayOpen() },
+            { label: "Create Flare", action: () => openCreateFlareOverlay(window.location.pathname) },
         ],
         'QuantaSpace': [
             { label: "Quanta Dashboard", path: "/quantaspace" },
             { label: "Quanta Timeline", path: "/quantaspace/timeline" },
             { label: "Quanta Explore", path: "/quantaspace/explore" },
-            { label: "Create Packet", action: () => setCreatePacketOverlay(true) },
+            { label: "Create Packet", action: () => openCreatePacketOverlay(window.location.pathname) },
         ],
         'AxionSpace': [
             { label: "Axion Dashboard", path: "/axionspace" },

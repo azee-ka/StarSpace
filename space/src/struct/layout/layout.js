@@ -20,22 +20,15 @@ import CreateFlare from '../../apps/radianSpace/createFlare/createPost';
 import { useSelector } from 'react-redux';
 import useProfile from '../../hooks/useProfile';
 import { usePostContext } from '../../context/PostContext';
+import { useCreateFlareContext } from '../../context/CreateFlareContext';
+import { useCreatePacketContext } from '../../context/CreatePacketContext';
 
 
-function Layout({ children, pageName,
-    // expandPostIdReciever,
-    // handlePreviousPostClick,
-    // handleNextPostClick,
-    // showPreviousPostButton,
-    // showNextPostButton,
-    // setExpandPostIdReciever,
-    // expandPostOnCloseUrl,
-}) {
+function Layout({ children, pageName }) {
     const navigate = useNavigate();
     const { authState } = useAuth();
     const location = useLocation();
-    const { callApi } = useApi();
-    const { activeSubApp, setActiveSubApp } = useSubApp();
+    const { activeSubApp } = useSubApp();
 
     const { minimalProfileData : profileData } = useProfile();
 
@@ -46,22 +39,10 @@ function Layout({ children, pageName,
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [notificationsMenuOpen, setNotificationsMenuOpen] = useState(false);
 
-    const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
+    // const [showCreatePacketOverlay, setCreatePacketOverlay] = useState(false);
 
-    const [showCreateFlareOverlay, setShowCreateFlareOverlay] = useState(false);
-    const [originalUrlBeforeCreateFlareOverlay, setOriginalUrlBeforeCreateFlareOverlay] = useState(null);
-
-    const handleCreateFlareOverlayOpen = () => {
-        if (window.location.pathname !== '/radianspace/create-flare') {
-            setOriginalUrlBeforeCreateFlareOverlay(window.location.pathname);
-            setShowCreateFlareOverlay(true);
-        }
-    };
-    const handleCreateFlareOverlayClose = () => {
-        setShowCreateFlareOverlay(false);
-        navigate(originalUrlBeforeCreateFlareOverlay);
-    }
-
+    const { showCreateFlareOverlay } = useCreateFlareContext();
+    const { showCreatePacketOverlay, openCreatePacketOverlay  } = useCreatePacketContext();
 
 
     const handleSidebarClose = () => {
@@ -97,19 +78,14 @@ function Layout({ children, pageName,
         setNotificationsMenuOpen(false);
     };
 
-    const handleCloseCreatePacketOverlay = () => {
-        setCreatePacketOverlay(false);
-        navigate(`/`);
-    }
-
     useEffect(() => {
         handleCloseOverlays();
     }, [location]);
 
 
     useEffect(() => {
-        if (window.location.pathname === '/quantaspace/create-packet') {
-            setCreatePacketOverlay(true);
+        if (window.location.pathname === '/quantaspace/create-packet' && !showCreatePacketOverlay) {
+            openCreatePacketOverlay();
         }
     }, [])
 
@@ -146,8 +122,7 @@ function Layout({ children, pageName,
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                     profileData={profileData}
-                    setCreatePacketOverlay={setCreatePacketOverlay}
-                    handleCreateFlareOverlayOpen={handleCreateFlareOverlayOpen}
+                    // handleCreateFlareOverlayOpen={handleCreateFlareOverlayOpen}
                 />
             </div>
             <div className='layout-page'>
@@ -173,14 +148,14 @@ function Layout({ children, pageName,
             {appMenuOpen && <AppMenu />}
             {notificationsMenuOpen && <NotificationsMenu />}
 
-            {showCreatePacketOverlay && <CreatePacketOverlay onClose={handleCloseCreatePacketOverlay} />}
+            {showCreatePacketOverlay && <CreatePacketOverlay  />}
 
             {expandPostIdReciever &&
                 <ExpandPost />
             }
 
             {showCreateFlareOverlay &&
-                <CreateFlare originalUrl={originalUrlBeforeCreateFlareOverlay} handleCreateFlareOverlayClose={handleCreateFlareOverlayClose} />
+                <CreateFlare />
             }
         </div>
     );

@@ -22,9 +22,9 @@ import { usePostContext } from '../../../../../context/PostContext';
 
 const ExpandedPostOverlay = () => {
     const {
-        handlePreviousPostClick, 
-        handleNextPostClick, 
-        showPreviousPostButton, 
+        handlePreviousPostClick,
+        handleNextPostClick,
+        showPreviousPostButton,
         showNextPostButton,
     } = usePostContext();
 
@@ -68,40 +68,40 @@ const ExpandedPostOverlay = () => {
                     </div>
                 </div>
                 <div className='expanded-post-overlay-comments'>
-                        {post?.comments?.length !== 0 ?
-                            (post?.comments?.map((commentData, index) => (
-                                <div key={`${index}-${commentData?.created_at}`} className='expanded-post-per-comment'>
-                                    <div className='expanded-post-comments-info'>
-                                        <div className='expanded-post-commenting-user-info'>
-                                            <div className='expanded-post-commenting-user-profile-picture'>
-                                                <div className='expanded-post-commenting-user-profile-picture-inner'>
-                                                    <ProfilePicture src={post?.author?.profile_image} />
-                                                </div>
+                    {post?.comments?.length !== 0 ?
+                        (post?.comments?.map((commentData, index) => (
+                            <div key={`${index}-${commentData?.created_at}`} className='expanded-post-per-comment'>
+                                <div className='expanded-post-comments-info'>
+                                    <div className='expanded-post-commenting-user-info'>
+                                        <div className='expanded-post-commenting-user-profile-picture'>
+                                            <div className='expanded-post-commenting-user-profile-picture-inner'>
+                                                <ProfilePicture src={post?.author?.profile_image} />
                                             </div>
-                                            <div className='expanded-post-commenting-user-username'>
-                                                <p>
-                                                    <Link to={`/profile/${commentData?.author?.username}`}>
+                                        </div>
+                                        <div className='expanded-post-commenting-user-username'>
+                                            <p>
+                                                <Link to={`/profile/${commentData?.author?.username}`}>
                                                     {commentData?.author?.username}
-                                                    </Link>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className='expanded-post-comment-info'>
-                                            <p>Posted {timeAgo(commentData?.created_at)}</p>
+                                                </Link>
+                                            </p>
                                         </div>
                                     </div>
-                                    <div className='expanded-post-comments-text'>
-                                        <div className='expanded-post-comments-text-inner'>
-                                            <p>{commentData?.text}</p>
-                                        </div>
+                                    <div className='expanded-post-comment-info'>
+                                        <p>Posted {timeAgo(commentData?.created_at)}</p>
                                     </div>
                                 </div>
-                            ))) : (
-                                <div className='expanded-post-no-comments'>
-                                    No Comments
+                                <div className='expanded-post-comments-text'>
+                                    <div className='expanded-post-comments-text-inner'>
+                                        <p>{commentData?.text}</p>
+                                    </div>
                                 </div>
-                            )
-                        }
+                            </div>
+                        ))) : (
+                            <div className='expanded-post-no-comments'>
+                                No Comments
+                            </div>
+                        )
+                    }
                 </div>
                 <div className='expanded-post-comment-post-container'>
                     <div className={`expanded-post-comment-post-button ${commentText !== '' ? 'active' : ''}`}>
@@ -181,22 +181,32 @@ const ExpandedPostOverlay = () => {
                 <UserListOverlay userList={post.dislikes} onClose={handleCloseLikesOverlay} title={'Dislikes'} username={authState.user.username} />
             )}
             <div className='expand-overlay-previous-next-post-button-container'>
-                <div className='expand-overlay-previous-next-post-button-container-inner '>
-                    <div className='expanded-post-overlay-previous-post-button-container' onClick={(e) => e.stopPropagation()}>
-                        {showPreviousPostButton &&
-                            <div className='expanded-post-overlay-previous-post-button-container-inner' onClick={handlePreviousPostClick}>
-                                <FaChevronLeft className='icon-style' />
-                            </div>
-                        }
-                    </div>
-                    <div className='expanded-post-overlay-next-post-button-container' onClick={(e) => e.stopPropagation()}>
-                        {showNextPostButton &&
-                            <div className='expanded-post-overlay-next-post-button-container-inner' onClick={handleNextPostClick}>
-                                <FaChevronRight className='icon-style' />
-                            </div>
-                        }
-                    </div>
-                </div>
+                {showPreviousPostButton ? (
+                    <button
+                        className='expanded-post-overlay-previous-post-button-container'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handlePreviousPostClick();
+                        }}>
+                        <FaChevronLeft className='icon-style' />
+                    </button> 
+                ) : (
+                    <div className="button-placeholder" />
+                )
+                }
+                {showNextPostButton ? (
+                    <button
+                        className='expanded-post-overlay-next-post-button-container'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleNextPostClick();
+                        }}>
+                        <FaChevronRight className='icon-style' />
+                    </button> 
+                ): (
+                    <div className="button-placeholder" />
+                )
+                }
             </div>
         </div>
     ) : (

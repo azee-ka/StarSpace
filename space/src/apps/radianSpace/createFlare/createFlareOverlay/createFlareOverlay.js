@@ -5,13 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useApi from '../../../../utils/useApi';
 import DraftEditor from '../../../../utils/editor/editor';
+import { useCreateFlareContext } from '../../../../context/CreateFlareContext';
 
 const CreateFlareOverlay = ({
   handleSubmit,
   mediaProps,
   contentProps,
   renderMediaContent,
-  handleCreateFlareOverlayClose,
+  // handleCreateFlareOverlayClose,
 }) => {
   const { content, setContent } = contentProps;
   const {
@@ -22,7 +23,7 @@ const CreateFlareOverlay = ({
     handleMediaUpload,
   } = mediaProps;
 
-  const { callApi } = useApi();
+  const { closeCreateFlareOverlay } = useCreateFlareContext();
 
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ const CreateFlareOverlay = ({
 
 
   const handleSubmitSucess = (response) => {
-    handleCreateFlareOverlayClose();
+    closeCreateFlareOverlay(window.location.pathname);
     console.log(response.data)
     navigate(`/radianspace/flare/${response.data.uuid}`);
   }
@@ -40,7 +41,7 @@ const CreateFlareOverlay = ({
 
 
   return (
-    <div className={`create-post-overlay`} onClick={handleCreateFlareOverlayClose}>
+    <div className={`create-post-overlay`} onClick={() => closeCreateFlareOverlay(window.location.pathname)}>
       <div className={`create-post-card-overlay`} onClick={(e) => e.stopPropagation(e)}>
         <h2>Create a New Post</h2>
         <form>
@@ -65,7 +66,7 @@ const CreateFlareOverlay = ({
           </div>
         }
       </div>
-      <div className={`media-container-overlay`} >
+      <div className={`media-container-overlay`} onClick={(e) => e.stopPropagation(e)} >
         {/* Conditionally display the uploaded media card */}
         {uploadedMedia.length !== 0 ? (
           <div className={`uploaded-media-card-overlay`} onClick={(e) => e.stopPropagation(e)}>

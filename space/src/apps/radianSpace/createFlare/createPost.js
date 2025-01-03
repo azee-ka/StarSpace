@@ -6,8 +6,10 @@ import API_BASE_URL from '../../../apiUrl';
 import VideoPlayer from '../utils/videoPlayer';
 import DOMPurify from 'dompurify';
 import { stateToHTML } from 'draft-js-export-html';
+import { useCreateFlareContext } from '../../../context/CreateFlareContext';
 
-const CreateFlare = ({ originalUrl, handleCreateFlareOverlayClose }) => {
+const CreateFlare = () => {
+  const { originalUrlBeforeCreateFlareOverlay: originalUrl } = useCreateFlareContext();
   const { callApi } = useApi();
 
   const [content, setContent] = useState();
@@ -64,7 +66,7 @@ const CreateFlare = ({ originalUrl, handleCreateFlareOverlayClose }) => {
     }
     const contentState = content?.getCurrentContent(); // Get current content from the editor
     let sanitizedContent = DOMPurify.sanitize(contentState);
-    if(contentState) {
+    if (contentState) {
       sanitizedContent = DOMPurify.sanitize(stateToHTML(contentState));
     }
 
@@ -109,7 +111,7 @@ const CreateFlare = ({ originalUrl, handleCreateFlareOverlayClose }) => {
 
   return originalUrl ? (
     <CreateFlareOverlay
-      handleCreateFlareOverlayClose={handleCreateFlareOverlayClose}
+      // handleCreateFlareOverlayClose={handleCreateFlareOverlayClose}
       handleSubmit={handleSubmit}
       mediaProps={mediaProps}
       contentProps={contentProps}

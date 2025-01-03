@@ -7,7 +7,7 @@ const NotificationList = () => {
     const { notifications } = useNotifications();
 
     return (notifications?.length > 0) ? (
-        <div className="notification-list">
+        <div className="notifications-list">
             {notifications?.map((notification) => (
                 <NotificationItem key={notification.id} notification={notification} />
             ))}

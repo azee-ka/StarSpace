@@ -147,7 +147,7 @@ const TimelinePerPost = ({ postId, posts, index }) => {
                     </div>
                     <div className='radian-timeline-post-user-username'>
                         <Link to={`profile/${post?.author?.username}`}>
-                            @{post?.author?.username}
+                            {post?.author?.username}
                         </Link>
                     </div>
                     <div className='radian-timeline-post-stats'>
