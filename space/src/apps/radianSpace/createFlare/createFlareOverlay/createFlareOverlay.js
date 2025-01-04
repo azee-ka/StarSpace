@@ -71,7 +71,7 @@ const CreateFlareOverlay = ({
           </div>
         }
       </div>
-      <div className={`media-container-overlay`} onClick={(e) => e.stopPropagation(e)} >
+      <div className={`media-container-overlay`} >
         {/* Conditionally display the uploaded media card */}
         {uploadedMedia.length !== 0 ? (
           <div className={`uploaded-media-card-overlay`} onClick={(e) => e.stopPropagation(e)}>
