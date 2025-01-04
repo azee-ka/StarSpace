@@ -56,7 +56,7 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
                 formData.append("uploadedFiles", file); // Match 'uploadedFiles' key expected by backend
             });
             
-            const response = await callApi(`openspace/exchange/${exchangeUUID}/create-entry/`, 'POST', formData, "multipart/form-data")
+            const response = await callApi(`axionspace/exchange/${exchangeUUID}/create-entry/`, 'POST', formData, "multipart/form-data")
             console.log(response.data);
             navigate(`/openspace/entry/${response.data.entry_uuid}`);
             // console.log('location.href', location);
@@ -105,7 +105,7 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
                         <h3>Create Entry</h3>
                     </div>
                     <div className="create-entry-overlay-textarea">
-                        <div className="create-entry-overlay-title">
+                        <div className="create-entry-overlay-title-field">
                             <textarea
                                 className="entry-textarea-title"
                                 placeholder="Enter prompt here..."
@@ -118,6 +118,7 @@ const CreateEntryOverlay = ({ exchangeUUID, onClose }) => {
                             <DraftEditor 
                                 placeholder="Enter context..." 
                                 onContentChange={(state) => setDescription(state)}
+                                showToolbar={true}
                             />
                         </div>
                     </div>

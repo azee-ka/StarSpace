@@ -14,6 +14,7 @@ const WriteReply = ({ title, placeholder, showEditor, onContentChange, onSubmit 
                 <DraftEditor
                     placeholder={placeholder}
                     onContentChange={onContentChange}
+                    showToolbar={true}
                 />
             </div>
             <div className="entry-reply-comment-submit">

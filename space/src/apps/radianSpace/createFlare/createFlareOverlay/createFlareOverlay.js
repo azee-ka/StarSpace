@@ -6,6 +6,7 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import useApi from '../../../../utils/useApi';
 import DraftEditor from '../../../../utils/editor/editor';
 import { useCreateFlareContext } from '../../../../context/CreateFlareContext';
+import { FaTimes } from 'react-icons/fa';
 
 const CreateFlareOverlay = ({
   handleSubmit,
@@ -43,16 +44,20 @@ const CreateFlareOverlay = ({
   return (
     <div className={`create-post-overlay`} onClick={() => closeCreateFlareOverlay(window.location.pathname)}>
       <div className={`create-post-card-overlay`} onClick={(e) => e.stopPropagation(e)}>
-        <h2>Create a New Post</h2>
-        <form>
+        <button className="create-post-card-close-btn" onClick={() => closeCreateFlareOverlay(window.location.pathname)}>
+          <FaTimes className="icon-style" />
+        </button>
+        <h3>Create Flare</h3>
+        <div className='create-flare-content-editor'>
           <DraftEditor
             onChangeContent={(state) => setContent(state)}
             placeholder="Write your post here..."
+            showToolbar={true}
           />
-          <div className="create-post-buttons-overlay">
-            <button type="submit" onClick={(e) => handleSubmit(e, content, uploadedMedia, handleSubmitSucess)}>Post</button>
-          </div>
-        </form>
+        </div>
+        <div className="create-post-buttons-overlay">
+          <button type="submit" onClick={(e) => handleSubmit(e, content, uploadedMedia, handleSubmitSucess)}>Post</button>
+        </div>
         {uploadedMedia.length > 0 &&
           <div className={`create-post-to-upload-media-overlay`}>
             <div className={`create-post-to-upload-media-overlay-inner`} onClick={handleMediaUpload}>

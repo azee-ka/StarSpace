@@ -17,9 +17,9 @@ const Comment = ({ comment, onReplyClick, onSubmitReply, activeReplyCommentId, s
         <div className="entry-center-panel-per-comment">
             <div className="entry-comment-info">
                 <div className="entry-comment-author">
-                    <Link to={`/profile/${comment.author}`}>
+                    <Link to={`/profile/${comment?.author?.username}`}>
                         <ProfilePicture />
-                        <p>@{comment.author}</p>
+                        <p>@{comment?.author?.username}</p>
                     </Link>
                 </div>
                 <div className="entry-comment-stats">

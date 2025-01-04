@@ -3,15 +3,18 @@ import './createPacket.css';
 import useApi from "../../../utils/useApi";
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
-import DraftEditor from "../../../utils/editor/editor";
 import { stateToHTML } from 'draft-js-export-html';
-import { FaCross, FaTimes } from "react-icons/fa";
+import { FaCross, FaEllipsisV, FaTimes, FaUpload } from "react-icons/fa";
 import { useCreatePacketContext } from "../../../context/CreatePacketContext";
+import DraftEditor from "../../../utils/editor/editor";
 
 const CreatePacketOverlay = () => {
     const { callApi } = useApi();
     const navigate = useNavigate();
-    const { closeCreatePacketOverlay : onClose } = useCreatePacketContext();
+    const { closeCreatePacketOverlay: onClose } = useCreatePacketContext();
+
+    const [showPacketEditorToolbar, setShowPacketEditorToolbar] = useState(false);
+
     // State for various fields
     const [content, setContent] = useState("");
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -33,7 +36,7 @@ const CreatePacketOverlay = () => {
 
     const handleSubmit = async () => {
         const formData = new FormData();
-        
+
         const contentState = content.getCurrentContent(); // Get current content from the editor
         const sanitizedContent = DOMPurify.sanitize(stateToHTML(contentState));
 
@@ -70,17 +73,43 @@ const CreatePacketOverlay = () => {
                     <DraftEditor
                         placeholder='Write something...'
                         onContentChange={(state) => setContent(state)}
+                        showToolbar={showPacketEditorToolbar}
                     />
-                </div>
-                <input type="file" multiple onChange={handleUploadedFilesChange} />
-                <div>
-                    <label>Packet Type</label>
-                    <select value={packetType} onChange={handlePacketTypeChange}>
-                        <option value="announcement">Announcement</option>
-                        <option value="idea">Idea</option>
-                        <option value="question">Question</option>
-                        <option value="poll">Poll</option>
-                    </select>
+                    <div className="create-packet-actions-menubar">
+                        <div className="create-packet-actions-menubar-inner">
+                            <div className="create-packet-menu-btn">
+                                <label>
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={handleUploadedFilesChange}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <FaUpload className="icon-style" />
+                                </label>
+                            </div>
+                            <div className="create-packet-menu-btn" id="create-packet-menu-btn-selector">
+                                <select value={packetType} onChange={handlePacketTypeChange}>
+                                    <option disabled value="idea">Select Type</option>
+                                    <option value="announcement">Announcement</option>
+                                    <option value="idea">Idea</option>
+                                    <option value="question">Question</option>
+                                    <option value="poll">Poll</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="create-packet-actions-menubar-inner">
+                            <button
+                                className="create-packet-settings-btn"
+                                onClick={() => setShowPacketEditorToolbar(!showPacketEditorToolbar)}
+                            >
+                                    {showPacketEditorToolbar ? 'Show Toolbar' : 'Hide Toolbar'}
+                            </button>
+                            <button className="create-packet-settings-btn">
+                                <FaEllipsisV className="icon-style" />
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label>Visibility</label>

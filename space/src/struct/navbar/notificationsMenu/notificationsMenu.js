@@ -16,7 +16,7 @@ const NotificationsMenu = ({ handleNotificationSidebarOpen }) => {
                 <h3>Notifications</h3>
                 <button onClick={() => handleNotificationSidebarOpen(null)}>
                     <p>
-                        Notifications Panel
+                        Expand Panel
                         <span><FaChevronRight /></span>
                     </p>
                 </button>

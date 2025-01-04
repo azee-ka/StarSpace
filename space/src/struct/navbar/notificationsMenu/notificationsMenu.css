@@ -244,7 +244,7 @@
     padding: 0.6em;
     margin: 0;
     font-size: 0.8em;
-    background-color: rgba(0, 111, 148, 0.850);
+    background-color: rgba(0, 126, 148, 0.888);
     border: 0;
     color: white;
     box-sizing: border-box;
@@ -259,7 +259,7 @@
 }
 .notification-item-actions-container a:hover,
 .notification-item-actions-container button:hover {
-    background-color: rgba(0, 111, 148, 0.150);
-    box-shadow: 0 0 3px 2px rgba(0, 111, 148, 0.850);
+    background-color: rgba(0, 126, 148, 0.272);
+    box-shadow: 0 0 3px 2px rgba(0, 126, 148, 0.888);
     cursor: pointer;
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DOMPurify from 'dompurify';
 import "./exchange.css"; // Style for futuristic UI
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import API_BASE_URL from "../../../apiUrl";
 import getConfig from "../../../config";
@@ -57,7 +57,7 @@ const ExchangePage = () => {
     useEffect(() => {
         const fetchExchange = async () => {
             try {
-                const response = await callApi(`openspace/exchange/${exchangeId}/`);
+                const response = await callApi(`axionspace/exchange/${exchangeId}/`);
                 setExchange(response.data);
                 console.log(response.data)
                 setLoading(false);
@@ -69,7 +69,7 @@ const ExchangePage = () => {
 
         const fetchEntries = async () => {
             try {
-                const response = await callApi(`openspace/exchange/${exchangeId}/entries/`);
+                const response = await callApi(`axionspace/exchange/${exchangeId}/entries/`);
                 console.log(response.data)
                 setEntries(response.data);
             } catch (err) {
@@ -292,7 +292,7 @@ const ExchangePage = () => {
                             <div className="exchange-page-entries-inner">
                                 {entries.map((entry, index) => (
                                     <div key={index} className="exchange-page-per-entry">
-                                        <div className="exchange-page-per-entry-content" onClick={() => handleEntryClick(entry.uuid)} >
+                                        <Link className="exchange-page-per-entry-content" to={`/axionspace/entry/${entry.uuid}`} >
                                             <div className="exchange-page-per-entry-content-inner">
                                                 <div className="exhcange-page-per-entry-title">
                                                     <h3>{entry.title}</h3>
@@ -301,7 +301,7 @@ const ExchangePage = () => {
                                                     <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.content)}}/>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                         <div className="exchange-page-per-entry-metrics">
                                             <div className="exchange-page-per-entry-metrics-inner">
                                                 <button onClick={() => voteEntry(entry?.uuid, 'upvote')} className="exchange-page-per-entry-controls-btn">
@@ -326,7 +326,7 @@ const ExchangePage = () => {
                     }
                 </div>
             </div>
-            {showCreateEntryOverlay && <CreateEntryOverlay exchangeUUID={exchange?.uuid} onClose={false} />}
+            {showCreateEntryOverlay && <CreateEntryOverlay exchangeUUID={exchange?.uuid} onClose={() => setShowCreateEntryOverlay(false)} />}
         </div>
     );
 };

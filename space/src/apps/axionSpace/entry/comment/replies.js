@@ -37,9 +37,9 @@ const Reply = ({ reply, activeReplyCommentId, setActiveReplyCommentId, onReplyCl
         <div className="entry-comment-per-reply">
             <div className="entry-comment-per-reply-info">
                 <div className="entry-comment-per-reply-author">
-                    <Link to={`/profile/${reply.author}`}>
-                        <ProfilePicture />
-                        <p>@{reply.author}</p>
+                    <Link to={`/profile/${reply?.author?.username}`}>
+                        <ProfilePicture src={reply?.author?.profile_image} />
+                        <p>@{reply.author?.username}</p>
                     </Link>
                 </div>
                 <div className="entry-comment-per-reply-stats">

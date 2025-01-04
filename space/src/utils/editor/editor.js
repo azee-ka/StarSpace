@@ -1,5 +1,13 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Editor, EditorState, RichUtils, convertToRaw, Modifier } from 'draft-js';
+import { 
+    Editor,
+    EditorState,
+    SelectionState,
+    RichUtils,
+    convertToRaw,
+    Modifier,
+    getDefaultKeyBinding,
+} from 'draft-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBold,
@@ -32,7 +40,7 @@ import {
 import 'draft-js/dist/Draft.css';
 import './editor.css';
 
-const DraftEditor = ({ placeholder, onContentChange }) => {
+const DraftEditor = ({ placeholder, onContentChange, showToolbar }) => {
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const [textColor, setTextColor] = useState("");
     const [backgroundColor, setBackgroundColor] = useState("");
@@ -41,38 +49,30 @@ const DraftEditor = ({ placeholder, onContentChange }) => {
 
     const editorRef = useRef(null);
 
-    
-    // Function to ensure the editor scrolls to the caret
-    const scrollToCaret = () => {
-        const editorDOM = editorRef.current;
-        const contentDiv = editorDOM.querySelector('.public-DraftEditor-content');
-        
-        if (contentDiv) {
-            const caretElement = contentDiv.querySelector('.public-DraftEditor-caret');
-            if (caretElement) {
-                const caretPosition = caretElement.getBoundingClientRect();
-                const editorPosition = editorDOM.getBoundingClientRect();
-
-                // If caret is below the visible area, scroll to it
-                if (caretPosition.bottom > editorPosition.bottom) {
-                    editorDOM.scrollTop += caretPosition.bottom - editorPosition.bottom;
-                }
-            }
-        }
-    };
 
     const handleEditorChange = useCallback((state) => {
         setEditorState(state);
         onContentChange && onContentChange(state);
-        
-        // Scroll to caret after state changes (e.g., pressing Enter)
-        setTimeout(scrollToCaret, 0); // Ensure this happens after the DOM update
+    
+        setTimeout(() => {
+            const selection = state?.getSelection();
+            if (!selection?.isCollapsed()) return;
+    
+            const blockKey = selection?.getFocusKey();
+            const blockElement = document.querySelector(`[data-offset-key="${blockKey}-0-0"]`);
+    
+            if (blockElement) {
+                blockElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                });
+            }
+        }, 0);
     }, [onContentChange]);
 
-    useEffect(() => {
-        // Scroll the editor whenever the editor state changes, particularly after Enter press
-        scrollToCaret();
-    }, [editorState]);
+    
+    
+
     
 
     const toggleInlineStyle = useCallback((style) => {
@@ -139,6 +139,7 @@ const DraftEditor = ({ placeholder, onContentChange }) => {
 
     return (
         <div className="editor-container">
+            {showToolbar &&
             <div className="toolbar">
                 {/* Inline Styles */}
                 <button className={`button ${editorState.getCurrentInlineStyle().has('BOLD') ? 'active' : ''}`} 
@@ -228,13 +229,15 @@ const DraftEditor = ({ placeholder, onContentChange }) => {
                     <FontAwesomeIcon icon={faRedo} />
                 </button>
             </div>
+}
 
             <div 
                 className="editor"
-                ref={editorRef}
+                // ref={editorRef}
+                onClick={() => editorRef.current?.focus()}
                 style={{ fontFamily, fontSize, color: textColor, backgroundColor }}>
                 <Editor
-                // ref={editorRef}
+                    ref={(element) => (editorRef.current = element)}
                     placeholder={placeholder || 'Start typing...'}
                     editorState={editorState}
                     onChange={handleEditorChange}

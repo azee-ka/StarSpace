@@ -242,18 +242,18 @@ const Entry = () => {
                         <div className="entry-center-panel-info">
                             <div className="entry-center-panel-info-content">
                                 <p>Author</p>
-                                <Link to={`/profile/${entryInfo.author}`} >
+                                <Link to={`/profile/${entryInfo?.author?.username}`} >
                                     <ProfilePicture />
-                                    @{entryInfo.author}
+                                    @{entryInfo?.author?.username}
                                 </Link>
                             </div>
                             <div className="entry-center-panel-info-content">
                                 <p>Created</p>
-                                <p>{formatDateTime(entryInfo.created_at)}</p>
+                                <p>{formatDateTime(entryInfo?.created_at)}</p>
                             </div>
                             <div className="entry-center-panel-info-content">
                                 <p>Posted in</p>
-                                <Link to={`/axionspace/exchange/${parentExchangeInfo.uuid}`}>{parentExchangeInfo.name}</Link>
+                                <Link to={`/axionspace/exchange/${parentExchangeInfo?.uuid}`}>{parentExchangeInfo?.name}</Link>
                             </div>
                         </div>
                     </div>
